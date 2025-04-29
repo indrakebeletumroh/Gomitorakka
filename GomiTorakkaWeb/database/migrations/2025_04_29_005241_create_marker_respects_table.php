@@ -13,9 +13,6 @@ class CreateMarkerRespectsTable extends Migration
             $table->unsignedBigInteger('marker_id');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
-
-            $table->foreign('marker_id')->references('marker_id')->on('markers')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePenggunaTable extends Migration
+class CreateUserTable extends Migration
 {
     /**
      * Jalankan migrasi untuk membuat tabel users.
@@ -13,7 +13,7 @@ class CreatePenggunaTable extends Migration
      */
     public function up()
     {
-        Schema::create('pengguna', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->id('uid');
             $table->string('username', 50);
             $table->string('password', 255);
@@ -35,6 +35,6 @@ class CreatePenggunaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pengguna');
+        Schema::dropIfExists('users');
     }
 }
