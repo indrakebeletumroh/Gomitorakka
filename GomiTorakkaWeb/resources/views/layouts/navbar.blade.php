@@ -1,6 +1,6 @@
 <div class="navbar bg-base-100 shadow-sm">
   <div class="flex-1">
-  <a href="/" class="text-white text-3xl font-bold font-['Roboto']">
+  <a href="/" class="text-black text-3xl font-bold font-['Roboto']">
             GomiTorakka <span class="text-green-400">ゴミトラッカ</span>
         </a>
   </div>
