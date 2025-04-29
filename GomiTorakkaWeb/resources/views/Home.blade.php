@@ -20,17 +20,17 @@
             </style>
         @endif
 </head>
-<body>
+<body class="motion-opacity-in-0 motion-translate-y-in-100 motion-blur-in-md">
 @include('layouts.navbar')
 <div class="hero bg-base-200 min-h-screen">
   <div class="hero-content text-center">
     <div class="max-w-md">
-      <h1 class="text-5xl font-bold">Hello there</h1>
+      <h1 class="text-5xl font-bold">Welcome To Gomi<span class="text-green-700">Torakka</span></h1>
       <p class="py-6">
         Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
         quasi. In deleniti eaque aut repudiandae et a id nisi.
       </p>
-      <button class="btn btn-primary">Get Started</button>
+      <button class="btn btn-primary text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:-rotate-15 hover:duration-100 animate-bounce">Get Started</button>
     </div>
   </div>
 </div>
