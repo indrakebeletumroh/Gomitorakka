@@ -30,7 +30,7 @@
         Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
         quasi. In deleniti eaque aut repudiandae et a id nisi.
       </p>
-      <button class="btn btn-primary text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:-rotate-15 hover:duration-100 animate-bounce">Get Started</button>
+      <button class="btn btn-primary text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:-rotate-5 hover:duration-3500 animate-bounce">Get Started</button>
     </div>
   </div>
 </div>
