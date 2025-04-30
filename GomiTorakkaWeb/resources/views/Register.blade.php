@@ -22,28 +22,31 @@
 </head>
 <body>
     <div class="flex-row">
-        <div class="flex justify-center pt-40">
-        <fieldset class="fieldset bg-base-100 border-base-300 rounded-md w-xs border p-4 gap-1">
-        <legend class="fieldset-legend text-xl">Register</legend>
-        <img src="" alt="">
+        <form action="{{ route('form_register.submit') }}" method="post">
+            @csrf
+            <div class="flex justify-center pt-40">
+            <fieldset class="fieldset bg-base-100 border-base-300 rounded-md w-xs border p-4 gap-1">
+            <legend class="fieldset-legend text-xl">Register</legend>
+            <img src="" alt="">
 
-        <label class="label">Username</label>
-        <input type="text" class="input" placeholder="Username" />
+            <label class="label">Username</label>
+            <input type="text" class="input" placeholder="Username" name="username" />
 
-        <label class="label">Phone Number</label>
-        <input type="text" class="input" placeholder="Phone Number" />
-    
-        <label class="label">Email</label>
-        <input type="email" class="input" placeholder="Email" />
+            <label class="label">Phone Number</label>
+            <input type="number" class="input" placeholder="Phone Number" name="phone_number" />
+        
+            <label class="label">Email</label>
+            <input type="email" class="input" placeholder="Email" name="email" />
 
-        <label class="label">Password</label>
-        <input type="password" class="input" placeholder="Password" />
+            <label class="label">Password</label>
+            <input type="password" class="input" placeholder="Password" name="password" />
 
 
 
-        <button class="btn btn-primary mt-10 text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:scale-106 hover:duration-1200">Register</button>
-        </fieldset>
-        </div>
+            <button class="btn btn-primary mt-10 text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:scale-106 hover:duration-1200">Register</button>
+            </fieldset>
+            </div>
+        </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
