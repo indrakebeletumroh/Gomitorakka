@@ -17,7 +17,7 @@ class CreateUserTable extends Migration
             $table->id('uidg');
             $table->string('username', 50);
             $table->string('password', 255);
-            $table->string('gmail', 100);
+            $table->string('email', 100);
             $table->integer('age')->nullable();
             $table->string('profile_photo', 255)->nullable();
             $table->string('phone_number', 20)->nullable();

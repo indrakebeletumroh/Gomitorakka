@@ -22,19 +22,22 @@
 </head>
 <body>
     <div class="flex-row">
-        <div class="flex justify-center pt-40">
-        <fieldset class="fieldset bg-base-100 border-base-300 rounded-md w-xs border p-4 gap-2">
-        <legend class="fieldset-legend text-xl">Login</legend>
-        <img src="" alt="">
-        <label class="label">Email</label>
-        <input type="email" class="input" placeholder="Email" />
+        <form action="{{ route('form_login.submit') }}" method="post">
+            @csrf
+            <div class="flex justify-center pt-40">
+            <fieldset class="fieldset bg-base-100 border-base-300 rounded-md w-xs border p-4 gap-2">
+            <legend class="fieldset-legend text-xl">Login</legend>
+            <img src="" alt="">
+            <label class="label">Username</label>
+            <input type="text" class="input" name="username" placeholder="Username" />
 
-        <label class="label">Password</label>
-        <input type="password" class="input" placeholder="Password" />
+            <label class="label">Password</label>
+            <input type="password" class="input" name="password" placeholder="Password" />
 
-        <button class="btn btn-primary mt-10 text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:scale-106 hover:duration-1200">Login</button>
-        </fieldset>
-        </div>
+            <button class="btn btn-primary mt-10 text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:scale-106 hover:duration-1200">Login</button>
+            </fieldset>
+            </div>
+        </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
