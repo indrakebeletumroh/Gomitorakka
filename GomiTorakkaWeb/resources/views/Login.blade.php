@@ -29,10 +29,10 @@
             <legend class="fieldset-legend text-xl">Login</legend>
             <img src="" alt="">
             <label class="label">Username</label>
-            <input type="text" class="input" name="username" placeholder="Username" />
+            <input type="text" class="input" name="username" placeholder="Username" required/>
 
             <label class="label">Password</label>
-            <input type="password" class="input" name="password" placeholder="Password" />
+            <input type="password" class="input" name="password" placeholder="Password" required/>
 
             <button class="btn btn-primary mt-10 text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:scale-106 hover:duration-1200">Login</button>
             </fieldset>
