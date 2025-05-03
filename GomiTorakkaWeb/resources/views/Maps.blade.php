@@ -82,8 +82,8 @@
 
     <br>
     <div class="py-30 px-20">
-        <button id="btn-lacak">📍 Lacak Lokasi Saya</button>
-        <button id="btn-tambah-marker">➕ Tambah Marker</button>
+        <button id="btn-lacak" class="btn btn-primary text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:-rotate-5 hover:duration-3500">📍 Lacak Lokasi Saya</button>
+        <button id="btn-tambah-marker" class="btn btn-primary text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:-rotate-5 hover:duration-3500 ">➕ Tambah Marker</button>
 
         <div id="map"></div>
         <div id="infoBox">

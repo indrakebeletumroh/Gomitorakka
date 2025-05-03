@@ -128,7 +128,7 @@
       <div class="max-w-md animate-fade-in-up">
         <h1 class="text-5xl font-bold">Welcome To Gomi<span class="text-green-700">Torakka</span></h1>
         <p class="py-6">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.</p>
-        <button class="btn btn-primary text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:-rotate-5 hover:duration-3500 animate-bounce" id="startBtn">Get Started</button>
+        <button class="btn btn-primary text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:-rotate-5 hover:duration-3500 animate-bounce">Get Started</button>
       </div>
     </div>
   </div>
