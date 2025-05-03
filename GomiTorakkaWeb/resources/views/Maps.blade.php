@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Dashboard</title>
 
@@ -17,12 +18,24 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Styles / Scripts -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @else
+    @endif
     <style>
         #map {
             height: 600px;
         }
 
-        #btn-lacak, #btn-tambah-marker {
+        #btn-lacak,
+        #btn-tambah-marker {
             margin: 10px 5px;
             padding: 10px 20px;
             background-color: #4CAF50;
@@ -32,7 +45,8 @@
             cursor: pointer;
         }
 
-        #btn-lacak:hover, #btn-tambah-marker:hover {
+        #btn-lacak:hover,
+        #btn-tambah-marker:hover {
             background-color: #45a049;
         }
 
@@ -48,7 +62,7 @@
             min-width: 200px;
             background-color: white;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             padding: 10px;
             z-index: 1000;
             display: none;
@@ -62,18 +76,21 @@
         }
     </style>
 </head>
+
 <body>
-    <h2>Selamat datang di HomePage!</h2>
+    @include('layouts.navbar')
 
     <br>
-    <button id="btn-lacak">📍 Lacak Lokasi Saya</button>
-    <button id="btn-tambah-marker">➕ Tambah Marker</button>
+    <div class="py-30 px-20">
+        <button id="btn-lacak">📍 Lacak Lokasi Saya</button>
+        <button id="btn-tambah-marker">➕ Tambah Marker</button>
 
-    <div id="map"></div>
-    <div id="infoBox">
-        <i class="fa fa-trash"></i> <span id="infoText">Tempat Sampah</span>
+        <div id="map"></div>
+        <div id="infoBox">
+            <i class="fa fa-trash"></i> <span id="infoText">Tempat Sampah</span>
+        </div>
     </div>
-
+    @include('layouts.footer')
     <script>
         var map = L.map('map', {
             center: [-6.7342685, 108.5380800],
@@ -94,7 +111,10 @@
         };
 
         // Kontrol layer
-        L.control.layers({ "Satellite": satellite, "OSM": openStreetMap }, overlays).addTo(map);
+        L.control.layers({
+            "Satellite": satellite,
+            "OSM": openStreetMap
+        }, overlays).addTo(map);
 
         // Tambah search lokasi (geocoder)
         L.Control.geocoder({
@@ -120,7 +140,9 @@
             .then(res => res.json())
             .then(data => {
                 data.forEach(marker => {
-                    const m = L.marker([marker.latitude, marker.longitude], { icon: tempatSampahIcon }).addTo(tempatSampahLayer);
+                    const m = L.marker([marker.latitude, marker.longitude], {
+                        icon: tempatSampahIcon
+                    }).addTo(tempatSampahLayer);
                     m.bindPopup(marker.description || "Tempat Sampah");
                 });
             });
@@ -135,34 +157,42 @@
         map.on('click', function(e) {
             if (!isAddingMarker) return;
 
-            const { lat, lng } = e.latlng;
-            const marker = L.marker([lat, lng], { icon: tempatSampahIcon }).addTo(tempatSampahLayer);
+            const {
+                lat,
+                lng
+            } = e.latlng;
+            const marker = L.marker([lat, lng], {
+                icon: tempatSampahIcon
+            }).addTo(tempatSampahLayer);
             marker.bindPopup("Tempat Sampah").openPopup();
 
             fetch("/markers", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({
-                    latitude: lat,
-                    longitude: lng,
-                    description: "Tempat Sampah",
-                    status: "aktif"
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        latitude: lat,
+                        longitude: lng,
+                        description: "Tempat Sampah",
+                        status: "aktif"
+                    })
                 })
-            })
-            .then(res => res.json())
-            .then(data => console.log(data.message))
-            .catch(err => console.error(err));
+                .then(res => res.json())
+                .then(data => console.log(data.message))
+                .catch(err => console.error(err));
 
             isAddingMarker = false;
             document.getElementById('map').classList.remove('crosshair-cursor');
         });
 
         // Lacak lokasi saya
-        document.getElementById('btn-lacak').addEventListener('click', function () {
-            map.locate({ setView: true, maxZoom: 17 });
+        document.getElementById('btn-lacak').addEventListener('click', function() {
+            map.locate({
+                setView: true,
+                maxZoom: 17
+            });
 
             map.on('locationfound', function(e) {
                 const radius = 5;
@@ -181,4 +211,5 @@
         });
     </script>
 </body>
+
 </html>
