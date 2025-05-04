@@ -31,8 +31,8 @@
 <body>
     @include('layouts.navbar')
     <!-- Profile Section -->
-    <div class="flex justify-center items-center py-8 pt-40">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <div class="flex justify-center items-center py-8 pt-20">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
         <div class="flex flex-col items-center">    
             <h1 class="text-4xl font-semibold text-gray-800 mb-6">Profile</h1>
             <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center mb-2">

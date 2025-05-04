@@ -16,6 +16,9 @@ Route::get('/profile', function () {
     return view('profile');
 })->name('profile');
 
+Route::get('/edit-profile', function () {
+    return view('edit_profile');
+})->name('edit_profile');
 
 Route::get('/register', [AuthController::class, 'form_register'])->name('form_register.tampil');
 Route::post('/register/submit', [AuthController::class, 'submit'])->name('form_register.submit');

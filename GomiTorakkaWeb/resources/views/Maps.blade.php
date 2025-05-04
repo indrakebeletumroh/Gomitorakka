@@ -32,6 +32,7 @@
     <style>
         #map {
             height: 600px;
+            z-index: 0; /* Make sure the map is in the background */
         }
 
         #btn-lacak,
@@ -74,6 +75,10 @@
             color: #4CAF50;
             font-size: 20px;
         }
+
+        #navbar {
+            z-index: 10; /* Navbar stays on top */
+        }
     </style>
 </head>
 
@@ -81,7 +86,7 @@
     @include('layouts.navbar')
 
     <br>
-    <div class="py-30 px-20">
+    <div class="py-20 px-20">
         <button id="btn-lacak" class="btn btn-primary text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:-rotate-5 hover:duration-3500">📍 Lacak Lokasi Saya</button>
         <button id="btn-tambah-marker" class="btn btn-primary text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:-rotate-5 hover:duration-3500 ">➕ Tambah Marker</button>
 
@@ -124,7 +129,7 @@
         // Icon custom
         const tempatSampahIcon = L.divIcon({
             className: '',
-            html: `
+            html: ` 
                 <div style="position: relative; pointer-events: auto; cursor: pointer; width: 20px; height: 20px; background-color: #4CAF50; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 3px rgba(0,0,0,0.5);">
                     <i class="fa fa-trash" style="color: white; font-size: 10px;"></i>
                     <div style="position: absolute; bottom: -6px; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid #4CAF50;"></div>
