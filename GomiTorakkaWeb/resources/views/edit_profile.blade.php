@@ -209,7 +209,8 @@
     <!-- Profile Section -->
     <div class="flex justify-center items-center py-50">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
-            <form class="flex flex-col" enctype="multipart/form-data">
+            <form class="flex flex-col" enctype="multipart/form-data" method="POST">
+                @csrf
                 <h1 class="text-4xl font-semibold text-gray-800 mb-6 text-center">Profile</h1>
 
                 <div class="flex flex-col md:flex-row gap-8">
@@ -285,10 +286,10 @@
                 <img id="cropImage" src="" alt="Image to crop">
             </div>
             <div class="modal-actions">
-                <button class="cancel-btn" onclick="cancelCrop()">
+                <button type="button" class="cancel-btn" onclick="cancelCrop()">
                     <i class="fas fa-times mr-2"></i>Cancel
                 </button>
-                <button class="save-btn" onclick="cropImage()">
+                <button type="button" class="save-btn" onclick="cropImage()">
                     <i class="fas fa-check mr-2"></i>Save Changes
                 </button>
             </div>
