@@ -1,5 +1,5 @@
 <!-- Navbar -->
-<nav id="navbar" class="navbar sticky top-0 left-0 right-0 z-50 bg-base-100 transition-all duration-300 shadow-md">
+<nav id="navbar" class="navbar sticky top-0 left-0 right-0 z-50 bg-base-100 transition-all duration-300 shadow-md relative">
   <div class="flex items-center justify-between w-full px-8">
     <!-- Burger Menu Button (Pindahkan ke kiri sebelum logo) -->
     <div class="block sm:hidden mr-4">
@@ -50,8 +50,7 @@
   </ul>
 
   <!-- Inbox Panel -->
-  <div id="inboxPanel" class="fixed top-20 right-5 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50 hidden opacity-0 translate-y-5 transition-all duration-300 ease-in-out">
-    <div class="flex justify-between items-center mb-2">
+  <div id="inboxPanel" class="absolute top-full right-5 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50 hidden opacity-0 translate-y-5 transition-all duration-300 ease-in-out mt-2">    <div class="flex justify-between items-center mb-2">
       <h3 class="font-bold text-lg">Inbox</h3>
       <button onclick="toggleInbox()" class="btn btn-sm btn-circle btn-ghost">✕</button>
     </div>
@@ -103,6 +102,17 @@
 </script>
 
 <style>
+  #navbar {
+  position: sticky;
+  top: 0;
+}
+
+#inboxPanel {
+  position: absolute;
+  top: 100%; /* Akan muncul tepat di bawah navbar */
+  right: 1.25rem; /* Sama dengan right-5 di Tailwind */
+  margin-top: 0.5rem; /* Sama dengan mt-2 di Tailwind */
+}
   @keyframes fade-in {
     from {
       opacity: 0;
