@@ -13,9 +13,9 @@
 
     <!-- Menu (Visible on desktop) -->
     <ul id="menu" class="menu menu-horizontal px-1 flex-1 justify-center space-x-4 hidden sm:flex">
-      <li><a href="#">Home</a></li>
+      <li><a href="/">Home</a></li>
       <li><a href="#">Feed</a></li>
-      <li><a href="#">Tracker</a></li>
+      <li><a href="/maps">Tracker</a></li>
     </ul>
 
     <!-- Profile & Inbox Button -->
@@ -31,7 +31,7 @@
           </div>
         </label>
         <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-          <li><a>Profile</a></li>
+          <li><a href="/profile">Profile</a></li>
           <li><a>Settings</a></li>
           <li><a>Logout</a></li>
         </ul>
@@ -41,9 +41,9 @@
 
   <!-- Mobile Menu (Hidden on desktop) -->
   <ul id="mobileMenu" class="menu bg-base-100 w-full p-4 space-y-4 sm:hidden absolute top-0 left-0 right-0 shadow-md hidden">
-    <li><a href="#">Home</a></li>
+    <li><a href="/">Home</a></li>
     <li><a href="#">Feed</a></li>
-    <li><a href="#">Tracker</a></li>
+    <li><a href="/maps">Tracker</a></li>
     <li>
       <button class="text-xl w-full text-center" onclick="toggleBurgerMenu()">✕ Close</button>
     </li>
