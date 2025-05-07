@@ -21,17 +21,17 @@
     <div class="flex-row">
         <form action="{{ route('form_login.submit') }}" method="post">
             @csrf
-            <div class="flex justify-center pt-40">
+            <div class="flex justify-center pt-50">
             <fieldset class="fieldset bg-base-100 border-base-300 rounded-md w-xs border p-4 gap-2">
-            <legend class="fieldset-legend text-xl">Login</legend>
+            <legend class="fieldset-legend text-3xl">Login</legend>
             <img src="" alt="">
             <label class="label">Username</label>
-            <input type="text" class="input" name="username" placeholder="Username" required/>
+            <input type="text" class="input focus:outline-2 focus:outline-blue-600 focus:-outline-offset-3" name="username" placeholder="Username" required/>
 
             <label class="label">Password</label>
-            <input type="password" class="input" name="password" placeholder="Password" required/>
-
-            <button class="btn btn-primary mt-10 text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:scale-106 hover:duration-1200">Login</button>
+            <input type="password" class="input focus:outline-2 focus:outline-blue-600 focus:-outline-offset-3" name="password" placeholder="Password" required/>
+            <p class="mt-6 mb-5">Dont Have An Account? <a href="/register" class="text-blue-400">Register</a></p>
+            <button class="btn btn-primary  text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:scale-102 hover:-rotate-3 hover:duration-1200">Login</button>
             </fieldset>
             </div>
         </form>

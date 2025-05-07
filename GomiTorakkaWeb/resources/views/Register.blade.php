@@ -28,14 +28,17 @@
             @csrf
             <div class="flex justify-center pt-40">
                 <fieldset class="fieldset bg-base-100 border-base-300 rounded-md w-xs border p-4 gap-1">
-                    <legend class="fieldset-legend text-xl">Register</legend>
+                    <legend class="fieldset-legend text-3xl">Register</legend>
                     <img src="" alt="">
 
                     <label class="label">Username</label>
                     <input type="text" class="input" placeholder="Username" name="username" />
 
+                    <label class="label">Age</label>
+                    <input type="text" class="input" placeholder="Age" name="age" />
+
                     <label class="label">Phone Number</label>
-                    <input type="number" class="input" placeholder="Phone Number" name="phone_number" />
+                    <input type="text" class="input" placeholder="Phone Number" name="phone_number" />
 
                     <label class="label">Email</label>
                     <input type="email" class="input" placeholder="Email" name="email" />
