@@ -35,20 +35,52 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
     
-        $users = users::where('username', $request->username)->first();
+        $user = users::where('username', $request->username)->first();
     
-        if ($users && Hash::check($request->password, $users->password)) {
-            // Login berhasil
-            // Simpan user ke session jika perlu
-            session(['loggedInUser' => $users]);
+        if ($user && Hash::check($request->password, $user->password)) {
+            // Simpan semua data yang diperlukan ke session
+            Session::put([
+                'user_id' => $user->id,
+                'username' => $user->username,
+                'email' => $user->email,
+                'phone_number' => $user->phone_number,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+                'logged_in' => true
+            ]);
     
-            return redirect('maps');
+            return redirect()->route('profile');
         } else {
-            // Gagal login
             return back()->withErrors([
                 'login' => 'Username atau password salah.',
             ]);
         }
     }
 
+    // Tambahkan method untuk profile page
+    public function profile()
+    {
+        // Cek apakah user sudah login
+        if (!Session::has('logged_in')) {
+            return redirect()->route('form_login.tampil');
+        }
+
+        // Ambil data dari session
+        $userData = [
+            'username' => Session::get('username'),
+            'email' => Session::get('email'),
+            'phone_number' => Session::get('phone_number')
+        ];
+
+        return view('profile', ['user' => $userData]);
+    }
+
+    // Tambahkan method untuk logout
+    public function logout()
+    {
+        // Hapus semua session
+        Session::flush();
+        
+        return redirect()->route('form_login.tampil');
+    }
 }

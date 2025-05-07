@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Profile - {{ Session::get('username') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -32,50 +32,51 @@
     @include('layouts.navbar')
     <!-- Profile Section -->
     <div class="flex justify-center items-center py-8 pt-20">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
-        <div class="flex flex-col items-center">    
-            <h1 class="text-4xl font-semibold text-gray-800 mb-6">Profile</h1>
-            <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center mb-2">
-                <span class="text-xl font-semibold text-gray-600">P</span>
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+            <div class="flex flex-col items-center">    
+                <h1 class="text-4xl font-semibold text-gray-800 mb-6">Profile</h1>
+                <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center mb-2">
+                    <!-- Ambil inisial dari username -->
+                    <span class="text-xl font-semibold text-gray-600">
+                        {{ strtoupper(substr(Session::get('username'), 0, 1)) }}
+                    </span>
+                </div>
+                <p class="text-gray-400 mb-8">Last Online {{ now()->diffForHumans() }}</p>
             </div>
-            <p class="text-gray-400 mb-8">Last Online 12 Minute Ago</p>
-        </div>
 
-        <div class="space-y-4 text-gray-500">
-            <div>
-                <p>Nama</p>
-                <span class="font-bold text-gray-800">Yanuar</span>
+            <div class="space-y-4 text-gray-500">
+                <div>
+                    <p>Username</p>
+                    <span class="font-bold text-gray-800">{{ Session::get('username') }}</span>
+                </div>
+                <div>
+                    <p>Phone Number</p>
+                    <span class="font-bold text-gray-800">{{ Session::get('phone_number') }}</span>
+                </div>
+                <div>
+                    <p>Email</p>
+                    <span class="font-bold text-gray-800">{{ Session::get('email') }}</span>
+                </div>
+                <div>
+                    <p>Member Since</p>
+                    <span class="font-bold text-gray-800">
+                        {{ \Carbon\Carbon::parse(Session::get('created_at'))->format('d F Y') }}
+                    </span>
+                </div>
             </div>
-            <div>
-                <p>Age</p>
-                <span class="font-bold text-gray-800">25</span>
-            </div>
-            <div>
-                <p>UID</p>
-                <span class="font-bold text-gray-800">2147612847</span>
-            </div>
-            <div>
-                <p>Phone Number</p>
-                <span class="font-bold text-gray-800">+62 2193 2198</span>
-            </div>
-            <div>
-                <p>Gmail</p>
-                <span class="font-bold text-gray-800">yanuar@example.com</span>
-            </div>
-        </div>
 
-        <div class="flex justify-center mt-10">
-            <a href="/edit-profile" class="btn bg-blue-400 text-base-100 w-40 hover:text-blue-400 hover:-rotate-3 hover:duration-800 hover:bg-base-100 hover:border-solid">
-                Edit Profile
-            </a>
-        </div>
+            <div class="flex justify-center mt-10">
+                <a href="/edit-profile" class="btn bg-blue-400 text-base-100 w-40 hover:text-blue-400 hover:-rotate-3 hover:duration-800 hover:bg-base-100 hover:border-solid">
+                    Edit Profile
+                </a>
+            </div>
 
-        <div class="flex justify-between text-sm text-gray-400 mt-10">
-            <p>Updated At</p>
-            <p>Account Created At</p>
+            <div class="flex justify-between text-sm text-gray-400 mt-10">
+                <p>Last Updated: {{ \Carbon\Carbon::parse(Session::get('updated_at'))->diffForHumans() }}</p>
+                <p>Account Created: {{ \Carbon\Carbon::parse(Session::get('created_at'))->diffForHumans() }}</p>
+            </div>
         </div>
     </div>
-</div>
 
     @include('layouts.footer')
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
