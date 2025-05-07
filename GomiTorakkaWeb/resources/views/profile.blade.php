@@ -65,7 +65,7 @@
         </div>
 
         <div class="flex justify-center mt-10">
-            <a href="#" class="btn bg-blue-400 text-base-100 w-40 hover:text-blue-400 hover:-rotate-3 hover:duration-800 hover:bg-base-100 hover:border-solid">
+            <a href="/edit-profile" class="btn bg-blue-400 text-base-100 w-40 hover:text-blue-400 hover:-rotate-3 hover:duration-800 hover:bg-base-100 hover:border-solid">
                 Edit Profile
             </a>
         </div>

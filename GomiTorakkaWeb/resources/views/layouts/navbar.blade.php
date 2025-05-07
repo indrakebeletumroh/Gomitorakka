@@ -13,7 +13,7 @@
 
     <!-- Menu (Visible on desktop) -->
     <ul id="menu" class="menu menu-horizontal px-1 flex-1 justify-center space-x-4 hidden sm:flex">
-      <li><a href="/">Home</a></li>
+      <li><a href="/" class="">Home</a></li>
       <li><a href="#">Feed</a></li>
       <li><a href="/maps">Tracker</a></li>
     </ul>

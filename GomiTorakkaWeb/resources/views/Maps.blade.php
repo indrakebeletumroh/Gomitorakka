@@ -86,7 +86,7 @@
     @include('layouts.navbar')
 
     <br>
-    <div class="py-20 px-20">
+    <div class=" px-20">
         <button id="btn-lacak" class="btn btn-primary text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:-rotate-5 hover:duration-3500">📍 Lacak Lokasi Saya</button>
         <button id="btn-tambah-marker" class="btn btn-primary text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:-rotate-5 hover:duration-3500 ">➕ Tambah Marker</button>
 

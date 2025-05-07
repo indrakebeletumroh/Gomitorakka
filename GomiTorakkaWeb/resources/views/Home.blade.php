@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document</title>
+  <title>GomiTorakka - Smart Waste Management</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.bunny.net">
@@ -21,7 +21,6 @@
   @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   @endif
-
 
   <style>
     @keyframes fall {
@@ -77,20 +76,6 @@
       animation-delay: 3s;
     }
 
-
-
-    @keyframes pulse-green {
-
-      0%,
-      100% {
-        box-shadow: 0 0 0px rgba(34, 197, 94, 0.4);
-      }
-
-      50% {
-        box-shadow: 0 0 40px rgba(34, 197, 94, 0.8);
-      }
-    }
-
     .animate-fade-in-up {
       animation: fadeInUp 1s ease-out forwards;
     }
@@ -106,8 +91,33 @@
         transform: translateY(0);
       }
     }
-  </style>
 
+    .feature-icon {
+      background: rgba(16, 185, 129, 0.1);
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 20px;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover .feature-icon {
+      background: rgba(16, 185, 129, 0.2);
+      transform: scale(1.1);
+    }
+
+    .feature-card {
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+  </style>
 </head>
 
 <body class="animate-fade-in transition-all duration-500 ease-out">
@@ -127,7 +137,7 @@
     <div class="hero-content text-center z-10">
       <div class="max-w-md animate-fade-in-up">
         <h1 class="text-5xl font-bold">Welcome To Gomi<span class="text-green-700">Torakka</span></h1>
-        <p class="py-6">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.</p>
+        <p class="py-6">Revolutionizing waste management with smart tracking and eco-friendly solutions for a cleaner tomorrow.</p>
         <button class="btn btn-primary text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:-rotate-5 hover:duration-3500 animate-bounce">Get Started</button>
       </div>
     </div>
@@ -135,63 +145,96 @@
 
   <!-- About Section with Animation -->
   <div class="py-28 bg-gray-50">
-    <div class="text-center">
-      <h1 class="text-4xl font-bold text-green mb-6 animate-fade-in-up">About GomiTorakka</h1>
-      <p class="text-xl text-gray-700 mx-auto max-w-4xl animate-fade-in-up">
-        GomiTorakka is your ultimate companion for waste management. With our easy-to-use app, you can effortlessly track your trash pickup, sort your waste, and even track your recycling efforts. Join us in making the world cleaner, one step at a time!
-      </p>
-      <div class="mt-12 mx-20">
-        <h2 class="text-3xl font-semibold text-gray-800 mb-6 animate-fade-in-up">Amazing Features You'll Love</h2>
-        <div class="grid md:grid-cols-2 gap-8">
-          <div class="flex items-start space-x-4 animate-fade-in-up transform transition-transform duration-300 hover:scale-105 hover:shadow-xl hover:bg-green-50 p-6 rounded-lg">
-            <div class="flex-shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m2 0h-2a2 2 0 00-2 2v6h-8v-6a2 2 0 00-2-2H3m6-2h8m2 0h-2a2 2 0 01-2 2v6h-8v-6a2 2 0 01-2-2H3m6-2h8" />
-              </svg>
-            </div>
-            <div>
-              <h3 class="text-xl font-semibold text-gray-800">Track Your Trash Pickup</h3>
-              <p class="text-gray-700 mt-2">Never forget a trash pickup again! With GomiTorakka, you’ll receive timely reminders for your scheduled trash collections. Stay organized and never let your trash pile up!</p>
-            </div>
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold text-green-600 mb-6 animate-fade-in-up">Our Eco-Friendly Features</h1>
+        <p class="text-xl text-gray-700 mx-auto max-w-4xl animate-fade-in-up">
+          GomiTorakka combines technology with sustainability to transform how you manage waste. Our platform helps you reduce environmental impact while making waste management effortless.
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <!-- Feature 1 -->
+        <div class="feature-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg animate-fade-in-up flex items-start">
+          <div class="feature-icon text-green-500">
+            <i class="fas fa-calendar-check text-2xl"></i>
           </div>
-
-          <div class="flex items-start space-x-4 animate-fade-in-up transform transition-transform duration-300 hover:scale-105 hover:shadow-xl hover:bg-green-50 p-6 rounded-lg">
-            <div class="flex-shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8V4m0 4l-4-4m4 4l4-4M12 4v4m-8 12v4h16v-4H4z" />
-              </svg>
-            </div>
-            <div>
-              <h3 class="text-xl font-semibold text-gray-800">Sort Your Waste</h3>
-              <p class="text-gray-700 mt-2">Easily categorize your waste! Whether it’s recyclables, organic waste, or general trash, GomiTorakka helps you organize your waste effectively. Let’s keep the environment clean!</p>
-            </div>
-          </div>
-
-          <div class="flex items-start space-x-4 animate-fade-in-up transform transition-transform duration-300 hover:scale-105 hover:shadow-xl hover:bg-green-50 p-6 rounded-lg">
-            <div class="flex-shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 7l-5 5m0 0l5 5m-5-5h12" />
-              </svg>
-            </div>
-            <div>
-              <h3 class="text-xl font-semibold text-gray-800">Track Your Recycling Progress</h3>
-              <p class="text-gray-700 mt-2">Feel good about recycling! GomiTorakka tracks your recycling progress, so you can see how much waste you’re saving from landfills. It’s easy, rewarding, and eco-friendly!</p>
-            </div>
-          </div>
-
-          <div class="flex items-start space-x-4 animate-fade-in-up transform transition-transform duration-300 hover:scale-105 hover:shadow-xl hover:bg-green-50 p-6 rounded-lg">
-            <div class="flex-shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8l4 4m0 0l4-4m-4 4V4" />
-              </svg>
-            </div>
-            <div>
-              <h3 class="text-xl font-semibold text-gray-800">Reminders and Notifications</h3>
-              <p class="text-gray-700 mt-2">Stay on top of your waste management! GomiTorakka sends reminders for your trash pickups and recycling schedules, making sure you stay eco-conscious every step of the way.</p>
-            </div>
+          <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">Smart Pickup Scheduling</h3>
+            <p class="text-gray-600">Automated reminders and optimized pickup schedules tailored to your location and waste generation patterns.</p>
           </div>
         </div>
 
+        <!-- Feature 2 -->
+        <div class="feature-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg animate-fade-in-up flex items-start">
+          <div class="feature-icon text-green-500">
+            <i class="fas fa-recycle text-2xl"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">Waste Sorting Guide</h3>
+            <p class="text-gray-600">Interactive guides to help you properly separate recyclables, compost, and landfill waste with confidence.</p>
+          </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="feature-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg animate-fade-in-up flex items-start">
+          <div class="feature-icon text-green-500">
+            <i class="fas fa-chart-line text-2xl"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">Real-Time Analytics</h3>
+            <p class="text-gray-600">Track your waste reduction progress with detailed reports and environmental impact metrics.</p>
+          </div>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="feature-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg animate-fade-in-up flex items-start">
+          <div class="feature-icon text-green-500">
+            <i class="fas fa-map-marked-alt text-2xl"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">Collection Point Locator</h3>
+            <p class="text-gray-600">Find nearby recycling centers and special waste disposal facilities with our interactive map.</p>
+          </div>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="feature-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg animate-fade-in-up flex items-start">
+          <div class="feature-icon text-green-500">
+            <i class="fas fa-leaf text-2xl"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">Carbon Footprint Tracker</h3>
+            <p class="text-gray-600">See how your recycling efforts translate into CO2 savings and environmental benefits.</p>
+          </div>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="feature-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg animate-fade-in-up flex items-start">
+          <div class="feature-icon text-green-500">
+            <i class="fas fa-bell text-2xl"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">Custom Notifications</h3>
+            <p class="text-gray-600">Personalized alerts for collection days, special disposals, and community clean-up events.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Section -->
+      <div class="mt-20 grid md:grid-cols-3 gap-6 max-w-6xl mx-auto animate-fade-in-up">
+        <div class="bg-white p-6 rounded-xl shadow text-center">
+          <div class="text-4xl font-bold text-green-600 mb-2">10K+</div>
+          <div class="text-gray-600">Active Users</div>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow text-center">
+          <div class="text-4xl font-bold text-green-600 mb-2">500+</div>
+          <div class="text-gray-600">Tons Recycled</div>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow text-center">
+          <div class="text-4xl font-bold text-green-600 mb-2">100%</div>
+          <div class="text-gray-600">Eco-Friendly</div>
+        </div>
       </div>
     </div>
   </div>
@@ -199,5 +242,4 @@
   @include('layouts.footer')
 
 </body>
-
 </html>
