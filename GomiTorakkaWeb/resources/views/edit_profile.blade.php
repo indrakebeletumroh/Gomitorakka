@@ -207,7 +207,7 @@
 <body>
     @include('layouts.navbar')
     <!-- Profile Section -->
-    <div class="flex justify-center items-center py-10">
+    <div class="flex justify-center items-center pt-5 pb-15">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
             <form class="flex flex-col" enctype="multipart/form-data" method="POST">
                 @csrf
