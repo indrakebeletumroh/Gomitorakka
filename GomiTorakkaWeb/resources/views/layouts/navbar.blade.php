@@ -109,9 +109,9 @@
 
 #inboxPanel {
   position: absolute;
-  top: 100%; /* Akan muncul tepat di bawah navbar */
-  right: 1.25rem; /* Sama dengan right-5 di Tailwind */
-  margin-top: 0.5rem; /* Sama dengan mt-2 di Tailwind */
+  top: 100%; 
+  right: 1.25rem; 
+  margin-top: 0.5rem; 
 }
   @keyframes fade-in {
     from {
