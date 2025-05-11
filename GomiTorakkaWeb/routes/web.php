@@ -11,7 +11,9 @@ Route::get('/', function () {
 Route::get('/maps', function () {
     return view('maps');
 });
-
+Route::get('/feed', function () {
+    return view('feed');
+});
 
 Route::get('/edit-profile', function () {
     return view('edit_profile');

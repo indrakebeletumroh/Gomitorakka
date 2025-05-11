@@ -1,5 +1,4 @@
 <!-- Navbar -->
-<!-- Navbar -->
 <nav id="navbar" class="navbar sticky top-0 left-0 right-0 z-50 bg-base-100 transition-all duration-300 shadow-md relative">
   <div class="flex items-center justify-between w-full px-8">
     <!-- Burger Menu Button -->
@@ -18,19 +17,19 @@
     <!-- Menu (Visible on desktop) -->
     <ul id="menu" class="menu menu-horizontal px-1 flex-1 justify-center space-x-4 hidden sm:flex">
       <li>
-        <a href="/" class="hover:text-green-600 transition-colors flex items-center gap-2">
+        <a href="/" class="hover:text-green-600 transition-colors flex items-center gap-2 border-b-2 border-transparent pb-1">
           <i class="fas fa-home w-5 text-center"></i>
           <span>Home</span>
         </a>
       </li>
       <li>
-        <a href="#" class="hover:text-green-600 transition-colors flex items-center gap-2">
+        <a href="/feed" class="hover:text-green-600 transition-colors flex items-center gap-2 border-b-2 border-transparent pb-1">
           <i class="fas fa-newspaper w-5 text-center"></i>
           <span>Feed</span>
         </a>
       </li>
       <li>
-        <a href="/maps" class="hover:text-green-600 transition-colors flex items-center gap-2">
+        <a href="/maps" class="hover:text-green-600 transition-colors flex items-center gap-2 border-b-2 border-transparent pb-1">
           <i class="fas fa-map-marked-alt w-5 text-center"></i>
           <span>Tracker</span>
         </a>
@@ -61,19 +60,19 @@
   <!-- Mobile Menu -->
   <ul id="mobileMenu" class="menu bg-base-100 w-full p-4 space-y-4 sm:hidden absolute top-0 left-0 right-0 shadow-md hidden border-b-2 border-green-600">
     <li>
-      <a href="/" class="hover:text-green-600 flex items-center gap-3 text-lg">
+      <a href="/" class="hover:text-green-600 flex items-center gap-3 text-lg border-b-2 border-transparent pb-1">
         <i class="fas fa-home w-6 text-center"></i>
         <span>Home</span>
       </a>
     </li>
     <li>
-      <a href="#" class="hover:text-green-600 flex items-center gap-3 text-lg">
+      <a href="#" class="hover:text-green-600 flex items-center gap-3 text-lg border-b-2 border-transparent pb-1">
         <i class="fas fa-newspaper w-6 text-center"></i>
         <span>Feed</span>
       </a>
     </li>
     <li>
-      <a href="/maps" class="hover:text-green-600 flex items-center gap-3 text-lg">
+      <a href="/maps" class="hover:text-green-600 flex items-center gap-3 text-lg border-b-2 border-transparent pb-1">
         <i class="fas fa-map-marked-alt w-6 text-center"></i>
         <span>Tracker</span>
       </a>
@@ -142,6 +141,21 @@
       navbar.classList.remove("bg-white", "shadow-lg");
     }
   });
+
+  // Add active border functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('#menu a, #mobileMenu a');
+    
+    navLinks.forEach(link => {
+      const linkPath = link.getAttribute('href');
+      
+      if (linkPath === currentPath) {
+        link.classList.add('border-green-600');
+        link.classList.remove('border-transparent');
+      }
+    });
+  });
 </script>
 
 <!-- Tailwind CSS Animations -->
@@ -152,6 +166,10 @@
 </script>
 
 <style>
+   .navbar a {
+    transition: border-color 0.2s ease-in-out;
+  }
+  
   #navbar {
   position: sticky;
   top: 0;

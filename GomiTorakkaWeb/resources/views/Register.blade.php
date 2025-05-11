@@ -27,8 +27,8 @@
         <form action="{{ route('form_register.submit') }}" method="post">
             @csrf
             <div class="flex justify-center pt-40">
-                <fieldset class="fieldset bg-base-100 border-base-300 rounded-md w-xs border p-4 gap-1">
-                    <legend class="fieldset-legend text-3xl">Register</legend>
+                <fieldset class="fieldset bg-base-100 border-base-300 rounded-md w-xl border p-4 gap-1">
+                    <legend class="fieldset-legend text-3xl ">Register</legend>
                     <img src="" alt="">
 
                     <label class="label">Username</label>
@@ -46,9 +46,8 @@
                     <label class="label">Password</label>
                     <input type="password" class="input" placeholder="Password" name="password" />
 
-
-
-                    <button class="btn btn-primary mt-10 text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:scale-106 hover:duration-1200">Register</button>
+                    <p class="mt-2 mb-1">Alredy Have An Account? <a href="/login" class="text-blue-400">Login</a></p>
+                    <button class="btn btn-primary my-3 text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:scale-102 hover:-rotate-3 hover:duration-1200">Register</button>
                 </fieldset>
             </div>
         </form>
