@@ -34,7 +34,6 @@ GOMITORAKKA (ゴミトラッカ) adalah aplikasi berbasis web yang membantu peng
 - **Framework Front-End:** Tailwind CSS
 
 ## Anggota Kelompok
-- Indra (Back-End)
-- Yanuar (Front-End)
-- Fajar (Back-End)
+- Indra (Back-End, Project Vice Manager)
+- Yanuar (Front-End, Back-End, Project Manager)
 - Arestu (Front-End)
