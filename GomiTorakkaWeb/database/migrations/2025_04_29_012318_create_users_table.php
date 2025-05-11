@@ -3,8 +3,10 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
-class CreateUserTable extends Migration
+
+class CreateUsersTable extends Migration
 {
     /**
      * Jalankan migrasi untuk membuat tabel users.
@@ -14,7 +16,7 @@ class CreateUserTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id('uidg');
+            $table->id('uid');
             $table->string('username', 50);
             $table->string('password', 255);
             $table->string('email', 100);
@@ -26,6 +28,7 @@ class CreateUserTable extends Migration
             $table->timestamps(0);  // created_at, updated_at
             $table->timestamp('deleted_at')->nullable();
         });
+        DB::statement('ALTER TABLE users AUTO_INCREMENT = 100000');
     }
 
     /**

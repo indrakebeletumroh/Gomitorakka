@@ -234,27 +234,27 @@
                     <div class="flex-1">
                         <div class="form-grid">
                             <div>
-                                <label class="text-sm text-gray-500">Nama</label>
-                                <input type="text" name="name" value="Yanuar" class="w-full p-3 text-lg font-semibold text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300">
+                                <label class="text-sm text-gray-500">Username</label>
+                                <input type="text" name="name" value="{{ Session::get('username') }}" class="w-full p-3 text-lg font-semibold text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300">
                             </div>
                             <div>
                                 <label class="text-sm text-gray-500">Age</label>
-                                <input type="text" name="age" value="25" class="w-full p-3 text-lg font-semibold text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300">
+                                <input type="text" name="age" value="{{ Session::get('age') }}" class="w-full p-3 text-lg font-semibold text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300">
                             </div>
                             <div class="input-with-icon">
                                 <label class="text-sm text-gray-500">UID</label>
-                                <input type="text" name="uid" value="2147612847" readonly class="w-full p-3 text-lg font-semibold text-gray-800 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed">
+                                <input type="text" name="uid" value="{{ Session::get('uid') }}" readonly class="w-full p-3 text-lg font-semibold text-gray-800 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed">
                                 <div class="input-icon" onclick="copyToClipboard('uid')">
                                     <i class="far fa-copy"></i>
                                 </div>
                             </div>
                             <div>
                                 <label class="text-sm text-gray-500">Phone Number</label>
-                                <input type="text" name="phone" value="+62 2193 2198" class="w-full p-3 text-lg font-semibold text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300">
+                                <input type="text" name="phone" value="{{ Session::get('phone_number') }}" class="w-full p-3 text-lg font-semibold text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300">
                             </div>
                             <div>
-                                <label class="text-sm text-gray-500">Gmail</label>
-                                <input type="email" name="email" value="yanuar@example.com" class="w-full p-3 text-lg font-semibold text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300">
+                                <label class="text-sm text-gray-500">Email</label>
+                                <input type="email" name="email" value="{{ Session::get('email') }}" class="w-full p-3 text-lg font-semibold text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300">
                             </div>
                             <div>
                                 <label class="text-sm text-gray-500">Password</label>

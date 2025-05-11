@@ -15,6 +15,7 @@ class AuthController extends Controller
 
     function submit(Request $request){
         $users = new users();
+        $users->age = $request->age;
         $users->username = $request->username;
         $users->phone_number = $request->phone_number;
         $users->email = $request->email;
@@ -41,6 +42,8 @@ class AuthController extends Controller
             // Simpan semua data yang diperlukan ke session
             Session::put([
                 'user_id' => $user->id,
+                'uid' => $user->uid,
+                'age' => $user->age,
                 'username' => $user->username,
                 'email' => $user->email,
                 'phone_number' => $user->phone_number,
@@ -81,6 +84,6 @@ class AuthController extends Controller
         // Hapus semua session
         Session::flush();
         
-        return redirect()->route('form_login.tampil');
+        return redirect('/');
     }
 }
