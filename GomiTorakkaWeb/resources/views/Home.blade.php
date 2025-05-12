@@ -125,7 +125,7 @@
   @include('layouts.navbar')
 
   <!-- Hero Section -->
-  <div class="hero bg-emerald-100 min-h-screen pt-24">
+  <div class="hero bg-emerald-100 min-h-screen pt-1">
     <div class="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
       <div class="leaf"></div>
       <div class="leaf"></div>
@@ -136,7 +136,7 @@
 
     <div class="hero-content text-center z-10">
       <div class="max-w-md animate-fade-in-up">
-        <h1 class="text-5xl font-bold">Welcome To Gomi<span class="text-green-700">Torakka</span></h1>
+        <h1 class="text-5xl font-bold">Hello {{ Session::get('username') }} <br>Welcome To Gomi<span class="text-green-700">Torakka</span></h1>
         <p class="py-6">Revolutionizing waste management with smart tracking and eco-friendly solutions for a cleaner tomorrow.</p>
         <button class="btn btn-primary text-white hover:bg-green-400 hover:border-none hover:text-gray-700 hover:-rotate-5 hover:duration-3500 animate-bounce">Get Started</button>
       </div>

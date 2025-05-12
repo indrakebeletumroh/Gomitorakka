@@ -37,9 +37,10 @@
                 <h1 class="text-4xl font-semibold text-gray-800 mb-6">Profile</h1>
                 <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center mb-2">
                     <!-- Ambil inisial dari username -->
-                    <span class="text-xl font-semibold text-gray-600">
-                        {{ strtoupper(substr(Session::get('username'), 0, 1)) }}
-                    </span>
+                    <img id="previewImage"
+                                src="{{ Session::has('profile_picture') ? asset('storage/' . Session::get('profile_picture')) : asset('/images/download.png') }}"
+                                alt="Profile Picture"
+                                class="rounded-full">
                 </div>
                 <p class="text-gray-400 mb-8">Last Online {{ now()->diffForHumans() }}</p>
             </div>

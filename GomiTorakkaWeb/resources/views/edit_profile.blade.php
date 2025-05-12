@@ -201,6 +201,16 @@
         .save-button-container {
             grid-column: 1 / -1;
         }
+
+        /* Add to your existing styles */
+        #navbarProfileImage,
+        #previewImage {
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .profile-picture-container:hover img {
+            opacity: 0.9;
+        }
     </style>
 </head>
 
@@ -209,7 +219,22 @@
     <!-- Profile Section -->
     <div class="flex justify-center items-center pt-5 pb-15">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
-            <form class="flex flex-col" enctype="multipart/form-data" method="POST">
+            <form class="flex flex-col" enctype="multipart/form-data" method="POST" action="{{ route('profile.update') }}">
+                @if($errors->any())
+                <div class="alert alert-error mb-4">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
+                @if(session('success'))
+                <div class="alert alert-success mb-4">
+                    {{ session('success') }}
+                </div>
+                @endif
                 @csrf
                 <h1 class="text-4xl font-semibold text-gray-800 mb-6 text-center">Profile</h1>
 
@@ -222,12 +247,16 @@
                                     <path d="M17.414 2.586a2 2 0 010 2.828l-8.5 8.5a1 1 0 01-.39.24l-3 1a1 1 0 01-1.264-1.265l1-3a1 1 0 01.24-.39l8.5-8.5a2 2 0 012.828 0zM5.207 12.207l-.707.707L4 14l1.086-.5.707-.707-.586-.586z" />
                                 </svg>
                             </div>
-                            <img id="previewImage" src="/images/download.jpg" alt="" class="rounded-full">
+                            <img id="previewImage"
+                                src="{{ Session::has('profile_picture') ? asset('storage/' . Session::get('profile_picture')) : asset('/images/download.png') }}"
+                                alt="Profile Picture"
+                                class="rounded-full">
                             <label for="photo"></label>
                             <input id="photo" name="photo" type="file" accept="image/*" class="hidden" onchange="openCropModal(event)">
+                            <input type="hidden" name="cropped_image" id="croppedImageInput">
                         </div>
 
-                        <p class="text-gray-400">Last Online 12 Minutes Ago</p>
+                        <p class="text-gray-400">Last Online {{ now()->diffForHumans() }}</p>
                     </div>
 
                     <!-- Right Column - Form Inputs -->
@@ -235,7 +264,7 @@
                         <div class="form-grid">
                             <div>
                                 <label class="text-sm text-gray-500">Username</label>
-                                <input type="text" name="name" value="{{ Session::get('username') }}" class="w-full p-3 text-lg font-semibold text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300">
+                                <input type="text" name="username" value="{{ Session::get('username') }}" class="w-full p-3 text-lg font-semibold text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300">
                             </div>
                             <div>
                                 <label class="text-sm text-gray-500">Age</label>
@@ -272,8 +301,8 @@
                 </div>
 
                 <div class="flex justify-between text-sm text-gray-400 mt-8 w-full">
-                    <p>Updated At</p>
-                    <p>Account Created At</p>
+                    <p>Updated At {{ Session::get('updated_at') }}</p>
+                    <p>Account Created At {{ Session::get('created_at') }}</p>
                 </div>
             </form>
         </div>
@@ -336,11 +365,33 @@
         }
 
         function cropImage() {
-            const canvas = cropper.getCroppedCanvas();
-            const croppedImage = canvas.toDataURL('image/jpeg');
+            const canvas = cropper.getCroppedCanvas({
+                width: 300,
+                height: 300,
+                fillColor: '#fff',
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high'
+            });
 
-            const imgPreview = document.getElementById('previewImage');
-            imgPreview.src = croppedImage;
+            canvas.toBlob((blob) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const croppedImage = reader.result;
+
+                    // Update form preview
+                    const imgPreview = document.getElementById('previewImage');
+                    imgPreview.src = croppedImage;
+
+                    // Update navbar image
+                    const navbarImage = document.getElementById('navbarProfileImage');
+                    if (navbarImage) {
+                        navbarImage.src = croppedImage;
+                    }
+
+                    document.getElementById('croppedImageInput').value = croppedImage;
+                };
+                reader.readAsDataURL(blob);
+            }, 'image/jpeg', 0.9);
 
             document.getElementById('cropperModal').classList.remove('active');
             document.body.classList.remove('modal-open');

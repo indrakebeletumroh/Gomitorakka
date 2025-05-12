@@ -19,6 +19,8 @@ Route::get('/feed', function () {
 Route::get('/edit-profile', function () {
     return view('edit_profile');
 })->name('edit_profile');
+Route::post('/edit-profile', [AuthController::class, 'update'])->name('profile.update');
+
 
 Route::get('/logout', [AuthController::class, 'logout']);
 Route::get('/register', [AuthController::class, 'form_register'])->name('form_register.tampil');

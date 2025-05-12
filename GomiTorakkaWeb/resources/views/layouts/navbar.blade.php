@@ -45,7 +45,10 @@
       <div class="dropdown dropdown-end">
         <label tabindex="0" class="btn btn-ghost btn-circle avatar hover:ring-2 hover:ring-green-600 transition-all">
           <div class="w-10 rounded-full">
-            <img src="https://i.pravatar.cc/100?u=profile" />
+            <img id="previewImage"
+              src="{{ Session::has('profile_picture') ? asset('storage/' . Session::get('profile_picture')) : asset('/images/download.png') }}"
+              alt="Profile Picture"
+              class="rounded-full">
           </div>
         </label>
         <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 border border-green-100">
@@ -146,10 +149,10 @@
   document.addEventListener('DOMContentLoaded', function() {
     const currentPath = window.location.pathname;
     const navLinks = document.querySelectorAll('#menu a, #mobileMenu a');
-    
+
     navLinks.forEach(link => {
       const linkPath = link.getAttribute('href');
-      
+
       if (linkPath === currentPath) {
         link.classList.add('border-green-600');
         link.classList.remove('border-transparent');
@@ -166,21 +169,22 @@
 </script>
 
 <style>
-   .navbar a {
+  .navbar a {
     transition: border-color 0.2s ease-in-out;
   }
-  
-  #navbar {
-  position: sticky;
-  top: 0;
-}
 
-#inboxPanel {
-  position: absolute;
-  top: 100%; 
-  right: 1.25rem; 
-  margin-top: 0.5rem; 
-}
+  #navbar {
+    position: sticky;
+    top: 0;
+  }
+
+  #inboxPanel {
+    position: absolute;
+    top: 100%;
+    right: 1.25rem;
+    margin-top: 0.5rem;
+  }
+
   @keyframes fade-in {
     from {
       opacity: 0;
