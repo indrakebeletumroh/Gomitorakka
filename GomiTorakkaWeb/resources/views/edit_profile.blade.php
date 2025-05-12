@@ -203,14 +203,11 @@
         }
 
         /* Add to your existing styles */
-        #navbarProfileImage,
-        #previewImage {
-            transition: opacity 0.3s ease-in-out;
-        }
+#navbarProfileImage, #previewImage {
+    transition: opacity 0.3s ease-in-out;
+}
 
-        .profile-picture-container:hover img {
-            opacity: 0.9;
-        }
+
     </style>
 </head>
 
@@ -364,38 +361,38 @@
             reader.readAsDataURL(file);
         }
 
-        function cropImage() {
-            const canvas = cropper.getCroppedCanvas({
-                width: 300,
-                height: 300,
-                fillColor: '#fff',
-                imageSmoothingEnabled: true,
-                imageSmoothingQuality: 'high'
-            });
+       function cropImage() {
+    const canvas = cropper.getCroppedCanvas({
+        width: 300,
+        height: 300,
+        fillColor: '#fff',
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high'
+    });
 
-            canvas.toBlob((blob) => {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    const croppedImage = reader.result;
+    canvas.toBlob((blob) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const croppedImage = reader.result;
+            
+            // Update form preview
+            const imgPreview = document.getElementById('previewImage');
+            imgPreview.src = croppedImage;
+            
+            // Update navbar image
+            const navbarImage = document.getElementById('navbarProfileImage');
+            if (navbarImage) {
+                navbarImage.src = croppedImage;
+            }
 
-                    // Update form preview
-                    const imgPreview = document.getElementById('previewImage');
-                    imgPreview.src = croppedImage;
+            document.getElementById('croppedImageInput').value = croppedImage;
+        };
+        reader.readAsDataURL(blob);
+    }, 'image/jpeg', 0.9);
 
-                    // Update navbar image
-                    const navbarImage = document.getElementById('navbarProfileImage');
-                    if (navbarImage) {
-                        navbarImage.src = croppedImage;
-                    }
-
-                    document.getElementById('croppedImageInput').value = croppedImage;
-                };
-                reader.readAsDataURL(blob);
-            }, 'image/jpeg', 0.9);
-
-            document.getElementById('cropperModal').classList.remove('active');
-            document.body.classList.remove('modal-open');
-        }
+    document.getElementById('cropperModal').classList.remove('active');
+    document.body.classList.remove('modal-open');
+}
 
         function cancelCrop() {
             document.getElementById('cropperModal').classList.remove('active');
