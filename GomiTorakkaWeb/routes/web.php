@@ -15,6 +15,12 @@ Route::get('/maps', function () {
 Route::get('/feed', function () {
     return view('feed');
 });
+Route::get('/request', function () {
+    return view('RequestPanel');
+});
+Route::get('/adminpanel', function () {
+    return view('UserPanel');
+});
 
 Route::get('/edit-profile', function () {
     return view('edit_profile');
