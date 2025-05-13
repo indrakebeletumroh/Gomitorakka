@@ -10,9 +10,11 @@ class users extends Authenticatable
     use HasFactory;
 
     protected $table = 'users';
-    protected $primaryKey = 'uid'; // Match your database primary key
-    public $incrementing = false; // Set to false if uid is not auto-incrementing
-    protected $keyType = 'string'; // Set to 'string' if uid is not integer
+    protected $primaryKey = 'uid';
+
+    // Hapus jika uid adalah auto-increment integer
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'uid',
@@ -22,10 +24,16 @@ class users extends Authenticatable
         'email',
         'password',
         'profile_picture',
+        'role'
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
+    public function markers()
+    {
+        return $this->hasMany(Marker::class, 'uid', 'uid');
+    }
 }

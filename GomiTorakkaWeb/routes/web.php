@@ -33,6 +33,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/markers', [MarkerController::class, 'index']);
 Route::post('/markers', [MarkerController::class, 'store']);
+Route::post('/markers/{id}/status', [MarkerController::class, 'updateStatus']); // untuk admin
 
 
 

@@ -21,7 +21,6 @@ class CreateUsersTable extends Migration
             $table->string('password', 255);
             $table->string('email', 100);
             $table->integer('age')->nullable();
-            $table->string('profile_photo', 255)->nullable();
             $table->string('phone_number', 20)->nullable();
             $table->integer('report_count')->default(0);
             $table->timestamps(0);  // created_at, updated_at

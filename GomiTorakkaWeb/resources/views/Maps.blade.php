@@ -162,16 +162,38 @@
         map.on('click', function(e) {
             if (!isAddingMarker) return;
 
-            const {
-                lat,
-                lng
-            } = e.latlng;
+            const { lat, lng } = e.latlng;
+
             const marker = L.marker([lat, lng], {
                 icon: tempatSampahIcon
             }).addTo(tempatSampahLayer);
-            marker.bindPopup("Tempat Sampah").openPopup();
 
-            fetch("/markers", {
+            const popupForm = document.createElement("div");
+            popupForm.innerHTML = `
+                <label style="font-weight: bold;">Berikan Nama Tempat Sampah:</label><br>
+                <input type="text" id="descInput" style="width: 100%; margin-top: 8px; margin-bottom: 10px; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px;" placeholder="Contoh: Bantar Gebang"/><br>
+                <div style="display: flex; gap: 10px;">
+                    <button id="saveMarkerBtn" style="flex: 1; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 5px; font-size: 14px;">Simpan</button>
+                    <button id="cancelMarkerBtn" style="flex: 1; padding: 10px; background: #f44336; color: white; border: none; border-radius: 5px; font-size: 14px;">Batal</button>
+                </div>
+            `;
+
+            const popup = L.popup()
+                .setLatLng([lat, lng])
+                .setContent(popupForm)
+                .openOn(map);
+
+            // Tombol Simpan
+            popupForm.querySelector("#saveMarkerBtn").addEventListener("click", () => {
+                const desc = popupForm.querySelector("#descInput").value.trim();
+                if (!desc) {
+                    alert("Deskripsi tidak boleh kosong.");
+                    return;
+                }
+
+                marker.bindPopup(desc).openPopup();
+
+                fetch("/markers", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -180,17 +202,32 @@
                     body: JSON.stringify({
                         latitude: lat,
                         longitude: lng,
-                        description: "Tempat Sampah",
-                        status: "aktif"
+                        description: desc,
+                        status: "pending"
                     })
                 })
                 .then(res => res.json())
-                .then(data => console.log(data.message))
+                .then(data => {
+                    console.log(data.message);
+                })
                 .catch(err => console.error(err));
 
-            isAddingMarker = false;
-            document.getElementById('map').classList.remove('crosshair-cursor');
+                isAddingMarker = false;
+                map.closePopup();
+                document.getElementById('map').classList.remove('crosshair-cursor');
+            });
+
+            // Tombol Batal
+            popupForm.querySelector("#cancelMarkerBtn").addEventListener("click", () => {
+                map.removeLayer(marker); // Hapus marker
+                map.closePopup();        // Tutup form
+                isAddingMarker = false;
+                document.getElementById('map').classList.remove('crosshair-cursor');
+            });
         });
+
+
+
 
         // Lacak lokasi saya
         document.getElementById('btn-lacak').addEventListener('click', function() {

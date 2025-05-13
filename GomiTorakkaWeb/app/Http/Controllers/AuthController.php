@@ -37,9 +37,9 @@ class AuthController extends Controller
             'username' => 'required',
             'password' => 'required'
         ]);
-    
+
         $user = users::where('username', $request->username)->first();
-    
+
         if ($user && Hash::check($request->password, $user->password)) {
             // Simpan semua data yang diperlukan ke session
             Session::put([
@@ -51,9 +51,10 @@ class AuthController extends Controller
                 'profile_picture' => $user->profile_picture,
                 'created_at' => $user->created_at,
                 'updated_at' => $user->updated_at,
+                'role' => $user->role, // <-- TAMBAHKAN INI
                 'logged_in' => true
             ]);
-    
+
             return redirect()->route('profile');
         } else {
             return back()->withErrors([
@@ -61,6 +62,7 @@ class AuthController extends Controller
             ]);
         }
     }
+
 
     // Tambahkan method untuk profile page
     public function profile()

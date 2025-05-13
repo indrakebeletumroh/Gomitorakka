@@ -8,16 +8,16 @@ class CreateMarkersTable extends Migration
 {
     public function up(): void
     {
-        Schema::create('markers', function (Blueprint $table) {
+            Schema::create('markers', function (Blueprint $table) {
             $table->id('marker_id');
-            $table->unsignedBigInteger('uid')->nullable();
-            $table->text('description')->nullable();
-            $table->decimal('latitude', 10, 7)->nullable();
-            $table->decimal('longitude', 10, 7)->nullable();
-            $table->string('status', 20)->nullable();
+            $table->unsignedBigInteger('uid'); // tetap simpan uid sebagai kolom relasi manual
+            $table->decimal('latitude', 10, 7);
+            $table->decimal('longitude', 10, 7);
+            $table->string('description')->nullable();
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->text('admin_note')->nullable();
             $table->timestamps();
         });
-        
     }
 
     public function down(): void
