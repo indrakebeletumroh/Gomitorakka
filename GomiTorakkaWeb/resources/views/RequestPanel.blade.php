@@ -28,20 +28,20 @@
 
 
 <body class="animate-fade-in transition-all duration-500 ease-out">
+
   @include('layouts.navbar')
 
-  <!-- Main Content -->
   <main class="min-h-[calc(100vh-160px)] bg-base-100/80 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
       <div class="mb-8 text-center">
         <h1 class="text-4xl font-instrument-sans font-bold text-primary mb-2">
-          <i class="fas fa-trash-restore mr-2"></i>Waste Pickup Requests
+          <i class="fas fa-trash-restore mr-2"></i>Marker Request
         </h1>
         <p class="text-base-content/70">Manage collection requests efficiently</p>
       </div>
 
-      <!-- Filter Card -->
+      <!-- Filter -->
       <div class="card bg-base-200 shadow-sm mb-8">
         <div class="card-body py-4">
           <div class="flex flex-col sm:flex-row gap-4 items-end">
@@ -72,25 +72,22 @@
         </div>
       </div>
 
-      <!-- Requests Table -->
+      <!-- Table -->
       <div class="card shadow-lg bg-base-100">
         <div class="card-body p-0">
           <div class="overflow-x-auto">
             <table class="table">
-              <!-- Table Header -->
               <thead class="bg-base-200">
-                <tr class="font-instrument-sans">
-                  <th class="text-lg">User</th>
-                  <th class="text-lg">Schedule</th>
-                  <th class="text-lg">Location</th>
-                  <th class="text-lg">Status</th>
-                  <th class="text-lg">Actions</th>
+                <tr class="font-instrument-sans text-lg">
+                  <th>User</th>
+                  <th>Schedule</th>
+                  <th>Location</th>
+                  <th>Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
-              
-              <!-- Table Body -->
               <tbody>
-                <!-- Sample Row -->
+                <!-- User 1 -->
                 <tr>
                   <td>
                     <div class="flex items-center gap-3">
@@ -117,17 +114,228 @@
                   </td>
                   <td>
                     <div class="flex gap-2">
-                      <button class="btn btn-square btn-sm btn-ghost text-primary">
+                      <button onclick="editModal.showModal()" class="btn btn-sm btn-primary">
                         <i class="fas fa-edit"></i>
                       </button>
                       <div class="dropdown dropdown-end">
-                        <div tabindex="0" role="button" class="btn btn-sm btn-ghost">
+                        <div tabindex="0" role="button" class="btn btn-sm btn-secondary">
                           <i class="fas fa-ellipsis-v"></i>
                         </div>
-                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                          <li><a class="text-success"><i class="fas fa-check mr-2"></i>Confirm</a></li>
-                          <li><a class="text-error"><i class="fas fa-times mr-2"></i>Cancel</a></li>
-                          <li><a class="text-info"><i class="fas fa-check-double mr-2"></i>Complete</a></li>
+                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 border border-base-200">
+                          <li>
+                            <a onclick="openActionModal('Confirm this request?')" class="text-success hover:bg-success/10">
+                              <i class="fas fa-check-circle mr-2"></i>Confirm
+                            </a>
+                          </li>
+                          <li>
+                            <a onclick="openActionModal('Cancel this request?')" class="text-error hover:bg-error/10">
+                              <i class="fas fa-times-circle mr-2"></i>Cancel
+                            </a>
+                          </li>
+                          <li>
+                            <a onclick="openActionModal('Mark as completed?')" class="text-info hover:bg-info/10">
+                              <i class="fas fa-clipboard-check mr-2"></i>Complete
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- User 2 -->
+                <tr>
+                  <td>
+                    <div class="flex items-center gap-3">
+                      <div class="avatar">
+                        <div class="mask mask-circle w-12 h-12">
+                          <img src="/placeholder-user.jpg" alt="Avatar">
+                        </div>
+                      </div>
+                      <div>
+                        <div class="font-bold">John Doe</div>
+                        <div class="text-sm text-base-content/50">john.doe@example.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="font-medium">2024-03-21</div>
+                    <div class="text-sm text-base-content/50">10:00 - 12:00</div>
+                  </td>
+                  <td class="max-w-xs truncate">456 Elm Street, Tech Park</td>
+                  <td>
+                    <span class="badge badge-lg badge-confirmed">
+                      <i class="fas fa-check-circle mr-1"></i>Confirmed
+                    </span>
+                  </td>
+                  <td>
+                    <div class="flex gap-2">
+                      <button onclick="editModal.showModal()" class="btn btn-sm btn-primary">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <div class="dropdown dropdown-end">
+                        <div tabindex="0" role="button" class="btn btn-sm btn-secondary">
+                          <i class="fas fa-ellipsis-v"></i>
+                        </div>
+                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 border border-base-200">
+                          <li>
+                            <a onclick="openActionModal('Cancel this request?')" class="text-error hover:bg-error/10">
+                              <i class="fas fa-times-circle mr-2"></i>Cancel
+                            </a>
+                          </li>
+                          <li>
+                            <a onclick="openActionModal('Mark as completed?')" class="text-info hover:bg-info/10">
+                              <i class="fas fa-clipboard-check mr-2"></i>Complete
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- User 3 -->
+                <tr>
+                  <td>
+                    <div class="flex items-center gap-3">
+                      <div class="avatar">
+                        <div class="mask mask-circle w-12 h-12">
+                          <img src="/placeholder-user.jpg" alt="Avatar">
+                        </div>
+                      </div>
+                      <div>
+                        <div class="font-bold">Mary Jane</div>
+                        <div class="text-sm text-base-content/50">mary.jane@example.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="font-medium">2024-03-22</div>
+                    <div class="text-sm text-base-content/50">12:00 - 14:00</div>
+                  </td>
+                  <td class="max-w-xs truncate">789 Oak Avenue, Green City</td>
+                  <td>
+                    <span class="badge badge-lg badge-completed">
+                      <i class="fas fa-clipboard-check mr-1"></i>Completed
+                    </span>
+                  </td>
+                  <td>
+                    <div class="flex gap-2">
+                      <button onclick="editModal.showModal()" class="btn btn-sm btn-primary">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <div class="dropdown dropdown-end">
+                        <div tabindex="0" role="button" class="btn btn-sm btn-secondary">
+                          <i class="fas fa-ellipsis-v"></i>
+                        </div>
+                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 border border-base-200">
+                          <li>
+                            <a onclick="openActionModal('Cancel this request?')" class="text-error hover:bg-error/10">
+                              <i class="fas fa-times-circle mr-2"></i>Cancel
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- User 4 -->
+                <tr>
+                  <td>
+                    <div class="flex items-center gap-3">
+                      <div class="avatar">
+                        <div class="mask mask-circle w-12 h-12">
+                          <img src="/placeholder-user.jpg" alt="Avatar">
+                        </div>
+                      </div>
+                      <div>
+                        <div class="font-bold">Alice Cooper</div>
+                        <div class="text-sm text-base-content/50">alice.cooper@example.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="font-medium">2024-03-23</div>
+                    <div class="text-sm text-base-content/50">08:00 - 10:00</div>
+                  </td>
+                  <td class="max-w-xs truncate">101 Pine Road, Suburban</td>
+                  <td>
+                    <span class="badge badge-lg badge-cancelled">
+                      <i class="fas fa-times-circle mr-1"></i>Cancelled
+                    </span>
+                  </td>
+                  <td>
+                    <div class="flex gap-2">
+                      <button onclick="editModal.showModal()" class="btn btn-sm btn-primary">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <div class="dropdown dropdown-end">
+                        <div tabindex="0" role="button" class="btn btn-sm btn-secondary">
+                          <i class="fas fa-ellipsis-v"></i>
+                        </div>
+                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 border border-base-200">
+                          <li>
+                            <a onclick="openActionModal('Confirm this request?')" class="text-success hover:bg-success/10">
+                              <i class="fas fa-check-circle mr-2"></i>Confirm
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- User 5 -->
+                <tr>
+                  <td>
+                    <div class="flex items-center gap-3">
+                      <div class="avatar">
+                        <div class="mask mask-circle w-12 h-12">
+                          <img src="/placeholder-user.jpg" alt="Avatar">
+                        </div>
+                      </div>
+                      <div>
+                        <div class="font-bold">Bob Marley</div>
+                        <div class="text-sm text-base-content/50">bob.marley@example.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="font-medium">2024-03-24</div>
+                    <div class="text-sm text-base-content/50">16:00 - 18:00</div>
+                  </td>
+                  <td class="max-w-xs truncate">345 Maple Street, City Center</td>
+                  <td>
+                    <span class="badge badge-lg badge-pending">
+                      <i class="fas fa-clock mr-1"></i>Pending
+                    </span>
+                  </td>
+                  <td>
+                    <div class="flex gap-2">
+                      <button onclick="editModal.showModal()" class="btn btn-sm btn-primary">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <div class="dropdown dropdown-end">
+                        <div tabindex="0" role="button" class="btn btn-sm btn-secondary">
+                          <i class="fas fa-ellipsis-v"></i>
+                        </div>
+                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 border border-base-200">
+                          <li>
+                            <a onclick="openActionModal('Confirm this request?')" class="text-success hover:bg-success/10">
+                              <i class="fas fa-check-circle mr-2"></i>Confirm
+                            </a>
+                          </li>
+                          <li>
+                            <a onclick="openActionModal('Cancel this request?')" class="text-error hover:bg-error/10">
+                              <i class="fas fa-times-circle mr-2"></i>Cancel
+                            </a>
+                          </li>
+                          <li>
+                            <a onclick="openActionModal('Mark as completed?')" class="text-info hover:bg-info/10">
+                              <i class="fas fa-clipboard-check mr-2"></i>Complete
+                            </a>
+                          </li>
                         </ul>
                       </div>
                     </div>
@@ -136,7 +344,6 @@
               </tbody>
             </table>
           </div>
-
           <!-- Pagination -->
           <div class="flex justify-center p-4 bg-base-200/50">
             <div class="join">
@@ -149,6 +356,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </main>
 
@@ -181,11 +389,36 @@
           </div>
         </div>
         <div class="modal-action">
-          <button class="btn">Cancel</button>
+          <button type="button" onclick="editModal.close()" class="btn">Cancel</button>
           <button class="btn btn-primary">Save Changes</button>
         </div>
       </form>
     </div>
   </dialog>
+
+  <!-- Action Confirmation Modal -->
+  <dialog id="actionModal" class="modal">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg text-center" id="modalMessage">Are you sure?</h3>
+      <div class="modal-action justify-center">
+        <button class="btn" onclick="actionModal.close()">No</button>
+        <button class="btn btn-primary" onclick="handleConfirm()">Yes</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    function openActionModal(message) {
+      document.getElementById('modalMessage').innerText = message;
+      actionModal.showModal();
+    }
+
+    function handleConfirm() {
+      // Kirim request ke Laravel atau lakukan aksi
+      actionModal.close();
+      alert('Action confirmed!');
+    }
+  </script>
+
 </body>
 </html>
