@@ -47,8 +47,16 @@
 
             <div class="space-y-4 text-gray-500">
                 <div>
+                    <p>UID</p>
+                    <span class="font-bold text-gray-800">{{ Session::get('uid') }}</span>
+                </div>
+                <div>
                     <p>Username</p>
                     <span class="font-bold text-gray-800">{{ Session::get('username') }}</span>
+                </div>
+                <div>
+                    <p>Age</p>
+                    <span class="font-bold text-gray-800">{{ Session::get('age') }}</span>
                 </div>
                 <div>
                     <p>Phone Number</p>
