@@ -23,10 +23,10 @@ class CreateUsersTable extends Migration
             $table->integer('age')->nullable();
             $table->string('profile_photo', 255)->nullable();
             $table->string('phone_number', 20)->nullable();
-            $table->string('role', 20)->default('user');
             $table->integer('report_count')->default(0);
             $table->timestamps(0);  // created_at, updated_at
             $table->timestamp('deleted_at')->nullable();
+            $table->enum('role', ['user', 'admin'])->default('user'); // untuk membedakan admin & user
         });
         DB::statement('ALTER TABLE users AUTO_INCREMENT = 100000');
     }

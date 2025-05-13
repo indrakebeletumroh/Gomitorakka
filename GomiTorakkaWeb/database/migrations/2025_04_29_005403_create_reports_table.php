@@ -11,7 +11,7 @@ class CreateReportsTable extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->id('report_id');
             $table->unsignedBigInteger('marker_id')->nullable();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('uid')->nullable();
             $table->string('reason');
             $table->timestamps();
         });

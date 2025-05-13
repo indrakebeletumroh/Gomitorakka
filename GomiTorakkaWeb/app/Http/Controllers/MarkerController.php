@@ -22,7 +22,7 @@ class MarkerController extends Controller
         ]);
 
         $marker = new Marker();
-        $marker->user_id = auth()->check() ? auth()->id() : null;
+        $marker->uid;
         $marker->latitude = $request->latitude;
         $marker->longitude = $request->longitude;
         $marker->description = $request->description ?? 'Tempat Sampah';

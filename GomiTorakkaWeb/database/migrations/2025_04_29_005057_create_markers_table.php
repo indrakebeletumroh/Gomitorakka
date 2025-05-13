@@ -10,7 +10,7 @@ class CreateMarkersTable extends Migration
     {
         Schema::create('markers', function (Blueprint $table) {
             $table->id('marker_id');
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('uid')->nullable();
             $table->text('description')->nullable();
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();

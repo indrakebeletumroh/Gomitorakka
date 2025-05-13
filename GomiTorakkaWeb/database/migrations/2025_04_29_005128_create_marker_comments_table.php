@@ -11,7 +11,7 @@ class CreateMarkerCommentsTable extends Migration
         Schema::create('marker_comments', function (Blueprint $table) {
             $table->id('comment_id');
             $table->unsignedBigInteger('marker_id')->nullable();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('uid')->nullable();
             $table->text('comment');
             $table->timestamp('created_at')->useCurrent();
         });

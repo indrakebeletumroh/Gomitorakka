@@ -11,7 +11,7 @@ class CreateMarkerRespectsTable extends Migration
         Schema::create('marker_respects', function (Blueprint $table) {
             $table->id('respect_id');
             $table->unsignedBigInteger('marker_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('uid');
             $table->timestamps();
         });
     }

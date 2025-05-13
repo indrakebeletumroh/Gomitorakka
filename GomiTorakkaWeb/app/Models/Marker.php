@@ -13,7 +13,7 @@ class Marker extends Model
     protected $primaryKey = 'marker_id';
 
     protected $fillable = [
-        'user_id', 'description', 'latitude', 'longitude', 'status'
+        'uid', 'description', 'latitude', 'longitude', 'status'
     ];
 }
 
