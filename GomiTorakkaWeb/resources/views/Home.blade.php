@@ -152,7 +152,7 @@
           GomiTorakka combines technology with sustainability to transform how you manage waste. Our platform helps you reduce environmental impact while making waste management effortless.
         </p>
       </div>
-      
+
       <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
         <!-- Feature 1 -->
         <div class="feature-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg animate-fade-in-up flex items-start">
@@ -242,4 +242,5 @@
   @include('layouts.footer')
 
 </body>
+
 </html>
