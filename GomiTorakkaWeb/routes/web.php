@@ -22,6 +22,13 @@ Route::get('/adminpanel', function () {
     return view('UserPanel');
 });
 
+Route::get('/about', function () {
+    return view('aboutus');
+});
+Route::get('/contact', function () {
+    return view('contactus');
+});
+
 Route::get('/edit-profile', function () {
     return view('edit_profile');
 })->name('edit_profile');
