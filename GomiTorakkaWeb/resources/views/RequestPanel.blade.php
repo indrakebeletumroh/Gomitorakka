@@ -114,9 +114,7 @@
                   </td>
                   <td>
                     <div class="flex gap-2">
-                      <button onclick="editModal.showModal()" class="btn btn-sm btn-primary">
-                        <i class="fas fa-edit"></i>
-                      </button>
+                      
                       <div class="dropdown dropdown-end">
                         <div tabindex="0" role="button" class="btn btn-sm btn-secondary">
                           <i class="fas fa-ellipsis-v"></i>
@@ -124,17 +122,12 @@
                         <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 border border-base-200">
                           <li>
                             <a onclick="openActionModal('Confirm this request?')" class="text-success hover:bg-success/10">
-                              <i class="fas fa-check-circle mr-2"></i>Confirm
+                              <i class="fas fa-check-circle mr-2"></i>Approve
                             </a>
                           </li>
                           <li>
                             <a onclick="openActionModal('Cancel this request?')" class="text-error hover:bg-error/10">
-                              <i class="fas fa-times-circle mr-2"></i>Cancel
-                            </a>
-                          </li>
-                          <li>
-                            <a onclick="openActionModal('Mark as completed?')" class="text-info hover:bg-info/10">
-                              <i class="fas fa-clipboard-check mr-2"></i>Complete
+                              <i class="fas fa-times-circle mr-2"></i>Decline
                             </a>
                           </li>
                         </ul>
@@ -143,204 +136,7 @@
                   </td>
                 </tr>
 
-                <!-- User 2 -->
-                <tr>
-                  <td>
-                    <div class="flex items-center gap-3">
-                      <div class="avatar">
-                        <div class="mask mask-circle w-12 h-12">
-                          <img src="/placeholder-user.jpg" alt="Avatar">
-                        </div>
-                      </div>
-                      <div>
-                        <div class="font-bold">John Doe</div>
-                        <div class="text-sm text-base-content/50">john.doe@example.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="font-medium">2024-03-21</div>
-                    <div class="text-sm text-base-content/50">10:00 - 12:00</div>
-                  </td>
-                  <td class="max-w-xs truncate">456 Elm Street, Tech Park</td>
-                  <td>
-                    <span class="badge badge-lg badge-confirmed">
-                      <i class="fas fa-check-circle mr-1"></i>Confirmed
-                    </span>
-                  </td>
-                  <td>
-                    <div class="flex gap-2">
-                      <button onclick="editModal.showModal()" class="btn btn-sm btn-primary">
-                        <i class="fas fa-edit"></i>
-                      </button>
-                      <div class="dropdown dropdown-end">
-                        <div tabindex="0" role="button" class="btn btn-sm btn-secondary">
-                          <i class="fas fa-ellipsis-v"></i>
-                        </div>
-                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 border border-base-200">
-                          <li>
-                            <a onclick="openActionModal('Cancel this request?')" class="text-error hover:bg-error/10">
-                              <i class="fas fa-times-circle mr-2"></i>Cancel
-                            </a>
-                          </li>
-                          <li>
-                            <a onclick="openActionModal('Mark as completed?')" class="text-info hover:bg-info/10">
-                              <i class="fas fa-clipboard-check mr-2"></i>Complete
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- User 3 -->
-                <tr>
-                  <td>
-                    <div class="flex items-center gap-3">
-                      <div class="avatar">
-                        <div class="mask mask-circle w-12 h-12">
-                          <img src="/placeholder-user.jpg" alt="Avatar">
-                        </div>
-                      </div>
-                      <div>
-                        <div class="font-bold">Mary Jane</div>
-                        <div class="text-sm text-base-content/50">mary.jane@example.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="font-medium">2024-03-22</div>
-                    <div class="text-sm text-base-content/50">12:00 - 14:00</div>
-                  </td>
-                  <td class="max-w-xs truncate">789 Oak Avenue, Green City</td>
-                  <td>
-                    <span class="badge badge-lg badge-completed">
-                      <i class="fas fa-clipboard-check mr-1"></i>Completed
-                    </span>
-                  </td>
-                  <td>
-                    <div class="flex gap-2">
-                      <button onclick="editModal.showModal()" class="btn btn-sm btn-primary">
-                        <i class="fas fa-edit"></i>
-                      </button>
-                      <div class="dropdown dropdown-end">
-                        <div tabindex="0" role="button" class="btn btn-sm btn-secondary">
-                          <i class="fas fa-ellipsis-v"></i>
-                        </div>
-                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 border border-base-200">
-                          <li>
-                            <a onclick="openActionModal('Cancel this request?')" class="text-error hover:bg-error/10">
-                              <i class="fas fa-times-circle mr-2"></i>Cancel
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- User 4 -->
-                <tr>
-                  <td>
-                    <div class="flex items-center gap-3">
-                      <div class="avatar">
-                        <div class="mask mask-circle w-12 h-12">
-                          <img src="/placeholder-user.jpg" alt="Avatar">
-                        </div>
-                      </div>
-                      <div>
-                        <div class="font-bold">Alice Cooper</div>
-                        <div class="text-sm text-base-content/50">alice.cooper@example.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="font-medium">2024-03-23</div>
-                    <div class="text-sm text-base-content/50">08:00 - 10:00</div>
-                  </td>
-                  <td class="max-w-xs truncate">101 Pine Road, Suburban</td>
-                  <td>
-                    <span class="badge badge-lg badge-cancelled">
-                      <i class="fas fa-times-circle mr-1"></i>Cancelled
-                    </span>
-                  </td>
-                  <td>
-                    <div class="flex gap-2">
-                      <button onclick="editModal.showModal()" class="btn btn-sm btn-primary">
-                        <i class="fas fa-edit"></i>
-                      </button>
-                      <div class="dropdown dropdown-end">
-                        <div tabindex="0" role="button" class="btn btn-sm btn-secondary">
-                          <i class="fas fa-ellipsis-v"></i>
-                        </div>
-                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 border border-base-200">
-                          <li>
-                            <a onclick="openActionModal('Confirm this request?')" class="text-success hover:bg-success/10">
-                              <i class="fas fa-check-circle mr-2"></i>Confirm
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- User 5 -->
-                <tr>
-                  <td>
-                    <div class="flex items-center gap-3">
-                      <div class="avatar">
-                        <div class="mask mask-circle w-12 h-12">
-                          <img src="/placeholder-user.jpg" alt="Avatar">
-                        </div>
-                      </div>
-                      <div>
-                        <div class="font-bold">Bob Marley</div>
-                        <div class="text-sm text-base-content/50">bob.marley@example.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="font-medium">2024-03-24</div>
-                    <div class="text-sm text-base-content/50">16:00 - 18:00</div>
-                  </td>
-                  <td class="max-w-xs truncate">345 Maple Street, City Center</td>
-                  <td>
-                    <span class="badge badge-lg badge-pending">
-                      <i class="fas fa-clock mr-1"></i>Pending
-                    </span>
-                  </td>
-                  <td>
-                    <div class="flex gap-2">
-                      <button onclick="editModal.showModal()" class="btn btn-sm btn-primary">
-                        <i class="fas fa-edit"></i>
-                      </button>
-                      <div class="dropdown dropdown-end">
-                        <div tabindex="0" role="button" class="btn btn-sm btn-secondary">
-                          <i class="fas fa-ellipsis-v"></i>
-                        </div>
-                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 border border-base-200">
-                          <li>
-                            <a onclick="openActionModal('Confirm this request?')" class="text-success hover:bg-success/10">
-                              <i class="fas fa-check-circle mr-2"></i>Confirm
-                            </a>
-                          </li>
-                          <li>
-                            <a onclick="openActionModal('Cancel this request?')" class="text-error hover:bg-error/10">
-                              <i class="fas fa-times-circle mr-2"></i>Cancel
-                            </a>
-                          </li>
-                          <li>
-                            <a onclick="openActionModal('Mark as completed?')" class="text-info hover:bg-info/10">
-                              <i class="fas fa-clipboard-check mr-2"></i>Complete
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
+              
               </tbody>
             </table>
           </div>
@@ -408,10 +204,7 @@
   </dialog>
 
   <script>
-    function openActionModal(message) {
-      document.getElementById('modalMessage').innerText = message;
-      actionModal.showModal();
-    }
+   
 
     function handleConfirm() {
       // Kirim request ke Laravel atau lakukan aksi
