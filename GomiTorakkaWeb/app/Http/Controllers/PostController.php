@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Like;
+use App\Models\PostComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
@@ -88,6 +89,14 @@ class PostController extends Controller
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }
+public function fetchComments($postId)
+{
+    $comments = PostComment::with('user')
+        ->where('post_id', $postId)
+        ->latest()
+        ->get();
 
+    return response()->json($comments);
+}
 
 }
