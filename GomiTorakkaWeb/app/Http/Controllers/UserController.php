@@ -33,4 +33,5 @@ class UserController extends Controller
         return redirect()->route('user.panel')
             ->with('success', 'User deleted successfully');
     }
+    
 }

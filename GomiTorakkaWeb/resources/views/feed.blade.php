@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="emerald">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,6 +18,8 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <style>
         .aspect-square {
             aspect-ratio: 1 / 1;
@@ -43,14 +46,42 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        #removeImageBtn {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #removeImageBtn:hover {
+            transform: scale(1.1);
+            transition: transform 0.2s ease;
         }
     </style>
 </head>
 
 <body class="animate-fade-in">
     @include('layouts.navbar')
+
+    <!-- Cropping Modal -->
+    <dialog id="cropModal" class="modal">
+        <div class="modal-box max-w-2xl">
+            <h3 class="font-bold text-lg mb-4">Crop Your Image</h3>
+            <div class="img-container w-full h-96 bg-gray-100">
+                <img id="imageToCrop" class="max-w-full h-full object-contain">
+            </div>
+            <div class="modal-action">
+                <button type="button" class="btn btn-primary" id="confirmCrop">Crop & Save</button>
+                <button type="button" class="btn" onclick="closeCropModal()">Cancel</button>
+            </div>
+        </div>
+    </dialog>
 
     <div class="container mx-auto px-4 py-8 max-w-4xl">
         <!-- Create Post Card -->
@@ -68,28 +99,34 @@
                         @csrf
 
                         <!-- Caption Input -->
-                        <textarea 
+                        <textarea
                             name="content"
                             rows="3"
-                            class="textarea textarea-bordered w-full mb-4" 
+                            class="textarea textarea-bordered w-full mb-4"
                             placeholder="What's on your mind?"
-                            required
-                        >{{ old('content') }}</textarea>
+                            required>{{ old('content') }}</textarea>
 
                         <!-- Image Preview & Upload -->
                         <div class="mb-4">
-                            <input 
-                                type="file" 
+                            <input
+                                type="file"
                                 name="image"
                                 id="imageInput"
                                 class="hidden"
                                 accept="image/*"
-                                onchange="previewImage()"
-                            >
+                                onchange="previewImage()">
 
-                            <!-- Image Preview -->
-                            <div id="imagePreview" class="hidden aspect-square bg-gray-100 rounded-lg mb-4">
+                            <!-- In the image preview section -->
+                            <div id="imagePreview" class="hidden aspect-square bg-gray-100 rounded-lg mb-4 relative">
                                 <img src="" class="w-full h-full object-cover rounded-lg" alt="Preview">
+                                <!-- Remove Button -->
+                                <button
+                                    type="button"
+                                    id="removeImageBtn"
+                                    class="absolute top-2 right-2 btn btn-circle btn-xs btn-error"
+                                    onclick="removeImage()">
+                                    <i class="fas fa-times"></i>
+                                </button>
                             </div>
 
                             <!-- Upload Button -->
@@ -132,8 +169,8 @@
                 @if ($post->image)
                 <div class="aspect-square bg-gray-100">
                     <img src="{{ asset('storage/' . $post->image) }}"
-                         class="w-full h-full object-cover"
-                         alt="Post image">
+                        class="w-full h-full object-cover"
+                        alt="Post image">
                 </div>
                 @endif
 
@@ -165,35 +202,131 @@
             @endforeach
         </div>
     </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <script>
-        function previewImage() {
-            const input = document.getElementById('imageInput');
-            const previewContainer = document.getElementById('imagePreview');
-            const previewImage = previewContainer.querySelector('img');
+    let cropper = null;
+    let originalImageFile = null;
 
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
+    // Image Input Handler
+    document.getElementById('imageInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            originalImageFile = file;
+            showCropModal(file);
+            document.getElementById('removeImageBtn').classList.remove('hidden');
+        }
+    });
 
-                reader.onload = function(e) {
-                    previewImage.src = e.target.result;
-                    previewContainer.classList.remove('hidden');
-                }
+    function showCropModal(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imageToCrop').src = e.target.result;
+            document.getElementById('cropModal').showModal();
+            initCropper();
+        };
+        reader.readAsDataURL(file);
+    }
 
-                reader.readAsDataURL(input.files[0]);
+    function initCropper() {
+        const image = document.getElementById('imageToCrop');
+        if (cropper) {
+            cropper.destroy();
+        }
+        
+        cropper = new Cropper(image, {
+            aspectRatio: 1, // Force square
+            viewMode: 2,
+            autoCropArea: 1,
+            responsive: true,
+            guides: false,
+            background: false
+        });
+    }
+
+    // Confirm Crop Handler
+    document.getElementById('confirmCrop').addEventListener('click', function() {
+        const canvas = cropper.getCroppedCanvas({
+            width: 1080,
+            height: 1080,
+            fillColor: '#fff',
+            imageSmoothingQuality: 'high'
+        });
+
+        canvas.toBlob((blob) => {
+            // Create new cropped file
+            const croppedFile = new File([blob], 'cropped-image.jpg', {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+            });
+
+            // Update file input
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(croppedFile);
+            document.getElementById('imageInput').files = dataTransfer.files;
+
+            // Update preview
+            const previewUrl = URL.createObjectURL(blob);
+            const previewImage = document.getElementById('imagePreview').querySelector('img');
+            previewImage.src = previewUrl;
+            document.getElementById('imagePreview').classList.remove('hidden');
+
+            // Cleanup previous blob URL if exists
+            if (previewImage.dataset.originalUrl) {
+                URL.revokeObjectURL(previewImage.dataset.originalUrl);
             }
+            previewImage.dataset.originalUrl = previewUrl;
+
+            closeCropModal();
+        }, 'image/jpeg', 0.9); // 90% quality
+    });
+
+    function closeCropModal() {
+        document.getElementById('cropModal').close();
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+    }
+
+    // Image Removal Functionality
+    function removeImage() {
+        const fileInput = document.getElementById('imageInput');
+        const previewContainer = document.getElementById('imagePreview');
+        const previewImage = previewContainer.querySelector('img');
+        
+        // Reset file input
+        fileInput.value = '';
+        
+        // Clear preview
+        previewImage.src = '';
+        previewContainer.classList.add('hidden');
+        
+        // Revoke object URL if exists
+        if (previewImage.dataset.originalUrl) {
+            URL.revokeObjectURL(previewImage.dataset.originalUrl);
+            delete previewImage.dataset.originalUrl;
         }
 
-        document.querySelectorAll('.post-like').forEach(button => {
-            button.addEventListener('click', function() {
-                const icon = this.querySelector('i');
-                icon.classList.toggle('far');
-                icon.classList.toggle('fas');
-                icon.classList.toggle('text-red-500');
-            });
+        // Hide remove button
+        document.getElementById('removeImageBtn').classList.add('hidden');
+    }
+
+    // Like Button Functionality
+    document.querySelectorAll('.post-like').forEach(button => {
+        button.addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            icon.classList.toggle('far');
+            icon.classList.toggle('fas');
+            icon.classList.toggle('text-red-500');
         });
-    </script>
+    });
+
+    // Initialize remove button state
+    document.getElementById('removeImageBtn').classList.add('hidden');
+</script>
 
     @include('layouts.footer')
+
 </body>
+
 </html>
