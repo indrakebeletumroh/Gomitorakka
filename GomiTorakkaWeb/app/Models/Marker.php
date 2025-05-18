@@ -2,18 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Marker extends Model
 {
-    use HasFactory;
+    protected $table = 'markers'; // pastikan ini sesuai
 
-    protected $table = 'markers';
-    protected $primaryKey = 'marker_id';
+    protected $primaryKey = 'marker_id'; // kalau kamu pakai custom primary key
 
-    protected $fillable = [
-        'uid', 'description', 'latitude', 'longitude', 'status'
-    ];
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'uid');
+        // uid adalah foreign key di tabel markers yang menunjuk ke id di tabel users
+    }
 }
-

@@ -4,6 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
   <title>GomiTorakka</title>
 
   <!-- Fonts -->
@@ -22,7 +24,7 @@
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   @endif
 
-  
+<meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 
@@ -88,55 +90,53 @@
               </thead>
               <tbody>
                 <!-- User 1 -->
+                @foreach ($markers as $marker)
                 <tr>
                   <td>
                     <div class="flex items-center gap-3">
-                      <div class="avatar">
-                        <div class="mask mask-circle w-12 h-12">
-                          <img src="/placeholder-user.jpg" alt="Avatar">
-                        </div>
-                      </div>
                       <div>
-                        <div class="font-bold">Eco User</div>
-                        <div class="text-sm text-base-content/50">user@ecocity.com</div>
+                        <div class="font-bold">{{ $marker->user->username ?? 'Eco User' }}</div>
+                        <div class="text-sm text-base-content/50">{{ $marker->user->email ?? 'user@ecocity.com' }}</div>
                       </div>
                     </div>
                   </td>
                   <td>
-                    <div class="font-medium">2024-03-20</div>
-                    <div class="text-sm text-base-content/50">14:00 - 16:00</div>
+                    <div class="font-medium">{{ $marker->created_at->format('Y-m-d') }}</div>
+                    <div class="text-sm text-base-content/50">{{ $marker->created_at->format('H:i') }}</div>
                   </td>
-                  <td class="max-w-xs truncate">123 Green Street, Eco District</td>
+                  <td class="max-w-xs truncate">{{ $marker->description ?? 'Tidak ada deskripsi' }}</td>
                   <td>
-                    <span class="badge badge-lg badge-warning">
-                      <i class="fas fa-clock mr-1"></i>Pending
+                    <span class="badge badge-lg 
+      @if($marker->status == 'pending') badge-warning 
+      @elseif($marker->status == 'approved') badge-success 
+      @else badge-error @endif">
+                      {{ ucfirst($marker->status) }}
                     </span>
                   </td>
                   <td>
-                    <div class="flex gap-2">
-                      
-                      <div class="dropdown dropdown-end">
-                        <div tabindex="0" role="button" class="btn btn-sm btn-secondary">
-                          <i class="fas fa-ellipsis-v"></i>
-                        </div>
-                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 border border-base-200">
-                          <li>
-                            <a onclick="openActionModal('Confirm this request?')" class="text-success hover:bg-success/10">
-                              <i class="fas fa-check-circle mr-2"></i>Approve
-                            </a>
-                          </li>
-                          <li>
-                            <a onclick="openActionModal('Cancel this request?')" class="text-error hover:bg-error/10">
-                              <i class="fas fa-times-circle mr-2"></i>Decline
-                            </a>
-                          </li>
-                        </ul>
+                    <div class="dropdown dropdown-end">
+                      <div tabindex="0" role="button" class="btn btn-sm btn-secondary">
+                        <i class="fas fa-ellipsis-v"></i>
                       </div>
+                      <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 border border-base-200">
+                        <li>
+                          <a href="#" onclick="openActionModal('{{ $marker->marker_id }}', 'approved', 'Confirm this request?')" class="text-success hover:bg-success/10">
+                            <i class="fas fa-check-circle mr-2"></i>Approve
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" onclick="openActionModal('{{ $marker->marker_id }}', 'rejected', 'Cancel this request?')" class="text-error hover:bg-error/10">
+                            <i class="fas fa-times-circle mr-2"></i>Decline
+                          </a>
+                        </li>
+                      </ul>
                     </div>
                   </td>
                 </tr>
+                @endforeach
 
-              
+
+
               </tbody>
             </table>
           </div>
@@ -204,14 +204,77 @@
   </dialog>
 
   <script>
-   
+    let currentMarkerId = null;
+    let currentStatus = null;
 
-    function handleConfirm() {
-      // Kirim request ke Laravel atau lakukan aksi
-      actionModal.close();
-      alert('Action confirmed!');
+    function openActionModal(markerId, status, message) {
+      currentMarkerId = markerId;
+      currentStatus = status;
+      document.getElementById('modalMessage').innerText = message;
+      document.getElementById('actionModal').showModal();
+    }
+
+    async function handleConfirm() {
+      if (!currentMarkerId || !currentStatus) {
+        alert('Invalid action');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/markers/${currentMarkerId}/status`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}' // kalau blade, ganti ini, kalau static html buat token lain
+          },
+          body: JSON.stringify({
+            status: currentStatus
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('Status berhasil diupdate');
+          location.reload(); // reload halaman agar data terbaru tampil
+        } else {
+          alert('Gagal update status: ' + (data.message || 'Error'));
+        }
+      } catch (error) {
+        alert('Terjadi kesalahan: ' + error.message);
+      } finally {
+        document.getElementById('actionModal').close();
+        currentMarkerId = null;
+        currentStatus = null;
+      }
+    }
+
+    function handleAction(markerId, status) {
+      if (!confirm(`Are you sure to ${status} this request?`)) return;
+
+      fetch(`/markers/${markerId}/status`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+          },
+          body: JSON.stringify({
+            status: status
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          alert(data.message);
+          location.reload(); // reload page supaya update status terlihat
+        })
+        .catch(err => {
+          alert('Failed to update status');
+          console.error(err);
+        });
     }
   </script>
 
+
 </body>
+
 </html>

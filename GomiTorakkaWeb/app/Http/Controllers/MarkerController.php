@@ -19,10 +19,10 @@ class MarkerController extends Controller
         } else {
             $markers = Marker::where(function ($query) use ($uid) {
                 $query->where('status', 'approved')
-                      ->orWhere(function ($q) use ($uid) {
-                          $q->where('status', 'pending')
+                    ->orWhere(function ($q) use ($uid) {
+                        $q->where('status', 'pending')
                             ->where('uid', $uid);
-                      });
+                    });
             })->get();
         }
 
@@ -76,5 +76,19 @@ class MarkerController extends Controller
         $marker->save();
 
         return response()->json(['message' => 'Status marker diperbarui']);
+    }
+
+    public function requestPanel()
+    {
+        $role = Session::get('role');
+        $uid = Session::get('uid');
+
+        if ($role === 'admin') {
+            $markers = Marker::all();
+        } else {
+            $markers = Marker::where('uid', $uid)->get();
+        }
+
+        return view('RequestPanel', compact('markers'));
     }
 }

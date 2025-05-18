@@ -15,9 +15,6 @@ Route::get('/maps', function () {
 });
 
 Route::get('/feed', [PostController::class, 'index'])->name('posts.index');
-Route::get('/request', function () {
-    return view('RequestPanel');
-});
 
 Route::get('/adminpanel', function () {
     return view('UserPanel');
@@ -55,7 +52,4 @@ Route::post('/markers/{id}/status', [MarkerController::class, 'updateStatus']);
 // Post & Like
 Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 Route::post('/posts/{post}/like', [PostController::class, 'toggleLike'])->name('posts.like');
-
-
-
-
+Route::get('/request', [MarkerController::class, 'requestPanel']);
