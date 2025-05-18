@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Dashboard</title>
+    <title>Maps - GomiTorakka</title>
 
     <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />

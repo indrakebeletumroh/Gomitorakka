@@ -10,8 +10,9 @@ class CreatePostsTable extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id('post_id');
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('user_id'); // Tipe data string (sesuai uid di users)
             $table->text('content');
+            $table->string('image')->nullable(); // Kolom untuk menyimpan path gambar
             $table->integer('comment_count')->default(0);
             $table->timestamps();
         });
