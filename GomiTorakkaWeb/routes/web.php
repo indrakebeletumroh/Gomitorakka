@@ -42,7 +42,6 @@ Route::get('/register', [AuthController::class, 'form_register'])->name('form_re
 Route::post('/register/submit', [AuthController::class, 'submit'])->name('form_register.submit');
 
 Route::get('/login', [AuthController::class, 'form_login'])->name('login');
-Route::get('/login', [AuthController::class, 'form_login'])->name('form_login.tampil');
 Route::post('/login/submit', [AuthController::class, 'login'])->name('form_login.submit');
 
 Route::get('/profile', [AuthController::class, 'profile'])->name('profile');

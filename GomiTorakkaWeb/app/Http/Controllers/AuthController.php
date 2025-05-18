@@ -25,7 +25,7 @@ class AuthController extends Controller
         
         $users->save();
 
-        return redirect()->route('form_login.tampil');
+        return redirect()->route('login');
     }
 
     function form_login() {
@@ -69,7 +69,7 @@ class AuthController extends Controller
     {
         // Cek apakah user sudah login
         if (!Session::has('logged_in')) {
-            return redirect()->route('form_login.tampil');
+            return redirect()->route('login');
         }
 
         // Ambil data dari session
