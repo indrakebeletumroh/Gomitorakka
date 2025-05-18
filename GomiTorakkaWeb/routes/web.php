@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MarkerController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\PostCommentController;
 
 Route::get('/', function () {
     return view('Home');
@@ -40,6 +41,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/register', [AuthController::class, 'form_register'])->name('form_register.tampil');
 Route::post('/register/submit', [AuthController::class, 'submit'])->name('form_register.submit');
 
+Route::get('/login', [AuthController::class, 'form_login'])->name('login');
 Route::get('/login', [AuthController::class, 'form_login'])->name('form_login.tampil');
 Route::post('/login/submit', [AuthController::class, 'login'])->name('form_login.submit');
 
@@ -53,3 +55,8 @@ Route::post('/markers/{id}/status', [MarkerController::class, 'updateStatus']);
 Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 Route::post('/posts/{post}/like', [PostController::class, 'toggleLike'])->name('posts.like');
 Route::get('/request', [MarkerController::class, 'requestPanel']);
+
+Route::post('/posts/{post}/comments', [PostCommentController::class, 'store'])->name('posts.comments.store');
+Route::get('/posts/{post}/comments', [PostController::class, 'fetchComments']);
+
+

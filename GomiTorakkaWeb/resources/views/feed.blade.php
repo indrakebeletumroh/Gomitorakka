@@ -95,6 +95,31 @@
         </div>
     </dialog>
 
+    <dialog id="commentModal" class="modal">
+        <div class="modal-box w-full max-w-lg">
+            <h3 class="font-bold text-lg mb-4">Add a Comment</h3>
+
+            <div id="commentList" class="space-y-4 max-h-60 overflow-y-auto mb-4"></div>
+
+            <form id="commentForm" method="POST" action="">
+                @csrf
+                <div class="flex items-start gap-3">
+                    <div class="avatar">
+                        <div class="w-10 rounded-full">
+                            <img src="{{ Session::has('profile_picture') ? asset('storage/' . Session::get('profile_picture')) : asset('/images/download.png') }}" />
+                        </div>
+                    </div>
+                    <textarea name="comment" class="textarea textarea-bordered w-full bg-gray-100 text-gray-800" rows="3" placeholder="Write your comment here..." required></textarea>
+                </div>
+                <div class="modal-action">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn" onclick="commentModal.close()">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </dialog>
+
     <div class="container mx-auto px-4 py-8 max-w-4xl">
         <div class="bg-white rounded-lg shadow-md border border-gray-100 mb-8 p-4">
             <div class="flex items-start gap-4">
@@ -111,24 +136,19 @@
 
                         <div class="mb-4">
                             <input type="file" name="image" id="imageInput" class="hidden" accept="image/*" />
-
                             <div id="imagePreview" class="hidden aspect-square bg-gray-100 rounded-lg mb-4 relative">
                                 <img src="" class="w-full h-full object-cover rounded-lg" alt="Preview" />
                                 <button type="button" id="removeImageBtn" class="absolute top-2 right-2 btn btn-circle btn-xs btn-error" onclick="removeImage()">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
-
                             <label for="imageInput" class="btn btn-outline btn-sm gap-2">
-                                <i class="fas fa-image"></i>
-                                Upload Photo
+                                <i class="fas fa-image"></i> Upload Photo
                             </label>
                         </div>
 
                         <div class="text-right">
-                            <button class="btn btn-primary btn-sm" type="submit">
-                                Post
-                            </button>
+                            <button class="btn btn-primary btn-sm" type="submit">Post</button>
                         </div>
                     </form>
                 </div>
@@ -162,7 +182,7 @@
                     </button>
                     <span class="likes-count" data-post-id="{{ $post->post_id }}">{{ $post->likes_count }} likes</span>
 
-                    <button class="text-2xl hover:text-green-600">
+                    <button class="text-2xl hover:text-green-600 comment-btn" data-post-id="{{ $post->post_id }}">
                         <i class="far fa-comment"></i>
                     </button>
                     <button class="text-2xl hover:text-green-600">
@@ -171,8 +191,7 @@
                 </div>
 
                 <div class="text-sm px-4 py-2">
-                    <span class="font-semibold">{{ $post->user->username }}</span>
-                    {{ $post->content }}
+                    <span class="font-semibold">{{ $post->user->username }}</span> {{ $post->content }}
                 </div>
 
                 <p class="text-gray-500 text-xs mt-2 px-4 pb-2">{{ $post->created_at->diffForHumans() }}</p>
@@ -183,139 +202,233 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <script>
-        let cropper = null;
-        let originalImageFile = null;
+  let cropper = null;
+let originalImageFile = null;
 
-        document.getElementById('imageInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                originalImageFile = file;
-                showCropModal(file);
-                document.getElementById('removeImageBtn').classList.remove('hidden');
-            }
+document.getElementById('imageInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        originalImageFile = file;
+        showCropModal(file);
+        document.getElementById('removeImageBtn').classList.remove('hidden');
+    }
+});
+
+function showCropModal(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('imageToCrop').src = e.target.result;
+        document.getElementById('cropModal').showModal();
+        initCropper();
+    };
+    reader.readAsDataURL(file);
+}
+
+function initCropper() {
+    const image = document.getElementById('imageToCrop');
+    if (cropper) {
+        cropper.destroy();
+    }
+    cropper = new Cropper(image, {
+        aspectRatio: 1,
+        viewMode: 2,
+        autoCropArea: 1,
+        responsive: true,
+        guides: false,
+        background: false,
+    });
+}
+
+document.getElementById('confirmCrop').addEventListener('click', function() {
+    const canvas = cropper.getCroppedCanvas({
+        width: 1080,
+        height: 1080,
+        fillColor: '#fff',
+        imageSmoothingQuality: 'high',
+    });
+
+    canvas.toBlob((blob) => {
+        const croppedFile = new File([blob], 'cropped-image.jpg', {
+            type: 'image/jpeg',
+            lastModified: Date.now(),
         });
 
-        function showCropModal(file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('imageToCrop').src = e.target.result;
-                document.getElementById('cropModal').showModal();
-                initCropper();
-            };
-            reader.readAsDataURL(file);
-        }
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(croppedFile);
+        document.getElementById('imageInput').files = dataTransfer.files;
 
-        function initCropper() {
-            const image = document.getElementById('imageToCrop');
-            if (cropper) {
-                cropper.destroy();
+        const previewUrl = URL.createObjectURL(blob);
+        const previewImage = document.getElementById('imagePreview').querySelector('img');
+        previewImage.src = previewUrl;
+        document.getElementById('imagePreview').classList.remove('hidden');
+
+        if (previewImage.dataset.originalUrl) {
+            URL.revokeObjectURL(previewImage.dataset.originalUrl);
+        }
+        previewImage.dataset.originalUrl = previewUrl;
+
+        closeCropModal();
+    }, 'image/jpeg', 0.9);
+});
+
+function closeCropModal() {
+    document.getElementById('cropModal').close();
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+}
+
+function removeImage() {
+    const fileInput = document.getElementById('imageInput');
+    const previewContainer = document.getElementById('imagePreview');
+    const previewImage = previewContainer.querySelector('img');
+
+    fileInput.value = '';
+    previewImage.src = '';
+    previewContainer.classList.add('hidden');
+
+    if (previewImage.dataset.originalUrl) {
+        URL.revokeObjectURL(previewImage.dataset.originalUrl);
+        delete previewImage.dataset.originalUrl;
+    }
+
+    document.getElementById('removeImageBtn').classList.add('hidden');
+}
+
+document.getElementById('removeImageBtn').classList.add('hidden');
+
+document.querySelectorAll('.like-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const icon = btn.querySelector('i.fa-heart');
+        icon.classList.toggle('far');
+        icon.classList.toggle('fas');
+        icon.classList.toggle('liked');
+    });
+});
+
+document.querySelectorAll('.like-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const postId = this.dataset.postId;
+        fetch(`/posts/${postId}/like`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+            },
+        })
+        .then(res => res.json())
+        .then(data => {
+            const icon = this.querySelector('i');
+            if (data.status === 'liked') {
+                icon.classList.remove('far');
+                icon.classList.add('fas', 'text-red-500');
+            } else if (data.status === 'unliked') {
+                icon.classList.remove('fas', 'text-red-500');
+                icon.classList.add('far');
+            }
+            const likesCountElem = document.querySelector(`.likes-count[data-post-id="${postId}"]`);
+            if (likesCountElem) likesCountElem.textContent = `${data.likesCount} likes`;
+        });
+    });
+});
+
+document.querySelectorAll('.comment-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const postId = this.dataset.postId;
+        const form = document.getElementById('commentForm');
+        form.action = `/posts/${postId}/comments`;
+        loadComments(postId);
+        commentModal.showModal();
+    });
+});
+
+function timeAgo(dateString) {
+    const now = new Date();
+    const commentDate = new Date(dateString);
+    const seconds = Math.floor((now - commentDate) / 1000);
+
+    let interval = Math.floor(seconds / 31536000);
+    if (interval > 1) return interval + " tahun yang lalu";
+
+    interval = Math.floor(seconds / 2592000);
+    if (interval > 1) return interval + " bulan yang lalu";
+
+    interval = Math.floor(seconds / 86400);
+    if (interval > 1) return interval + " hari yang lalu";
+
+    interval = Math.floor(seconds / 3600);
+    if (interval > 1) return interval + " jam yang lalu";
+
+    interval = Math.floor(seconds / 60);
+    if (interval > 1) return interval + " menit yang lalu";
+
+    return "baru saja";
+}
+
+function loadComments(postId) {
+    const commentList = document.getElementById('commentList');
+    commentList.innerHTML = '<p class="text-sm text-gray-500">Loading comments...</p>';
+
+    fetch(`/posts/${postId}/comments`)
+        .then(res => res.json())
+        .then(comments => {
+            commentList.innerHTML = '';
+            if (comments.length === 0) {
+                commentList.innerHTML = '<p class="text-sm text-gray-500">No comments yet.</p>';
+                return;
             }
 
-            cropper = new Cropper(image, {
-                aspectRatio: 1,
-                viewMode: 2,
-                autoCropArea: 1,
-                responsive: true,
-                guides: false,
-                background: false,
-            });
-        }
+            comments.forEach(comment => {
+                const user = comment.user;
+                const profilePic = user.profile_picture ? `/storage/${user.profile_picture}` : '/images/download.png';
+                const timeAgoText = timeAgo(comment.created_at); 
 
-        document.getElementById('confirmCrop').addEventListener('click', function() {
-            const canvas = cropper.getCroppedCanvas({
-                width: 1080,
-                height: 1080,
-                fillColor: '#fff',
-                imageSmoothingQuality: 'high',
-            });
-
-            canvas.toBlob((blob) => {
-                const croppedFile = new File([blob], 'cropped-image.jpg', {
-                    type: 'image/jpeg',
-                    lastModified: Date.now(),
-                });
-
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(croppedFile);
-                document.getElementById('imageInput').files = dataTransfer.files;
-
-                const previewUrl = URL.createObjectURL(blob);
-                const previewImage = document.getElementById('imagePreview').querySelector('img');
-                previewImage.src = previewUrl;
-                document.getElementById('imagePreview').classList.remove('hidden');
-
-                if (previewImage.dataset.originalUrl) {
-                    URL.revokeObjectURL(previewImage.dataset.originalUrl);
-                }
-                previewImage.dataset.originalUrl = previewUrl;
-
-                closeCropModal();
-            }, 'image/jpeg', 0.9);
-        });
-
-        function closeCropModal() {
-            document.getElementById('cropModal').close();
-            if (cropper) {
-                cropper.destroy();
-                cropper = null;
-            }
-        }
-
-        function removeImage() {
-            const fileInput = document.getElementById('imageInput');
-            const previewContainer = document.getElementById('imagePreview');
-            const previewImage = previewContainer.querySelector('img');
-
-            fileInput.value = '';
-            previewImage.src = '';
-            previewContainer.classList.add('hidden');
-
-            if (previewImage.dataset.originalUrl) {
-                URL.revokeObjectURL(previewImage.dataset.originalUrl);
-                delete previewImage.dataset.originalUrl;
-            }
-
-            document.getElementById('removeImageBtn').classList.add('hidden');
-        }
-
-        document.getElementById('removeImageBtn').classList.add('hidden');
-
-        // Like button toggle warna merah saat klik (UI only)
-        document.querySelectorAll('.like-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const icon = btn.querySelector('i.fa-heart');
-                icon.classList.toggle('far');
-                icon.classList.toggle('fas');
-                icon.classList.toggle('liked');
+                const html = `
+                    <div class="flex items-start gap-3">
+                        <div class="avatar">
+                            <div class="w-10 rounded-full">
+                                <img src="${profilePic}" />
+                            </div>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-sm">${user.username} <span class="text-xs text-gray-400">· ${timeAgoText}</span></p>
+                            <p class="text-sm text-gray-700">${comment.comment}</p>
+                        </div>
+                    </div>
+                `;
+                commentList.innerHTML += html;
             });
         });
+}
 
-        document.querySelectorAll('.like-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const postId = this.dataset.postId;
+const commentModal = document.getElementById('commentModal');
 
-                fetch(`/posts/${postId}/like`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                            'Accept': 'application/json',
-                        },
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        const icon = this.querySelector('i');
-                        if (data.status === 'liked') {
-                            icon.classList.remove('far');
-                            icon.classList.add('fas', 'text-red-500');
-                        } else if (data.status === 'unliked') {
-                            icon.classList.remove('fas', 'text-red-500');
-                            icon.classList.add('far');
-                        }
-                        const likesCountElem = document.querySelector(`.likes-count[data-post-id="${postId}"]`);
-                        if (likesCountElem) likesCountElem.textContent = `${data.likesCount} likes`;
-                    });
-            });
-        });
+document.getElementById('commentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const form = this;
+    const url = form.action;
+    const formData = new FormData(form);
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            form.reset();
+            commentModal.close();
+        }
+    });
+});
+
+
     </script>
 
     @include('layouts.footer')
