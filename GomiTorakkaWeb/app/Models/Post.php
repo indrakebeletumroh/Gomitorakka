@@ -3,37 +3,28 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\users;
+use App\Models\User;
+use App\Models\Like;
 
 class Post extends Model
 {
-      protected $table = 'posts';
     protected $primaryKey = 'post_id';
-    public $incrementing = true;  // ini penting kalau post_id auto-increment integer
-    protected $fillable = ['user_id', 'content', 'image', 'likes_count'];
 
+    protected $fillable = ['user_id', 'content', 'image'];
 
     public function user()
     {
-        return $this->belongsTo(users::class, 'user_id', 'uid');
+        return $this->belongsTo(User::class, 'user_id', 'uid');
     }
-    
+
+
     public function likes()
     {
         return $this->hasMany(Like::class, 'post_id', 'post_id');
     }
-      public function incrementLikes()
-    {
-        $this->timestamps = false; // Prevent updating updated_at
-        $this->increment('likes_count');
-        $this->timestamps = true;
-    }
 
-    public function decrementLikes()
+    public function isLikedBy($userId)
     {
-        $this->timestamps = false;
-        $this->decrement('likes_count');
-        $this->timestamps = true;
+        return $this->likes()->where('user_id', $userId)->exists();
     }
 }
-

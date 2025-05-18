@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\users;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,7 +11,7 @@ class UserController extends Controller
     // Show User Management Panel
     public function UserPanel()
     {
-        $users = users::withCount('markers')
+        $users = User::withCount('markers')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -27,7 +27,7 @@ class UserController extends Controller
                 ->with('error', 'You cannot delete your own account!');
         }
 
-        $user = users::where('uid', $uid)->firstOrFail();
+        $user = User::where('uid', $uid)->firstOrFail();
         $user->delete();
 
         return redirect()->route('user.panel')

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\users;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
@@ -16,7 +16,7 @@ class AuthController extends Controller
     }
 
     function submit(Request $request){
-        $users = new users();
+        $users = new User();
         $users->age = $request->age;
         $users->username = $request->username;
         $users->phone_number = $request->phone_number;
@@ -38,7 +38,7 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        $user = users::where('username', $request->username)->first();
+        $user = User::where('username', $request->username)->first();
 
         if ($user && Hash::check($request->password, $user->password)) {
             // Simpan semua data yang diperlukan ke session
@@ -102,7 +102,7 @@ class AuthController extends Controller
         'cropped_image' => 'nullable|string',
     ]);
 
-   $user = users::where('uid', Session::get('uid'))->firstOrFail();
+   $user = User::where('uid', Session::get('uid'))->firstOrFail();
 
     
   if ($request->cropped_image) {

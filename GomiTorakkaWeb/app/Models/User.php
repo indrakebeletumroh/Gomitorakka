@@ -5,14 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class users extends Authenticatable
+class User extends Authenticatable
 {
     use HasFactory;
 
     protected $table = 'users';
     protected $primaryKey = 'uid';
-
-    // Hapus jika uid adalah auto-increment integer
     public $incrementing = false;
     protected $keyType = 'string';
 

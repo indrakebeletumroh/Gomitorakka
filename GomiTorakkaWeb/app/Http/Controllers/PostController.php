@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -53,7 +55,40 @@ class PostController extends Controller
     } catch (\Exception $e) {
         return back()->withInput()->with('error', 'Gagal upload: ' . $e->getMessage());
     }
+    
+    
 }
+
+public function toggleLike($postId)
+{
+    if (!session('logged_in') || !session('uid')) {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    $userId = session('uid');
+
+    $like = Like::where('user_id', $userId)->where('post_id', $postId)->first();
+
+    if ($like) {
+        $like->delete();
+        $status = 'unliked';
+    } else {
+        Like::create([
+            'user_id' => $userId,
+            'post_id' => $postId,
+        ]);
+        $status = 'liked';
+    }
+
+    $likesCount = Like::where('post_id', $postId)->count();
+
+    return response()->json([
+        'status' => $status,
+        'likesCount' => $likesCount,
+    ]);
+}
+
+
 
 
 }

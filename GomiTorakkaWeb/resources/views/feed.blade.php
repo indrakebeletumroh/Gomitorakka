@@ -5,21 +5,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Feed - GomiTorakka - Smart Waste Management</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-    <!-- Styles / Scripts -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <style>
         .aspect-square {
             aspect-ratio: 1 / 1;
@@ -35,10 +32,6 @@
         .textarea:focus {
             outline: none;
             box-shadow: none;
-        }
-
-        .post-like:active {
-            transform: scale(1.1);
         }
 
         .animate-fade-in {
@@ -63,18 +56,37 @@
             transform: scale(1.1);
             transition: transform 0.2s ease;
         }
+
+        .like-btn {
+            transition: transform 0.2s ease;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .like-btn:active {
+            transform: scale(1.2);
+        }
+
+        .fa-heart {
+            transition: color 0.3s ease;
+        }
+
+        .liked {
+            color: #dc2626;
+        }
     </style>
 </head>
 
 <body class="animate-fade-in">
     @include('layouts.navbar')
 
-    <!-- Cropping Modal -->
     <dialog id="cropModal" class="modal">
         <div class="modal-box max-w-2xl">
             <h3 class="font-bold text-lg mb-4">Crop Your Image</h3>
             <div class="img-container w-full h-96 bg-gray-100">
-                <img id="imageToCrop" class="max-w-full h-full object-contain">
+                <img id="imageToCrop" class="max-w-full h-full object-contain" />
             </div>
             <div class="modal-action">
                 <button type="button" class="btn btn-primary" id="confirmCrop">Crop & Save</button>
@@ -84,75 +96,48 @@
     </dialog>
 
     <div class="container mx-auto px-4 py-8 max-w-4xl">
-        <!-- Create Post Card -->
         <div class="bg-white rounded-lg shadow-md border border-gray-100 mb-8 p-4">
             <div class="flex items-start gap-4">
                 <div class="avatar">
                     <div class="w-12 rounded-full">
-                        <img src="{{ Session::has('profile_picture') ? asset('storage/' . Session::get('profile_picture')) : asset('/images/download.png') }}" alt="User avatar">
+                        <img src="{{ Session::has('profile_picture') ? asset('storage/' . Session::get('profile_picture')) : asset('/images/download.png') }}" alt="User avatar" />
                     </div>
                 </div>
 
                 <div class="flex-1">
-                    <!-- FORM MULAI DI SINI -->
                     <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        <textarea name="content" rows="3" class="textarea textarea-bordered w-full mb-4" placeholder="What's on your mind?" required>{{ old('content') }}</textarea>
 
-                        <!-- Caption Input -->
-                        <textarea
-                            name="content"
-                            rows="3"
-                            class="textarea textarea-bordered w-full mb-4"
-                            placeholder="What's on your mind?"
-                            required>{{ old('content') }}</textarea>
-
-                        <!-- Image Preview & Upload -->
                         <div class="mb-4">
-                            <input
-                                type="file"
-                                name="image"
-                                id="imageInput"
-                                class="hidden"
-                                accept="image/*"
-                                onchange="previewImage()">
+                            <input type="file" name="image" id="imageInput" class="hidden" accept="image/*" />
 
-                            <!-- In the image preview section -->
                             <div id="imagePreview" class="hidden aspect-square bg-gray-100 rounded-lg mb-4 relative">
-                                <img src="" class="w-full h-full object-cover rounded-lg" alt="Preview">
-                                <!-- Remove Button -->
-                                <button
-                                    type="button"
-                                    id="removeImageBtn"
-                                    class="absolute top-2 right-2 btn btn-circle btn-xs btn-error"
-                                    onclick="removeImage()">
+                                <img src="" class="w-full h-full object-cover rounded-lg" alt="Preview" />
+                                <button type="button" id="removeImageBtn" class="absolute top-2 right-2 btn btn-circle btn-xs btn-error" onclick="removeImage()">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
 
-                            <!-- Upload Button -->
                             <label for="imageInput" class="btn btn-outline btn-sm gap-2">
                                 <i class="fas fa-image"></i>
                                 Upload Photo
                             </label>
                         </div>
 
-                        <!-- Submit Button -->
                         <div class="text-right">
                             <button class="btn btn-primary btn-sm" type="submit">
                                 Post
                             </button>
                         </div>
                     </form>
-                    <!-- FORM END -->
                 </div>
             </div>
         </div>
 
-        <!-- Posts Feed -->
         <div class="space-y-8">
             @foreach ($posts as $post)
             <div class="bg-white rounded-lg shadow-md border border-gray-100 px-5 py-2">
-                <!-- Post Header -->
                 <div class="flex items-center p-4 border-b border-gray-100">
                     <div class="avatar">
                         <div class="w-10 rounded-full ring-1 ring-gray-200">
@@ -165,20 +150,18 @@
                     </div>
                 </div>
 
-                <!-- Post Image -->
                 @if ($post->image)
                 <div class="aspect-square bg-gray-100">
-                    <img src="{{ asset('storage/' . $post->image) }}"
-                        class="w-full h-full object-cover"
-                        alt="Post image">
+                    <img src="{{ asset('storage/' . $post->image) }}" class="w-full h-full object-cover" alt="Post image" />
                 </div>
                 @endif
 
-                <!-- Post Actions -->
                 <div class="flex items-center space-x-4 p-3">
-                    <button class="text-2xl hover:text-green-600 post-like">
-                        <i class="far fa-heart"></i>
+                    <button class="like-btn" data-post-id="{{ $post->post_id }}">
+                        <i class="{{ $post->isLikedBy(session('uid')) ? 'fas text-red-500' : 'far' }} fa-heart"></i>
                     </button>
+                    <span class="likes-count" data-post-id="{{ $post->post_id }}">{{ $post->likes_count }} likes</span>
+                    
                     <button class="text-2xl hover:text-green-600">
                         <i class="far fa-comment"></i>
                     </button>
@@ -187,146 +170,154 @@
                     </button>
                 </div>
 
-                <!-- Likes -->
-                <p class="font-semibold text-sm px-4">{{ $post->likes ?? 0 }} likes</p>
-
-                <!-- Caption -->
                 <div class="text-sm px-4 py-2">
                     <span class="font-semibold">{{ $post->user->username }}</span>
                     {{ $post->content }}
                 </div>
 
-                <!-- Time Posted -->
                 <p class="text-gray-500 text-xs mt-2 px-4 pb-2">{{ $post->created_at->diffForHumans() }}</p>
             </div>
             @endforeach
         </div>
     </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <script>
-    let cropper = null;
-    let originalImageFile = null;
+        let cropper = null;
+        let originalImageFile = null;
 
-    // Image Input Handler
-    document.getElementById('imageInput').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            originalImageFile = file;
-            showCropModal(file);
-            document.getElementById('removeImageBtn').classList.remove('hidden');
-        }
-    });
-
-    function showCropModal(file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('imageToCrop').src = e.target.result;
-            document.getElementById('cropModal').showModal();
-            initCropper();
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function initCropper() {
-        const image = document.getElementById('imageToCrop');
-        if (cropper) {
-            cropper.destroy();
-        }
-        
-        cropper = new Cropper(image, {
-            aspectRatio: 1, // Force square
-            viewMode: 2,
-            autoCropArea: 1,
-            responsive: true,
-            guides: false,
-            background: false
-        });
-    }
-
-    // Confirm Crop Handler
-    document.getElementById('confirmCrop').addEventListener('click', function() {
-        const canvas = cropper.getCroppedCanvas({
-            width: 1080,
-            height: 1080,
-            fillColor: '#fff',
-            imageSmoothingQuality: 'high'
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                originalImageFile = file;
+                showCropModal(file);
+                document.getElementById('removeImageBtn').classList.remove('hidden');
+            }
         });
 
-        canvas.toBlob((blob) => {
-            // Create new cropped file
-            const croppedFile = new File([blob], 'cropped-image.jpg', {
-                type: 'image/jpeg',
-                lastModified: Date.now()
+        function showCropModal(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('imageToCrop').src = e.target.result;
+                document.getElementById('cropModal').showModal();
+                initCropper();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function initCropper() {
+            const image = document.getElementById('imageToCrop');
+            if (cropper) {
+                cropper.destroy();
+            }
+
+            cropper = new Cropper(image, {
+                aspectRatio: 1,
+                viewMode: 2,
+                autoCropArea: 1,
+                responsive: true,
+                guides: false,
+                background: false,
+            });
+        }
+
+        document.getElementById('confirmCrop').addEventListener('click', function() {
+            const canvas = cropper.getCroppedCanvas({
+                width: 1080,
+                height: 1080,
+                fillColor: '#fff',
+                imageSmoothingQuality: 'high',
             });
 
-            // Update file input
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(croppedFile);
-            document.getElementById('imageInput').files = dataTransfer.files;
+            canvas.toBlob((blob) => {
+                const croppedFile = new File([blob], 'cropped-image.jpg', {
+                    type: 'image/jpeg',
+                    lastModified: Date.now(),
+                });
 
-            // Update preview
-            const previewUrl = URL.createObjectURL(blob);
-            const previewImage = document.getElementById('imagePreview').querySelector('img');
-            previewImage.src = previewUrl;
-            document.getElementById('imagePreview').classList.remove('hidden');
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(croppedFile);
+                document.getElementById('imageInput').files = dataTransfer.files;
 
-            // Cleanup previous blob URL if exists
+                const previewUrl = URL.createObjectURL(blob);
+                const previewImage = document.getElementById('imagePreview').querySelector('img');
+                previewImage.src = previewUrl;
+                document.getElementById('imagePreview').classList.remove('hidden');
+
+                if (previewImage.dataset.originalUrl) {
+                    URL.revokeObjectURL(previewImage.dataset.originalUrl);
+                }
+                previewImage.dataset.originalUrl = previewUrl;
+
+                closeCropModal();
+            }, 'image/jpeg', 0.9);
+        });
+
+        function closeCropModal() {
+            document.getElementById('cropModal').close();
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+        }
+
+        function removeImage() {
+            const fileInput = document.getElementById('imageInput');
+            const previewContainer = document.getElementById('imagePreview');
+            const previewImage = previewContainer.querySelector('img');
+
+            fileInput.value = '';
+            previewImage.src = '';
+            previewContainer.classList.add('hidden');
+
             if (previewImage.dataset.originalUrl) {
                 URL.revokeObjectURL(previewImage.dataset.originalUrl);
+                delete previewImage.dataset.originalUrl;
             }
-            previewImage.dataset.originalUrl = previewUrl;
 
-            closeCropModal();
-        }, 'image/jpeg', 0.9); // 90% quality
-    });
-
-    function closeCropModal() {
-        document.getElementById('cropModal').close();
-        if (cropper) {
-            cropper.destroy();
-            cropper = null;
-        }
-    }
-
-    // Image Removal Functionality
-    function removeImage() {
-        const fileInput = document.getElementById('imageInput');
-        const previewContainer = document.getElementById('imagePreview');
-        const previewImage = previewContainer.querySelector('img');
-        
-        // Reset file input
-        fileInput.value = '';
-        
-        // Clear preview
-        previewImage.src = '';
-        previewContainer.classList.add('hidden');
-        
-        // Revoke object URL if exists
-        if (previewImage.dataset.originalUrl) {
-            URL.revokeObjectURL(previewImage.dataset.originalUrl);
-            delete previewImage.dataset.originalUrl;
+            document.getElementById('removeImageBtn').classList.add('hidden');
         }
 
-        // Hide remove button
         document.getElementById('removeImageBtn').classList.add('hidden');
-    }
 
-    // Like Button Functionality
-    document.querySelectorAll('.post-like').forEach(button => {
-        button.addEventListener('click', function() {
-            const icon = this.querySelector('i');
-            icon.classList.toggle('far');
-            icon.classList.toggle('fas');
-            icon.classList.toggle('text-red-500');
+        // Like button toggle warna merah saat klik (UI only)
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const icon = btn.querySelector('i.fa-heart');
+                icon.classList.toggle('far');
+                icon.classList.toggle('fas');
+                icon.classList.toggle('liked');
+            });
         });
-    });
 
-    // Initialize remove button state
-    document.getElementById('removeImageBtn').classList.add('hidden');
-</script>
+        document.querySelectorAll('.like-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const postId = this.dataset.postId;
+
+                fetch(`/posts/${postId}/like`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json',
+                        },
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.liked) {
+                            this.querySelector('i').classList.remove('far');
+                            this.querySelector('i').classList.add('fas', 'text-red-500');
+                        } else {
+                            this.querySelector('i').classList.remove('fas', 'text-red-500');
+                            this.querySelector('i').classList.add('far');
+                        }
+                        const likesCountElem = document.querySelector(`.likes-count[data-post-id="${postId}"]`);
+                        if (likesCountElem) likesCountElem.textContent = `${data.likesCount} likes`;
+                    });
+            });
+        });
+    </script>
 
     @include('layouts.footer')
-
 </body>
 
 </html>

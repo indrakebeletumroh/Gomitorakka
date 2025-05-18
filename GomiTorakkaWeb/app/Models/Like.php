@@ -1,30 +1,17 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Like extends Model
 {
-    protected $fillable = ['user_id', 'post_id'];
+    protected $table = 'likes';
+    protected $fillable = ['post_id', 'user_id'];
+    public $timestamps = false;
 
     public function user()
-    {
-        return $this->belongsTo(users::class, 'user_id', 'uid');
-    }
-
-    public function post()
-    {
-        return $this->belongsTo(Post::class, 'post_id');
-    }
-     protected static function booted()
-    {
-        static::created(function ($like) {
-            $like->post->incrementLikes();
-        });
-
-        static::deleted(function ($like) {
-            $like->post->decrementLikes();
-        });
-    }
+{
+    return $this->belongsTo(User::class, 'user_id', 'uid');
+}
 }
