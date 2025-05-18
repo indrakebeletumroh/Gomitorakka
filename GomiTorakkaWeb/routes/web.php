@@ -54,7 +54,7 @@ Route::post('/markers/{id}/status', [MarkerController::class, 'updateStatus']);
 
 // Post & Like
 Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
-Route::post('/posts/{post}/like', [PostController::class, 'toggleLike'])->name('posts.toggleLike');
+Route::post('/posts/{post}/like', [PostController::class, 'toggleLike'])->name('posts.like');
 
 
 

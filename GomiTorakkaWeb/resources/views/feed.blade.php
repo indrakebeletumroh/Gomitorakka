@@ -161,7 +161,7 @@
                         <i class="{{ $post->isLikedBy(session('uid')) ? 'fas text-red-500' : 'far' }} fa-heart"></i>
                     </button>
                     <span class="likes-count" data-post-id="{{ $post->post_id }}">{{ $post->likes_count }} likes</span>
-                    
+
                     <button class="text-2xl hover:text-green-600">
                         <i class="far fa-comment"></i>
                     </button>
@@ -297,18 +297,19 @@
                 fetch(`/posts/${postId}/like`, {
                         method: 'POST',
                         headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                             'Accept': 'application/json',
                         },
                     })
                     .then(res => res.json())
                     .then(data => {
-                        if (data.liked) {
-                            this.querySelector('i').classList.remove('far');
-                            this.querySelector('i').classList.add('fas', 'text-red-500');
-                        } else {
-                            this.querySelector('i').classList.remove('fas', 'text-red-500');
-                            this.querySelector('i').classList.add('far');
+                        const icon = this.querySelector('i');
+                        if (data.status === 'liked') {
+                            icon.classList.remove('far');
+                            icon.classList.add('fas', 'text-red-500');
+                        } else if (data.status === 'unliked') {
+                            icon.classList.remove('fas', 'text-red-500');
+                            icon.classList.add('far');
                         }
                         const likesCountElem = document.querySelector(`.likes-count[data-post-id="${postId}"]`);
                         if (likesCountElem) likesCountElem.textContent = `${data.likesCount} likes`;

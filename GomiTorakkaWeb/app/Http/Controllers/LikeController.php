@@ -21,33 +21,39 @@ class LikeController extends Controller
         return response()->json(['status' => 'liked']);
     }
 
-    public function toggleLike($postId)
+  public function toggleLike($postId)
 {
-    if (!session('logged_in') || !session('uid')) {
-        return response()->json(['error' => 'Unauthorized'], 401);
-    }
+    try {
+        $userId = session('uid'); // pastikan session ada
 
-    $userId = session('uid');
+        if (!$userId) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
-    $like = Like::where('user_id', $userId)->where('post_id', $postId)->first();
+        $like = Like::where('user_id', $userId)->where('post_id', $postId)->first();
 
-    if ($like) {
-        $like->delete();
-        $status = 'unliked';
-    } else {
-        Like::create([
-            'user_id' => $userId,
-            'post_id' => $postId,
+        if ($like) {
+            $like->delete();
+            $status = 'unliked';
+        } else {
+            Like::create([
+                'user_id' => $userId,
+                'post_id' => $postId,
+            ]);
+            $status = 'liked';
+        }
+
+        $likesCount = Like::where('post_id', $postId)->count();
+
+        return response()->json([
+            'status' => $status,
+            'likesCount' => $likesCount,
         ]);
-        $status = 'liked';
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
     }
-
-    $likesCount = Like::where('post_id', $postId)->count();
-
-    return response()->json([
-        'status' => $status,
-        'likesCount' => $likesCount,
-    ]);
 }
+
+
 
 }
