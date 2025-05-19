@@ -211,7 +211,7 @@
 <body>
     @include('layouts.navbar')
     <!-- Profile Section -->
-    <div class="flex justify-center items-center pt-5 pb-15">
+    <div class="flex justify-center items-center py-22">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
             <form class="flex flex-col" enctype="multipart/form-data" method="POST" action="{{ route('profile.update') }}">
                 @if($errors->any())
@@ -232,7 +232,7 @@
                 @csrf
                 <h1 class="text-4xl font-semibold text-gray-800 mb-6 text-center">Profile</h1>
 
-                <div class="flex flex-col md:flex-row gap-8">
+                <div class="flex flex-col md:flex-row gap-8 ">
                     <!-- Left Column - Profile Picture -->
                     <div class="flex flex-col items-center md:items-start space-y-4">
                         <div class="profile-picture-container mb-4">

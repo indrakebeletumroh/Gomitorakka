@@ -40,7 +40,7 @@
     <div class="flex-none gap-2">
       <button onclick="toggleInbox()" class="btn btn-ghost btn-circle text-lg relative hover:text-green-600">
         <i class="fas fa-inbox"></i>
-        <span class="badge badge-sm badge-error absolute top-0 right-0 bg-green-600 border-green-600">3</span>
+        <span class="badge badge-sm badge-error absolute top-0 right-0 bg-green-600 border-green-600">1</span>
       </button>
       <div class="dropdown dropdown-end">
         <label tabindex="0" class="btn btn-ghost btn-circle avatar hover:ring-2 hover:ring-green-600 transition-all">
@@ -100,14 +100,6 @@
       <li class="bg-green-50 p-3 rounded-lg border border-green-100 hover:bg-green-100 transition-colors flex items-center gap-2">
         <i class="fas fa-bell text-green-600"></i>
         <span>Welcome to GomiTorakka!</span>
-      </li>
-      <li class="bg-green-50 p-3 rounded-lg border border-green-100 hover:bg-green-100 transition-colors flex items-center gap-2">
-        <i class="fas fa-shipping-fast text-green-600"></i>
-        <span>Your order has shipped.</span>
-      </li>
-      <li class="bg-green-50 p-3 rounded-lg border border-green-100 hover:bg-green-100 transition-colors flex items-center gap-2">
-        <i class="fas fa-tag text-green-600"></i>
-        <span>New promotions available!</span>
       </li>
     </ul>
   </div>
