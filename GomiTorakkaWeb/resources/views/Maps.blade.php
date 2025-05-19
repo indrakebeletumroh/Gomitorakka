@@ -3,6 +3,7 @@
 
 <head>
     <title>Maps - GomiTorakka</title>
+    <link rel="icon" href="{{ asset('images/restuIcon.ico') }}" type="image/x-icon">
 
     <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
