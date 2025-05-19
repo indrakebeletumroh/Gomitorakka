@@ -33,7 +33,8 @@
     <style>
         #map {
             height: 600px;
-            z-index: 0; /* Make sure the map is in the background */
+            z-index: 0;
+            /* Make sure the map is in the background */
         }
 
         #btn-lacak,
@@ -78,7 +79,16 @@
         }
 
         #navbar {
-            z-index: 10; /* Navbar stays on top */
+            z-index: 10;
+            /* Navbar stays on top */
+        }
+
+        .drawer-open {
+            left: 0 !important;
+        }
+
+        .crosshair-cursor {
+            cursor: crosshair;
         }
     </style>
 </head>
@@ -96,6 +106,21 @@
             <i class="fa fa-trash"></i> <span id="infoText">Tempat Sampah</span>
         </div>
     </div>
+
+    <div id="markerFormOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; background: rgba(0,0,0,0.3); z-index: 1999;">
+        <div id="markerFormDrawer" style="position: fixed; top: 0; left: -400px; width: 350px; height: 100%; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.3); z-index: 2000; padding: 20px; transition: left 0.3s ease-in-out;">
+            <h2 style="margin-bottom: 15px;"> Marker Tempat Sampah</h2>
+            <label for="markerDesc">Deskripsi:</label>
+            <input type="text" id="markerDesc" placeholder="Contoh: Dekat pos ronda" style="width: 100%; margin: 10px 0 20px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button id="cancelDrawerBtn" style="background-color: #ccc; border: none; padding: 10px 15px; border-radius: 5px;">Batal</button>
+                <button id="submitDrawerBtn" style="background-color: #4CAF50; color: white; border: none; padding: 10px 15px; border-radius: 5px;">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+
+
     @include('layouts.footer')
     <script>
         var map = L.map('map', {
@@ -108,7 +133,6 @@
         // Basemaps
         var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}').addTo(map);
         var openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-        var esriStreet = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}');
 
         // Layer tempat sampah
         var tempatSampahLayer = L.layerGroup().addTo(map);
@@ -147,86 +171,21 @@
             .then(data => {
                 data.forEach(marker => {
                     const m = L.marker([marker.latitude, marker.longitude], {
-                        icon: tempatSampahIcon
+                        icon: createTempatSampahIcon(marker.status)
                     }).addTo(tempatSampahLayer);
-                    m.bindPopup(marker.description || "Tempat Sampah");
+
+                    m.description = marker.description || "Tempat Sampah";
+
+                    m.on("click", function() {
+                        selectedLatLng = {
+                            lat: marker.latitude,
+                            lng: marker.longitude
+                        };
+                        descInput.value = m.description;
+                        openDrawer(true); // buka drawer dalam mode VIEW
+                    });
                 });
             });
-
-        // Tambah marker manual
-        let isAddingMarker = false;
-        document.getElementById('btn-tambah-marker').addEventListener('click', () => {
-            isAddingMarker = true;
-            document.getElementById('map').classList.add('crosshair-cursor');
-        });
-
-        map.on('click', function(e) {
-            if (!isAddingMarker) return;
-
-            const { lat, lng } = e.latlng;
-
-            const marker = L.marker([lat, lng], {
-                icon: tempatSampahIcon
-            }).addTo(tempatSampahLayer);
-
-            const popupForm = document.createElement("div");
-            popupForm.innerHTML = `
-                <label style="font-weight: bold;">Berikan Nama Tempat Sampah:</label><br>
-                <input type="text" id="descInput" style="width: 100%; margin-top: 8px; margin-bottom: 10px; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px;" placeholder="Contoh: Bantar Gebang"/><br>
-                <div style="display: flex; gap: 10px;">
-                    <button id="saveMarkerBtn" style="flex: 1; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 5px; font-size: 14px;">Simpan</button>
-                    <button id="cancelMarkerBtn" style="flex: 1; padding: 10px; background: #f44336; color: white; border: none; border-radius: 5px; font-size: 14px;">Batal</button>
-                </div>
-            `;
-
-            const popup = L.popup()
-                .setLatLng([lat, lng])
-                .setContent(popupForm)
-                .openOn(map);
-
-            // Tombol Simpan
-            popupForm.querySelector("#saveMarkerBtn").addEventListener("click", () => {
-                const desc = popupForm.querySelector("#descInput").value.trim();
-                if (!desc) {
-                    alert("Deskripsi tidak boleh kosong.");
-                    return;
-                }
-
-                marker.bindPopup(desc).openPopup();
-
-                fetch("/markers", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        latitude: lat,
-                        longitude: lng,
-                        description: desc,
-                        status: "pending"
-                    })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    console.log(data.message);
-                })
-                .catch(err => console.error(err));
-
-                isAddingMarker = false;
-                map.closePopup();
-                document.getElementById('map').classList.remove('crosshair-cursor');
-            });
-
-            // Tombol Batal
-            popupForm.querySelector("#cancelMarkerBtn").addEventListener("click", () => {
-                map.removeLayer(marker); // Hapus marker
-                map.closePopup();        // Tutup form
-                isAddingMarker = false;
-                document.getElementById('map').classList.remove('crosshair-cursor');
-            });
-        });
-
 
 
 
@@ -251,6 +210,155 @@
                 }).addTo(map);
             });
 
+        });
+
+        let isAddingMarker = false;
+        let tempMarker = null;
+        let selectedLatLng = null;
+
+        const drawer = document.getElementById("markerFormDrawer");
+        const descInput = document.getElementById("markerDesc");
+        const cancelBtn = document.getElementById("cancelDrawerBtn");
+        const submitBtn = document.getElementById("submitDrawerBtn");
+
+        function createTempatSampahIcon(status) {
+            let color;
+            switch (status) {
+                case "approved":
+                    color = "#4CAF50"; // hijau
+                    break;
+                case "pending":
+                    color = "#FFC107"; // kuning
+                    break;
+                default:
+                    color = "#FF0000"; // abu-abu
+            }
+
+            return L.divIcon({
+                className: '',
+                html: ` 
+            <div style="position: relative; pointer-events: auto; cursor: pointer; width: 20px; height: 20px; background-color: ${color}; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 3px rgba(0,0,0,0.5);">
+                <i class="fa fa-trash" style="color: white; font-size: 10px;"></i>
+                <div style="position: absolute; bottom: -6px; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid ${color};"></div>
+            </div>
+        `,
+                iconSize: [20, 26],
+                iconAnchor: [10, 26],
+                popupAnchor: [0, -20]
+            });
+        }
+
+        let isViewMode = false;
+
+        function openDrawer(isView = false) {
+            document.getElementById("markerFormOverlay").style.display = "block";
+            setTimeout(() => {
+                drawer.style.left = "0";
+            }, 10); // Delay kecil biar animasi jalan
+
+            isViewMode = isView;
+            if (isViewMode) {
+                descInput.readOnly = true;
+                submitBtn.style.display = "none";
+                cancelBtn.style.display = "none";
+            } else {
+                descInput.readOnly = false;
+                submitBtn.style.display = "inline-block";
+                cancelBtn.style.display = "inline-block";
+                descInput.value = "";
+            }
+        }
+
+        function closeDrawer() {
+            drawer.style.left = "-400px";
+            setTimeout(() => {
+                document.getElementById("markerFormOverlay").style.display = "none";
+            }, 300); // Tunggu animasi selesai
+
+            if (tempMarker) {
+                map.removeLayer(tempMarker);
+                tempMarker = null;
+            }
+            selectedLatLng = null;
+            isAddingMarker = false;
+            isViewMode = false;
+            document.getElementById('map').classList.remove('crosshair-cursor');
+        }
+
+
+
+        document.getElementById('btn-tambah-marker').addEventListener('click', () => {
+            isAddingMarker = true;
+            document.getElementById('map').classList.add('crosshair-cursor');
+        });
+
+        map.on('click', function(e) {
+            if (!isAddingMarker) return;
+
+            const {
+                lat,
+                lng
+            } = e.latlng;
+            selectedLatLng = e.latlng;
+
+            tempMarker = L.marker([lat, lng], {
+                icon: createTempatSampahIcon("pending")
+            }).addTo(tempatSampahLayer);
+
+            openDrawer();
+        });
+
+        cancelBtn.addEventListener("click", () => {
+            closeDrawer();
+        });
+
+        submitBtn.addEventListener("click", () => {
+            const desc = descInput.value.trim();
+            if (!desc || !selectedLatLng) {
+                alert("Deskripsi tidak boleh kosong.");
+                return;
+            }
+
+            fetch("/markers", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        latitude: selectedLatLng.lat,
+                        longitude: selectedLatLng.lng,
+                        description: desc,
+                        status: "pending"
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    // Hapus tempMarker lama
+                    if (tempMarker) {
+                        map.removeLayer(tempMarker);
+                        tempMarker = null;
+                    }
+
+                    // Tambahkan marker baru dengan icon pending
+                    const newMarker = L.marker([selectedLatLng.lat, selectedLatLng.lng], {
+                        icon: createTempatSampahIcon("pending")
+                    }).addTo(tempatSampahLayer);
+                    newMarker.bindPopup(desc);
+
+                    closeDrawer();
+                })
+                .catch(err => {
+                    alert("Gagal menyimpan marker.");
+                    console.error(err);
+                });
+        });
+
+
+        document.getElementById("markerFormOverlay").addEventListener("click", function(e) {
+            if (!drawer.contains(e.target)) {
+                closeDrawer();
+            }
         });
     </script>
 </body>
