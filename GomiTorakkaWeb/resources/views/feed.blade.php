@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Feed - GomiTorakka - Smart Waste Management</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-   <link rel="icon" href="{{ asset('images/restuIcon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('images/restuIcon.ico') }}" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -77,6 +77,44 @@
             color: #dc2626;
         }
     </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const maxHeightCollapsed = 72; // 4.5em kira-kira pixel, sesuaikan kalau font beda
+
+            document.querySelectorAll('.post-content-wrapper').forEach(wrapper => {
+                const content = wrapper.querySelector('.post-content');
+                const btn = wrapper.querySelector('.read-more-btn');
+
+                // Sembunyikan tombol kalau konten pendek
+                if (content.scrollHeight <= maxHeightCollapsed) {
+                    btn.style.display = 'none';
+                    return;
+                }
+
+                // Mulai dalam keadaan collapsed
+                content.style.maxHeight = maxHeightCollapsed + 'px';
+                content.style.overflow = 'hidden';
+
+                btn.textContent = 'Read more';
+
+                btn.addEventListener('click', () => {
+                    if (content.style.maxHeight === 'none') {
+                        // Collapse
+                        content.style.maxHeight = maxHeightCollapsed + 'px';
+                        btn.textContent = 'Read more';
+                        content.style.overflow = 'hidden';
+                    } else {
+                        // Expand
+                        content.style.maxHeight = 'none';
+                        btn.textContent = 'Show less';
+                        content.style.overflow = 'visible';
+                    }
+                });
+            });
+        });
+    </script>
+
 </head>
 
 <body class="animate-fade-in">
@@ -157,7 +195,7 @@
 
         <div class="space-y-8">
             @foreach ($posts as $post)
-            <div class="bg-white rounded-lg shadow-md border border-gray-100 px-5 py-2">
+            <div class="bg-white rounded-lg shadow-md border border-gray-100 px-5 py-2 ">
                 <div class="flex items-center p-4 border-b border-gray-100">
                     <div class="avatar">
                         <div class="w-10 rounded-full ring-1 ring-gray-200">
@@ -185,17 +223,20 @@
                     <button class="text-2xl hover:text-green-600 comment-btn" data-post-id="{{ $post->post_id }}">
                         <i class="far fa-comment"></i>
                     </button>
-                    
+
                     <span class="comments-count" data-post-id="{{ $post->post_id }}">{{ $post->comments_count }} comments</span>
-                    
+
                     <button class="text-2xl hover:text-green-600 share-btn" data-post-id="{{ $post->post_id }}">
                         <i class="far fa-paper-plane"></i>
                     </button>
 
                 </div>
-
-                <div class="text-sm px-4 py-2">
-                    <span class="font-semibold">{{ $post->user->username }}</span> {{ $post->content }}
+                <div class="post-content-wrapper">
+                    <div class="username font-semibold -mb-12">{{ $post->user->username }}</div>
+                    <div class="post-content whitespace-pre-wrap break-words max-h-[4.5em] overflow-hidden transition-[max-height] duration-300 ease-in-out">
+                        {!! nl2br(e($post->content)) !!}
+                    </div>
+                    <button class="read-more-btn text-blue-500 mt-1 text-sm cursor-pointer">Read more</button>
                 </div>
 
                 <p class="text-gray-500 text-xs mt-2 px-4 pb-2">{{ $post->created_at->diffForHumans() }}</p>
@@ -432,31 +473,31 @@
                 });
         });
 
-         document.querySelectorAll('.share-btn').forEach(button => {
-        button.addEventListener('click', async function () {
-            const postId = this.dataset.postId;
-            const postUrl = `${window.location.origin}/posts/${postId}`;
-            const shareData = {
-                title: 'Lihat Postingan Ini',
-                text: 'Cek postingan keren di GomiTorakka!',
-                url: postUrl
-            };
+        document.querySelectorAll('.share-btn').forEach(button => {
+            button.addEventListener('click', async function() {
+                const postId = this.dataset.postId;
+                const postUrl = `${window.location.origin}/posts/${postId}`;
+                const shareData = {
+                    title: 'Lihat Postingan Ini',
+                    text: 'Cek postingan keren di GomiTorakka!',
+                    url: postUrl
+                };
 
-            if (navigator.share) {
-                try {
-                    await navigator.share(shareData);
-                    console.log('Shared successfully');
-                } catch (err) {
-                    console.error('Share failed:', err.message);
+                if (navigator.share) {
+                    try {
+                        await navigator.share(shareData);
+                        console.log('Shared successfully');
+                    } catch (err) {
+                        console.error('Share failed:', err.message);
+                    }
+                } else {
+                    // fallback
+                    navigator.clipboard.writeText(postUrl).then(() => {
+                        alert("Link disalin ke clipboard!");
+                    });
                 }
-            } else {
-                // fallback
-                navigator.clipboard.writeText(postUrl).then(() => {
-                    alert("Link disalin ke clipboard!");
-                });
-            }
+            });
         });
-    }); 
     </script>
 
     @include('layouts.footer')

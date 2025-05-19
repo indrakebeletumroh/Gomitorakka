@@ -156,7 +156,7 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Age</label>
-                                <input type="number" name="age" min="13" max="120"
+                                <input type="text" name="age" min="13" max="120"
                                     class="input-field w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition duration-300"
                                     placeholder="Enter your age" required>
                             </div>
