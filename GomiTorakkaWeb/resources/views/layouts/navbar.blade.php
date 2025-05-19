@@ -45,7 +45,7 @@
       <div class="dropdown dropdown-end">
         <label tabindex="0" class="btn btn-ghost btn-circle avatar hover:ring-2 hover:ring-green-600 transition-all">
           <div class="w-10 rounded-full">
-            <img id="previewImage"
+            <img id="navbarProfileImage"
               src="{{ Session::has('profile_picture') ? asset('storage/' . Session::get('profile_picture')) : asset('/images/download.png') }}"
               alt="Profile Picture"
               class="rounded-full">

@@ -185,9 +185,13 @@
                     <button class="text-2xl hover:text-green-600 comment-btn" data-post-id="{{ $post->post_id }}">
                         <i class="far fa-comment"></i>
                     </button>
-                    <button class="text-2xl hover:text-green-600">
+                    
+                    <span class="comments-count" data-post-id="{{ $post->post_id }}">{{ $post->comments_count }} comments</span>
+                    
+                    <button class="text-2xl hover:text-green-600 share-btn" data-post-id="{{ $post->post_id }}">
                         <i class="far fa-paper-plane"></i>
                     </button>
+
                 </div>
 
                 <div class="text-sm px-4 py-2">
@@ -202,189 +206,189 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <script>
-  let cropper = null;
-let originalImageFile = null;
+        let cropper = null;
+        let originalImageFile = null;
 
-document.getElementById('imageInput').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        originalImageFile = file;
-        showCropModal(file);
-        document.getElementById('removeImageBtn').classList.remove('hidden');
-    }
-});
-
-function showCropModal(file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        document.getElementById('imageToCrop').src = e.target.result;
-        document.getElementById('cropModal').showModal();
-        initCropper();
-    };
-    reader.readAsDataURL(file);
-}
-
-function initCropper() {
-    const image = document.getElementById('imageToCrop');
-    if (cropper) {
-        cropper.destroy();
-    }
-    cropper = new Cropper(image, {
-        aspectRatio: 1,
-        viewMode: 2,
-        autoCropArea: 1,
-        responsive: true,
-        guides: false,
-        background: false,
-    });
-}
-
-document.getElementById('confirmCrop').addEventListener('click', function() {
-    const canvas = cropper.getCroppedCanvas({
-        width: 1080,
-        height: 1080,
-        fillColor: '#fff',
-        imageSmoothingQuality: 'high',
-    });
-
-    canvas.toBlob((blob) => {
-        const croppedFile = new File([blob], 'cropped-image.jpg', {
-            type: 'image/jpeg',
-            lastModified: Date.now(),
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                originalImageFile = file;
+                showCropModal(file);
+                document.getElementById('removeImageBtn').classList.remove('hidden');
+            }
         });
 
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(croppedFile);
-        document.getElementById('imageInput').files = dataTransfer.files;
-
-        const previewUrl = URL.createObjectURL(blob);
-        const previewImage = document.getElementById('imagePreview').querySelector('img');
-        previewImage.src = previewUrl;
-        document.getElementById('imagePreview').classList.remove('hidden');
-
-        if (previewImage.dataset.originalUrl) {
-            URL.revokeObjectURL(previewImage.dataset.originalUrl);
+        function showCropModal(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('imageToCrop').src = e.target.result;
+                document.getElementById('cropModal').showModal();
+                initCropper();
+            };
+            reader.readAsDataURL(file);
         }
-        previewImage.dataset.originalUrl = previewUrl;
 
-        closeCropModal();
-    }, 'image/jpeg', 0.9);
-});
-
-function closeCropModal() {
-    document.getElementById('cropModal').close();
-    if (cropper) {
-        cropper.destroy();
-        cropper = null;
-    }
-}
-
-function removeImage() {
-    const fileInput = document.getElementById('imageInput');
-    const previewContainer = document.getElementById('imagePreview');
-    const previewImage = previewContainer.querySelector('img');
-
-    fileInput.value = '';
-    previewImage.src = '';
-    previewContainer.classList.add('hidden');
-
-    if (previewImage.dataset.originalUrl) {
-        URL.revokeObjectURL(previewImage.dataset.originalUrl);
-        delete previewImage.dataset.originalUrl;
-    }
-
-    document.getElementById('removeImageBtn').classList.add('hidden');
-}
-
-document.getElementById('removeImageBtn').classList.add('hidden');
-
-document.querySelectorAll('.like-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const icon = btn.querySelector('i.fa-heart');
-        icon.classList.toggle('far');
-        icon.classList.toggle('fas');
-        icon.classList.toggle('liked');
-    });
-});
-
-document.querySelectorAll('.like-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const postId = this.dataset.postId;
-        fetch(`/posts/${postId}/like`, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json',
-            },
-        })
-        .then(res => res.json())
-        .then(data => {
-            const icon = this.querySelector('i');
-            if (data.status === 'liked') {
-                icon.classList.remove('far');
-                icon.classList.add('fas', 'text-red-500');
-            } else if (data.status === 'unliked') {
-                icon.classList.remove('fas', 'text-red-500');
-                icon.classList.add('far');
+        function initCropper() {
+            const image = document.getElementById('imageToCrop');
+            if (cropper) {
+                cropper.destroy();
             }
-            const likesCountElem = document.querySelector(`.likes-count[data-post-id="${postId}"]`);
-            if (likesCountElem) likesCountElem.textContent = `${data.likesCount} likes`;
+            cropper = new Cropper(image, {
+                aspectRatio: 1,
+                viewMode: 2,
+                autoCropArea: 1,
+                responsive: true,
+                guides: false,
+                background: false,
+            });
+        }
+
+        document.getElementById('confirmCrop').addEventListener('click', function() {
+            const canvas = cropper.getCroppedCanvas({
+                width: 1080,
+                height: 1080,
+                fillColor: '#fff',
+                imageSmoothingQuality: 'high',
+            });
+
+            canvas.toBlob((blob) => {
+                const croppedFile = new File([blob], 'cropped-image.jpg', {
+                    type: 'image/jpeg',
+                    lastModified: Date.now(),
+                });
+
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(croppedFile);
+                document.getElementById('imageInput').files = dataTransfer.files;
+
+                const previewUrl = URL.createObjectURL(blob);
+                const previewImage = document.getElementById('imagePreview').querySelector('img');
+                previewImage.src = previewUrl;
+                document.getElementById('imagePreview').classList.remove('hidden');
+
+                if (previewImage.dataset.originalUrl) {
+                    URL.revokeObjectURL(previewImage.dataset.originalUrl);
+                }
+                previewImage.dataset.originalUrl = previewUrl;
+
+                closeCropModal();
+            }, 'image/jpeg', 0.9);
         });
-    });
-});
 
-document.querySelectorAll('.comment-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const postId = this.dataset.postId;
-        const form = document.getElementById('commentForm');
-        form.action = `/posts/${postId}/comments`;
-        loadComments(postId);
-        commentModal.showModal();
-    });
-});
+        function closeCropModal() {
+            document.getElementById('cropModal').close();
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+        }
 
-function timeAgo(dateString) {
-    const now = new Date();
-    const commentDate = new Date(dateString);
-    const seconds = Math.floor((now - commentDate) / 1000);
+        function removeImage() {
+            const fileInput = document.getElementById('imageInput');
+            const previewContainer = document.getElementById('imagePreview');
+            const previewImage = previewContainer.querySelector('img');
 
-    let interval = Math.floor(seconds / 31536000);
-    if (interval > 1) return interval + " tahun yang lalu";
+            fileInput.value = '';
+            previewImage.src = '';
+            previewContainer.classList.add('hidden');
 
-    interval = Math.floor(seconds / 2592000);
-    if (interval > 1) return interval + " bulan yang lalu";
-
-    interval = Math.floor(seconds / 86400);
-    if (interval > 1) return interval + " hari yang lalu";
-
-    interval = Math.floor(seconds / 3600);
-    if (interval > 1) return interval + " jam yang lalu";
-
-    interval = Math.floor(seconds / 60);
-    if (interval > 1) return interval + " menit yang lalu";
-
-    return "baru saja";
-}
-
-function loadComments(postId) {
-    const commentList = document.getElementById('commentList');
-    commentList.innerHTML = '<p class="text-sm text-gray-500">Loading comments...</p>';
-
-    fetch(`/posts/${postId}/comments`)
-        .then(res => res.json())
-        .then(comments => {
-            commentList.innerHTML = '';
-            if (comments.length === 0) {
-                commentList.innerHTML = '<p class="text-sm text-gray-500">No comments yet.</p>';
-                return;
+            if (previewImage.dataset.originalUrl) {
+                URL.revokeObjectURL(previewImage.dataset.originalUrl);
+                delete previewImage.dataset.originalUrl;
             }
 
-            comments.forEach(comment => {
-                const user = comment.user;
-                const profilePic = user.profile_picture ? `/storage/${user.profile_picture}` : '/images/download.png';
-                const timeAgoText = timeAgo(comment.created_at); 
+            document.getElementById('removeImageBtn').classList.add('hidden');
+        }
 
-                const html = `
+        document.getElementById('removeImageBtn').classList.add('hidden');
+
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const icon = btn.querySelector('i.fa-heart');
+                icon.classList.toggle('far');
+                icon.classList.toggle('fas');
+                icon.classList.toggle('liked');
+            });
+        });
+
+        document.querySelectorAll('.like-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const postId = this.dataset.postId;
+                fetch(`/posts/${postId}/like`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                        },
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        const icon = this.querySelector('i');
+                        if (data.status === 'liked') {
+                            icon.classList.remove('far');
+                            icon.classList.add('fas', 'text-red-500');
+                        } else if (data.status === 'unliked') {
+                            icon.classList.remove('fas', 'text-red-500');
+                            icon.classList.add('far');
+                        }
+                        const likesCountElem = document.querySelector(`.likes-count[data-post-id="${postId}"]`);
+                        if (likesCountElem) likesCountElem.textContent = `${data.likesCount} likes`;
+                    });
+            });
+        });
+
+        document.querySelectorAll('.comment-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const postId = this.dataset.postId;
+                const form = document.getElementById('commentForm');
+                form.action = `/posts/${postId}/comments`;
+                loadComments(postId);
+                commentModal.showModal();
+            });
+        });
+
+        function timeAgo(dateString) {
+            const now = new Date();
+            const commentDate = new Date(dateString);
+            const seconds = Math.floor((now - commentDate) / 1000);
+
+            let interval = Math.floor(seconds / 31536000);
+            if (interval > 1) return interval + " tahun yang lalu";
+
+            interval = Math.floor(seconds / 2592000);
+            if (interval > 1) return interval + " bulan yang lalu";
+
+            interval = Math.floor(seconds / 86400);
+            if (interval > 1) return interval + " hari yang lalu";
+
+            interval = Math.floor(seconds / 3600);
+            if (interval > 1) return interval + " jam yang lalu";
+
+            interval = Math.floor(seconds / 60);
+            if (interval > 1) return interval + " menit yang lalu";
+
+            return "baru saja";
+        }
+
+        function loadComments(postId) {
+            const commentList = document.getElementById('commentList');
+            commentList.innerHTML = '<p class="text-sm text-gray-500">Loading comments...</p>';
+
+            fetch(`/posts/${postId}/comments`)
+                .then(res => res.json())
+                .then(comments => {
+                    commentList.innerHTML = '';
+                    if (comments.length === 0) {
+                        commentList.innerHTML = '<p class="text-sm text-gray-500">No comments yet.</p>';
+                        return;
+                    }
+
+                    comments.forEach(comment => {
+                        const user = comment.user;
+                        const profilePic = user.profile_picture ? `/storage/${user.profile_picture}` : '/images/download.png';
+                        const timeAgoText = timeAgo(comment.created_at);
+
+                        const html = `
                     <div class="flex items-start gap-3">
                         <div class="avatar">
                             <div class="w-10 rounded-full">
@@ -397,38 +401,62 @@ function loadComments(postId) {
                         </div>
                     </div>
                 `;
-                commentList.innerHTML += html;
-            });
-        });
-}
-
-const commentModal = document.getElementById('commentModal');
-
-document.getElementById('commentForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const form = this;
-    const url = form.action;
-    const formData = new FormData(form);
-
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            'Accept': 'application/json',
-        },
-        body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            form.reset();
-            commentModal.close();
+                        commentList.innerHTML += html;
+                    });
+                });
         }
-    });
-});
 
+        const commentModal = document.getElementById('commentModal');
 
+        document.getElementById('commentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const form = this;
+            const url = form.action;
+            const formData = new FormData(form);
+
+            fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        form.reset();
+                        commentModal.close();
+                    }
+                });
+        });
+
+         document.querySelectorAll('.share-btn').forEach(button => {
+        button.addEventListener('click', async function () {
+            const postId = this.dataset.postId;
+            const postUrl = `${window.location.origin}/posts/${postId}`;
+            const shareData = {
+                title: 'Lihat Postingan Ini',
+                text: 'Cek postingan keren di GomiTorakka!',
+                url: postUrl
+            };
+
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                    console.log('Shared successfully');
+                } catch (err) {
+                    console.error('Share failed:', err.message);
+                }
+            } else {
+                // fallback
+                navigator.clipboard.writeText(postUrl).then(() => {
+                    alert("Link disalin ke clipboard!");
+                });
+            }
+        });
+    }); 
     </script>
 
     @include('layouts.footer')

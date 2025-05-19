@@ -17,7 +17,10 @@ class PostController extends Controller
             return redirect()->route('login');
         }
 
-        $posts = Post::orderBy('created_at', 'desc')->get();
+        $posts = Post::withCount('comments')
+             ->orderBy('created_at', 'desc')
+             ->get();
+
 
         return view('feed', ['posts' => $posts]);
     }
