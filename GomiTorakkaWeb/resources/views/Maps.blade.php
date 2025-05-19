@@ -108,8 +108,14 @@
     </div>
 
     <div id="markerFormOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; background: rgba(0,0,0,0.3); z-index: 1999;">
-        <div id="markerFormDrawer" style="position: fixed; top: 0; left: -400px; width: 350px; height: 100%; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.3); z-index: 2000; padding: 20px; transition: left 0.3s ease-in-out;">
-            <h2 style="margin-bottom: 15px;"> Marker Tempat Sampah</h2>
+        
+
+            
+            <div id="markerFormDrawer" style="position: fixed; top: 0; left: -400px; width: 350px; height: 100%; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.3); z-index: 2000; padding: 20px; transition: left 0.3s ease-in-out;">
+            <label>Status:</label>
+            <div id="markerStatus" style="margin: 10px 0 20px 0; padding: 10px; border-radius: 5px; font-weight: 600; color: white; width: fit-content;">
+                <!-- status text & warna akan di-set lewat JS -->
+            </div>
             <label for="markerDesc">Deskripsi:</label>
             <input type="text" id="markerDesc" placeholder="Contoh: Dekat pos ronda" style="width: 100%; margin: 10px 0 20px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
             <div style="display: flex; justify-content: flex-end; gap: 10px;">
@@ -182,8 +188,9 @@
                             lng: marker.longitude
                         };
                         descInput.value = m.description;
-                        openDrawer(true); // buka drawer dalam mode VIEW
+                        openDrawer(true, marker.status); // buka drawer mode VIEW + status
                     });
+
                 });
             });
 
@@ -250,24 +257,60 @@
 
         let isViewMode = false;
 
-        function openDrawer(isView = false) {
+        function openDrawer(isView = false, status = null) {
             document.getElementById("markerFormOverlay").style.display = "block";
             setTimeout(() => {
                 drawer.style.left = "0";
             }, 10); // Delay kecil biar animasi jalan
 
             isViewMode = isView;
+
             if (isViewMode) {
                 descInput.readOnly = true;
                 submitBtn.style.display = "none";
                 cancelBtn.style.display = "none";
+
+                // Tampilkan status dengan warna
+                const statusDiv = document.getElementById("markerStatus");
+                if (status) {
+                    let bgColor;
+                    let text;
+                    switch (status.toLowerCase()) {
+                        case "approved":
+                            bgColor = "#4CAF50"; // hijau
+                            text = "Approved";
+                            break;
+                        case "pending":
+                            bgColor = "#FFC107"; // kuning
+                            text = "Pending";
+                            break;
+                        case "rejected":
+                            bgColor = "#F44336"; // merah
+                            text = "Rejected";
+                            break;
+                        default:
+                            bgColor = "#888";
+                            text = "Unknown";
+                    }
+                    statusDiv.style.backgroundColor = bgColor;
+                    statusDiv.textContent = text;
+                    statusDiv.style.display = "block";
+                } else {
+                    statusDiv.style.display = "none";
+                }
             } else {
                 descInput.readOnly = false;
                 submitBtn.style.display = "inline-block";
                 cancelBtn.style.display = "inline-block";
+
+                // Sembunyikan status kalau form input baru
+                const statusDiv = document.getElementById("markerStatus");
+                statusDiv.style.display = "none";
+
                 descInput.value = "";
             }
         }
+
 
         function closeDrawer() {
             drawer.style.left = "-400px";
