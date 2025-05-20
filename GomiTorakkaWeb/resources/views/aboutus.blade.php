@@ -75,7 +75,7 @@
         <section class="mb-16">
             <h2 class="text-3xl font-bold mb-12 text-center">Meet The Team</h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <!-- Indra -->
                 <div class="card bg-base-100 shadow-xl team-card">
                     <figure class="px-10 pt-10">
@@ -153,6 +153,33 @@
                                     <i class="fab fa-github"></i>
                                 </a>
                                 <a href="https://discordapp.com/users/1080115751635144704" class="btn btn-circle btn-sm btn-ghost" target="_blank">
+                                    <i class="fab fa-discord"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <!-- Fajar -->
+                <div class="card bg-base-100 shadow-xl team-card">
+                    <figure class="px-10 pt-10">
+                        <div class="avatar placeholder">
+                            <div class="bg-green-600 text-neutral-content rounded-full w-24">
+                                <img src="https://avatars.githubusercontent.com/u/156165419?v=4" alt="">
+                            </div>
+                        </div>
+                    </figure>
+                    <div class="card-body items-center text-center">
+                        <h3 class="card-title">Fajar</h3>
+                        <p class="text-sm opacity-70">Database Manager | Member</p>
+                        <p class="text-sm">
+                            Ensures data integrity and seamless accessibility by expertly designing, organizing, and maintaining databases that power efficient and reliable applications.
+                        </p>
+                        <div class="card-actions mt-4">
+                            <div class="flex gap-2">
+                                <a href="https://githubvvvvvv.com/CoderJarzz" class="btn btn-circle btn-sm btn-ghost" target="_blank">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                                <a href="https://discordapp.com/users/1061456282093092884" class="btn btn-circle btn-sm btn-ghost" target="_blank">
                                     <i class="fab fa-discord"></i>
                                 </a>
                             </div>

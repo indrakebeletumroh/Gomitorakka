@@ -51,10 +51,17 @@
               class="rounded-full">
           </div>
         </label>
+
         <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 border border-green-100">
           <li><a href="/profile" class="hover:text-green-600">Profile</a></li>
+          @if (Session::has('username'))
+          @if (Session::get('role') == 'admin')
+          <li><a class="text-green-600 hover:text-green-800" href="/request">Request Panel</a></li>
+          @endif
           <li><a class="text-red-500 hover:text-red-700" href="/logout">Logout</a></li>
+          
         </ul>
+        @endif
       </div>
     </div>
   </div>

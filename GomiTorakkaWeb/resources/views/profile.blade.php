@@ -33,14 +33,14 @@
     <!-- Profile Section -->
     <div class="flex justify-center items-center py-8 pt-20">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
-            <div class="flex flex-col items-center">    
+            <div class="flex flex-col items-center">
                 <h1 class="text-4xl font-semibold text-gray-800 mb-6">Profile</h1>
                 <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center mb-2">
                     <!-- Ambil inisial dari username -->
                     <img id="previewImage"
-                                src="{{ Session::has('profile_picture') ? asset('storage/' . Session::get('profile_picture')) : asset('/images/download.png') }}"
-                                alt="Profile Picture"
-                                class="rounded-full">
+                        src="{{ Session::has('profile_picture') ? asset('storage/' . Session::get('profile_picture')) : asset('/images/download.png') }}"
+                        alt="Profile Picture"
+                        class="rounded-full">
                 </div>
                 <p class="text-gray-400 mb-8">Last Online {{ now()->diffForHumans() }}</p>
             </div>
@@ -74,11 +74,15 @@
                 </div>
             </div>
 
-            <div class="flex justify-center mt-10">
+            <div class="flex justify-center mt-10 gap-5">
                 <a href="/edit-profile" class="btn bg-blue-400 text-base-100 w-40 hover:text-blue-400 hover:-rotate-3 hover:duration-800 hover:bg-base-100 hover:border-solid">
                     Edit Profile
                 </a>
+                <a href="/logout" class="btn bg-red-500 text-base-100 w-40 hover:text-red-500 hover:-rotate-3 hover:duration-800 hover:bg-base-100 hover:border-solid">
+                    Log Out
+                </a>
             </div>
+
 
             <div class="flex justify-between text-sm text-gray-400 mt-10">
                 <p>Last Updated: {{ \Carbon\Carbon::parse(Session::get('updated_at'))->diffForHumans() }}</p>
