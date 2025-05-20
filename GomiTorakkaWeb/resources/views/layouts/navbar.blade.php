@@ -75,7 +75,7 @@
       </a>
     </li>
     <li>
-      <a href="#" class="hover:text-green-600 flex items-center gap-3 text-lg border-b-2 border-transparent pb-1">
+      <a href="/feed" class="hover:text-green-600 flex items-center gap-3 text-lg border-b-2 border-transparent pb-1">
         <i class="fas fa-newspaper w-6 text-center"></i>
         <span>Feed</span>
       </a>
