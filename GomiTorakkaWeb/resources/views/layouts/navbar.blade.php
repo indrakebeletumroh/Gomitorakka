@@ -57,6 +57,7 @@
           @if (Session::has('username'))
           @if (Session::get('role') == 'admin')
           <li><a class="text-green-600 hover:text-green-800" href="/request">Request Panel</a></li>
+          <li><a class="text-green-600 hover:text-green-800" href="/adminpanel">Admin Panel</a></li>
           @endif
           <li><a class="text-red-500 hover:text-red-700" href="/logout">Logout</a></li>
           

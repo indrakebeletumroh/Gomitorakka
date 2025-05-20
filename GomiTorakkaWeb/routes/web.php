@@ -6,6 +6,7 @@ use App\Http\Controllers\MarkerController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostCommentController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('Home');
@@ -16,10 +17,6 @@ Route::get('/maps', function () {
 });
 
 Route::get('/feed', [PostController::class, 'index'])->name('posts.index');
-
-Route::get('/adminpanel', function () {
-    return view('UserPanel');
-});
 
 Route::get('/about', function () {
     return view('aboutus');
@@ -58,4 +55,7 @@ Route::get('/request', [MarkerController::class, 'requestPanel']);
 Route::post('/posts/{post}/comments', [PostCommentController::class, 'store'])->name('posts.comments.store');
 Route::get('/posts/{post}/comments', [PostController::class, 'fetchComments']);
 
+Route::get('/adminpanel', [UserController::class, 'UserPanel'])->name('user.panel');
 
+// Hapus user berdasarkan uid dengan method DELETE
+Route::delete('/adminpanel/user/{uid}', [UserController::class, 'destroy'])->name('user.destroy');

@@ -7,32 +7,36 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image; 
+use Intervention\Image\Facades\Image;
 
 class AuthController extends Controller
 {
-    function form_register(){
+    function form_register()
+    {
         return view('register');
     }
 
-    function submit(Request $request){
+    function submit(Request $request)
+    {
         $users = new User();
         $users->age = $request->age;
         $users->username = $request->username;
         $users->phone_number = $request->phone_number;
         $users->email = $request->email;
         $users->password = Hash::make($request->password);
-        
+
         $users->save();
 
         return redirect()->route('login');
     }
 
-    function form_login() {
+    function form_login()
+    {
         return view('login');
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $request->validate([
             'username' => 'required',
             'password' => 'required'
@@ -87,72 +91,74 @@ class AuthController extends Controller
     {
         // Hapus semua session
         Session::flush();
-        
+
         return redirect('/');
     }
 
     public function update(Request $request)
-{
-    $request->validate([
-        'username' => 'required|string|max:255',
-        'age' => 'required|integer|min:12|max:120',
-        'phone' => 'required|string|max:20',
-        'email' => 'required|email|max:255',
-        'password' => 'nullable|string|min:8',
-        'cropped_image' => 'nullable|string',
-    ]);
+    {
+        $request->validate([
+            'username' => 'required|string|max:255',
+            'age' => 'required|integer|min:12|max:120',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'password' => 'nullable|string|min:8',
+            'cropped_image' => 'nullable|string',
+        ]);
 
-   $user = User::where('uid', Session::get('uid'))->firstOrFail();
+        $user = User::where('uid', Session::get('uid'))->firstOrFail();
 
-    
-  if ($request->cropped_image) {
-    $imageData = $request->cropped_image;
-    list($type, $imageData) = explode(';', $imageData);
-    list(, $imageData) = explode(',', $imageData);
-    $data = base64_decode($imageData);
 
-    $fileName = 'profile_'.Session::get('uid').'_'.time().'.jpg';
-    $user->profile_picture = 'profiles/'.$fileName;
-  
-    $path = "profiles/{$fileName}";
-    
+        if ($request->cropped_image) {
+            $imageData = $request->cropped_image;
+            list($type, $imageData) = explode(';', $imageData);
+            list(, $imageData) = explode(',', $imageData);
+            $data = base64_decode($imageData);
 
-    if (!Storage::disk('public')->exists('profiles')) {
-        Storage::disk('public')->makeDirectory('profiles');
+            $fileName = 'profile_' . Session::get('uid') . '_' . time() . '.jpg';
+            $user->profile_picture = 'profiles/' . $fileName;
+
+            $path = "profiles/{$fileName}";
+
+
+            if (!Storage::disk('public')->exists('profiles')) {
+                Storage::disk('public')->makeDirectory('profiles');
+            }
+
+            Storage::disk('public')->put($path, $data);
+            $path = "profiles/{$fileName}";
+
+            // Store using Laravel's filesystem
+            Storage::disk('public')->put($path, $data);
+
+            // Store relative path without 'storage/' prefix
+            $user->profile_picture = $path;
+        }
+
+        // Update user data
+        $user->username = $request->username;
+        $user->age = $request->age;
+        $user->phone_number = $request->phone;
+        $user->email = $request->email;
+
+        if ($request->password) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        // Update session data
+        Session::put([
+            'username' => $user->username,
+            'age' => $user->age,
+            'email' => $user->email,
+            'phone_number' => $user->phone_number,
+            'updated_at' => $user->updated_at,
+            'profile_picture' => $user->profile_picture
+        ]);
+
+        return back()->with('success', 'Profile updated successfully!');
     }
 
-    Storage::disk('public')->put($path, $data);
-    $path = "profiles/{$fileName}";
     
-    // Store using Laravel's filesystem
-    Storage::disk('public')->put($path, $data);
-    
-    // Store relative path without 'storage/' prefix
-    $user->profile_picture = $path; 
-}
-
-    // Update user data
-    $user->username = $request->username;
-    $user->age = $request->age;
-    $user->phone_number = $request->phone;
-    $user->email = $request->email;
-    
-    if ($request->password) {
-        $user->password = Hash::make($request->password);
-    }
-
-    $user->save();
-
-    // Update session data
-    Session::put([
-        'username' => $user->username,
-        'age' => $user->age,
-        'email' => $user->email,
-        'phone_number' => $user->phone_number,
-        'updated_at' => $user->updated_at,
-        'profile_picture' => $user->profile_picture
-    ]);
-
-    return back()->with('success', 'Profile updated successfully!');
-}
 }

@@ -81,33 +81,33 @@
                 </tr>
               </thead>
               <tbody>
+                @foreach ($users as $user)
                 <tr>
                   <td>
                     <div class="flex items-center gap-3">
                       <div class="avatar">
                         <div class="mask mask-circle w-12 h-12">
-                          <img src="" alt="Avatar">
+                          <img src="{{ $user->avatar_url ?? 'default-avatar.png' }}" alt="Avatar">
                         </div>
                       </div>
                       <div>
-                        <div class="font-bold"></div>
-                        <div class="text-sm text-base-content/50">UID: </div>
+                        <div class="font-bold">{{ $user->username }}</div>
+                        <div class="text-sm text-base-content/50">UID: {{ $user->uid }}</div>
                       </div>
                     </div>
                   </td>
                   <td>
-                    <div class="font-medium"></div>
-                    <div class="text-sm text-base-content/50"></div>
+                    <div class="font-medium">{{ $user->email }}</div>
+                    <div class="text-sm text-base-content/50">{{ $user->phone_number }}</div>
                   </td>
-                  <td></td>
+                  <td>{{ $user->age }}</td>
+                  <td><span class="badge badge-lg">{{ ucfirst($user->role) }}</span></td>
                   <td>
-                    <span class="badge badge-lg">
-                    </span>
-                  </td>
-                  <td>
-                    <span class="badge badge-lg badge-success">
-                      <i class="fas fa-check-circle mr-1"></i>Active
-                    </span>
+                    @if ($user->is_active)
+                    <span class="badge badge-lg badge-success"><i class="fas fa-check-circle mr-1"></i>Active</span>
+                    @else
+                    <span class="badge badge-lg badge-error"><i class="fas fa-times-circle mr-1"></i>Inactive</span>
+                    @endif
                   </td>
                   <td>
                     <div class="flex gap-2">
@@ -139,10 +139,11 @@
                     </div>
                   </td>
                 </tr>
+                @endforeach
               </tbody>
             </table>
           </div>
-          
+
           <!-- Pagination -->
           <div class="flex justify-center p-4 bg-base-200/50">
           </div>
@@ -161,7 +162,7 @@
       </h3>
       <form class="space-y-4" method="POST" action="">
         @csrf
-        
+
         <input type="hidden" name="uid" id="editUid">
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -171,7 +172,7 @@
             </label>
             <input type="text" name="username" class="input input-bordered" required>
           </div>
-          
+
           <div class="form-control">
             <label class="label">
               <span class="label-text">Email</span>
@@ -232,7 +233,7 @@
       const form = document.getElementById('actionForm');
       form.action = actionUrl;
       form.method = method;
-      
+
       // Add method spoofing for DELETE/PUT
       if (method !== 'POST') {
         const methodInput = document.createElement('input');
@@ -241,7 +242,7 @@
         methodInput.value = method;
         form.appendChild(methodInput);
       }
-      
+
       actionModal.showModal();
     }
 
@@ -257,4 +258,5 @@
   </script>
 
 </body>
+
 </html>
