@@ -44,28 +44,37 @@ class AuthController extends Controller
 
         $user = User::where('username', $request->username)->first();
 
-        if ($user && Hash::check($request->password, $user->password)) {
-            // Simpan semua data yang diperlukan ke session
-            Session::put([
-                'uid' => $user->uid,
-                'age' => $user->age,
-                'username' => $user->username,
-                'email' => $user->email,
-                'phone_number' => $user->phone_number,
-                'profile_picture' => $user->profile_picture,
-                'created_at' => $user->created_at,
-                'updated_at' => $user->updated_at,
-                'role' => $user->role, // <-- TAMBAHKAN INI
-                'logged_in' => true
-            ]);
+        if ($user) {
+            // Cek apakah akun aktif
+            if (!$user->is_active) {
+                return back()->with('deactivated', 'This account has been deactivated');
+            }
 
-            return redirect()->route('profile');
-        } else {
-            return back()->withErrors([
-                'login' => 'Username atau password salah.',
-            ]);
+
+            // Cek password
+            if (Hash::check($request->password, $user->password)) {
+                Session::put([
+                    'uid' => $user->uid,
+                    'age' => $user->age,
+                    'username' => $user->username,
+                    'email' => $user->email,
+                    'phone_number' => $user->phone_number,
+                    'profile_picture' => $user->profile_picture,
+                    'created_at' => $user->created_at,
+                    'updated_at' => $user->updated_at,
+                    'role' => $user->role,
+                    'logged_in' => true
+                ]);
+
+                return redirect()->route('profile');
+            }
         }
+
+        return back()->withErrors([
+            'login' => 'Username atau password salah.',
+        ]);
     }
+
 
 
     // Tambahkan method untuk profile page
@@ -159,6 +168,4 @@ class AuthController extends Controller
 
         return back()->with('success', 'Profile updated successfully!');
     }
-
-    
 }

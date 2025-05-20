@@ -122,21 +122,27 @@
                           <i class="fas fa-ellipsis-v"></i>
                         </div>
                         <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 border border-base-200">
+                          <a onclick="openActionModal('Promote to admin?', `{{ route('users.promote', $user->uid) }}`, 'POST')" class="text-success hover:bg-success/10">
+                            <i class="fas fa-user-shield mr-2"></i>Make Admin
+                          </a>
+                          @if ($user->is_active)
+                          <!-- Tombol Promote dan Deactivate hanya muncul kalau user aktif -->
+                          <a onclick="openActionModal('Promote to admin?', `{{ route('users.promote', $user->uid) }}`, 'POST')" class="text-success hover:bg-success/10">
+                            <i class="fas fa-user-shield mr-2"></i>Make Admin
+                          </a>
+                          <a onclick="openActionModal('Deactivate user?', `{{ route('users.deactivate', $user->uid) }}`, 'POST')" class="text-warning hover:bg-warning/10">
+                            <i class="fas fa-user-slash mr-2"></i>Deactivate
+                          </a>
+                          @else
+                          <!-- Tombol Activate muncul kalau user tidak aktif -->
+                          <a onclick="openActionModal('Activate user?', `{{ route('users.activate', $user->uid) }}`, 'POST')" class="text-info hover:bg-info/10">
+                            <i class="fas fa-user-check mr-2"></i>Activate
+                          </a>
+                          @endif
                           <li>
-                            <a onclick="openActionModal('Promote to admin?')" class="text-success hover:bg-success/10">
-                              <i class="fas fa-user-shield mr-2"></i>Make Admin
-                            </a>
-                          </li>
-                          <li>
-                            <a onclick="openActionModal('Deactivate user?')" class="text-warning hover:bg-warning/10">
-                              <i class="fas fa-user-slash mr-2"></i>Deactivate
-                            </a>
-                          </li>
-                          <li>
-                            <a onclick="openActionModal('Permanently delete user?', '{{ route('users.destroy', $user->uid) }}', 'DELETE')" class="text-error hover:bg-error/10">
+                            <a onclick="openActionModal('Permanently delete user?', `{{ route('users.destroy', $user->uid) }}`, 'DELETE')" class="text-error hover:bg-error/10">
                               <i class="fas fa-trash-alt mr-2"></i>Delete
                             </a>
-
                           </li>
                         </ul>
                       </div>

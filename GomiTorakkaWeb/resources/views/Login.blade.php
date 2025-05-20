@@ -79,6 +79,11 @@
                 <div class="p-8">
                     <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">Welcome Back</h1>
                     <p class="text-center text-gray-500 mb-8">Log in to your account</p>
+                    @if (session('deactivated'))
+                    <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 10px; border: 1px solid #f5c6cb;">
+                        {{ session('deactivated') }}
+                    </div>
+                    @endif
 
                     <div class="space-y-6">
                         <div>

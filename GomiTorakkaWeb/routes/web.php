@@ -56,9 +56,8 @@ Route::post('/posts/{post}/comments', [PostCommentController::class, 'store'])->
 Route::get('/posts/{post}/comments', [PostController::class, 'fetchComments']);
 
 Route::get('/adminpanel', [UserController::class, 'UserPanel'])->name('user.panel');
-
 Route::put('/users/{uid}', [UserController::class, 'update'])->name('users.update');
-
 Route::delete('/users/{uid}', [UserController::class, 'destroy'])->name('users.destroy');
-
-
+Route::post('/users/{uid}/promote', [UserController::class, 'promoteToAdmin'])->name('users.promote');
+Route::post('/users/{uid}/deactivate', [UserController::class, 'deactivate'])->name('users.deactivate');
+Route::post('/users/{uid}/activate', [UserController::class, 'activate'])->name('users.activate');

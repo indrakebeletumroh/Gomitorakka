@@ -80,4 +80,31 @@ class UserController extends Controller
 
         return back()->with('success', 'User berhasil dihapus.');
     }
+
+    public function promoteToAdmin($uid)
+    {
+        $user = User::where('uid', $uid)->firstOrFail();
+        $user->role = 'admin';
+        $user->save();
+
+        return redirect()->back()->with('success', $user->username . ' telah dipromosikan menjadi admin.');
+    }
+
+    public function deactivate($uid)
+    {
+        $user = User::where('uid', $uid)->firstOrFail();
+        $user->is_active = false;
+        $user->save();
+
+        return redirect()->back()->with('success', 'User deactivated successfully.');
+    }
+
+    public function activate($uid)
+    {
+        $user = User::where('uid', $uid)->firstOrFail();
+        $user->is_active = true;
+        $user->save();
+
+        return redirect()->back()->with('success', 'User activated successfully.');
+    }
 }
