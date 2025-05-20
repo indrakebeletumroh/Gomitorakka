@@ -121,23 +121,28 @@
                         <div tabindex="0" role="button" class="btn btn-sm btn-secondary">
                           <i class="fas fa-ellipsis-v"></i>
                         </div>
+
                         <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 border border-base-200">
-                          <a onclick="openActionModal('Promote to admin?', `{{ route('users.promote', $user->uid) }}`, 'POST')" class="text-success hover:bg-success/10">
-                            <i class="fas fa-user-shield mr-2"></i>Make Admin
-                          </a>
-                          @if ($user->is_active)
-                          <!-- Tombol Promote dan Deactivate hanya muncul kalau user aktif -->
-                          <a onclick="openActionModal('Promote to admin?', `{{ route('users.promote', $user->uid) }}`, 'POST')" class="text-success hover:bg-success/10">
-                            <i class="fas fa-user-shield mr-2"></i>Make Admin
-                          </a>
-                          <a onclick="openActionModal('Deactivate user?', `{{ route('users.deactivate', $user->uid) }}`, 'POST')" class="text-warning hover:bg-warning/10">
-                            <i class="fas fa-user-slash mr-2"></i>Deactivate
-                          </a>
-                          @else
-                          <!-- Tombol Activate muncul kalau user tidak aktif -->
-                          <a onclick="openActionModal('Activate user?', `{{ route('users.activate', $user->uid) }}`, 'POST')" class="text-info hover:bg-info/10">
-                            <i class="fas fa-user-check mr-2"></i>Activate
-                          </a>
+                          <li>
+                            <a onclick="openActionModal('Promote to admin?', `{{ route('users.promote', $user->uid) }}`, 'POST')" class="text-success hover:bg-success/10">
+                              <i class="fas fa-user-shield mr-2"></i>Make Admin
+                            </a>
+                          </li>
+                          <li>
+
+                            @if ($user->is_active)
+                            <a onclick="openActionModal('Deactivate user?', `{{ route('users.deactivate', $user->uid) }}`, 'POST')" class="text-warning hover:bg-warning/10">
+                              <i class="fas fa-user-slash mr-2"></i>Deactivate
+                            </a>
+                            @else
+                          </li>
+                          <li>
+                            <!-- Tombol Activate muncul kalau user tidak aktif -->
+                            <a onclick="openActionModal('Activate user?', `{{ route('users.activate', $user->uid) }}`, 'POST')" class="text-info hover:bg-info/10">
+                              <i class="fas fa-user-check mr-2"></i>Activate
+                            </a>
+
+                          </li>
                           @endif
                           <li>
                             <a onclick="openActionModal('Permanently delete user?', `{{ route('users.destroy', $user->uid) }}`, 'DELETE')" class="text-error hover:bg-error/10">
@@ -156,7 +161,9 @@
 
           <!-- Pagination -->
           <div class="flex justify-center p-4 bg-base-200/50">
+            {{ $users->appends(request()->query())->links('vendor.pagination.tailwind') }}
           </div>
+
         </div>
       </div>
     </div>

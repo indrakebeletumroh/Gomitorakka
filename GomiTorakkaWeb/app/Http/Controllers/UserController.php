@@ -41,6 +41,7 @@ class UserController extends Controller
     // Hapus user dengan pengecekan supaya user tidak bisa hapus akun sendiri
 
 
+    
     public function update(Request $request, $uid)
     {
         $user = User::where('uid', $uid)->firstOrFail();
