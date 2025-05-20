@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -24,9 +25,9 @@ class UserController extends Controller
 
         // Filter berdasarkan search username atau email
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('username', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
@@ -38,15 +39,45 @@ class UserController extends Controller
     }
 
     // Hapus user dengan pengecekan supaya user tidak bisa hapus akun sendiri
+
+
+    public function update(Request $request, $uid)
+    {
+        $user = User::where('uid', $uid)->firstOrFail();
+
+        // Validasi input
+        $validated = $request->validate([
+            'username' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone_number' => 'nullable|string|max:20',
+            'age' => 'nullable|integer|min:1',
+            'role' => 'required|in:user,admin',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        $user->update($validated);
+
+        return redirect()->route('user.panel')->with('success', 'User updated successfully');
+    }
+
     public function destroy($uid)
     {
-        if (Auth::user()->uid === $uid) {
-            return redirect()->back()->with('error', 'You cannot delete your own account!');
+        // Cegah user tidak login
+        if (!session()->has('role') || session('role') !== 'admin') {
+            abort(403, 'Unauthorized');
         }
 
+        // Cegah admin menghapus dirinya sendiri
+        if (session('uid') == $uid) {
+            return back()->with('error', 'Tidak bisa menghapus akun sendiri.');
+        }
+
+        // Temukan user
         $user = User::where('uid', $uid)->firstOrFail();
+
+        // Hapus user
         $user->delete();
 
-        return redirect()->route('user.panel')->with('success', 'User deleted successfully');
+        return back()->with('success', 'User berhasil dihapus.');
     }
 }

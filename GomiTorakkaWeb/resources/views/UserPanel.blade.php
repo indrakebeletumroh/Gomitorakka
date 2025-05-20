@@ -87,7 +87,9 @@
                     <div class="flex items-center gap-3">
                       <div class="avatar">
                         <div class="mask mask-circle w-12 h-12">
-                          <img src="{{ $user->avatar_url ?? 'default-avatar.png' }}" alt="Avatar">
+                          <img
+                            src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('images/download.png') }}"
+                            alt="Avatar">
                         </div>
                       </div>
                       <div>
@@ -111,9 +113,10 @@
                   </td>
                   <td>
                     <div class="flex gap-2">
-                      <button onclick="editModal.showModal()" class="btn btn-sm btn-primary">
+                      <button onclick='openEditModal(@json($user))' class="btn btn-sm btn-primary">
                         <i class="fas fa-edit"></i>
                       </button>
+
                       <div class="dropdown dropdown-end">
                         <div tabindex="0" role="button" class="btn btn-sm btn-secondary">
                           <i class="fas fa-ellipsis-v"></i>
@@ -130,9 +133,10 @@
                             </a>
                           </li>
                           <li>
-                            <a onclick="openActionModal('Permanently delete user?')" class="text-error hover:bg-error/10">
+                            <a onclick="openActionModal('Permanently delete user?', '{{ route('users.destroy', $user->uid) }}', 'DELETE')" class="text-error hover:bg-error/10">
                               <i class="fas fa-trash-alt mr-2"></i>Delete
                             </a>
+
                           </li>
                         </ul>
                       </div>
@@ -230,11 +234,18 @@
   <script>
     function openActionModal(message, actionUrl, method = 'POST') {
       document.getElementById('modalMessage').innerText = message;
+
       const form = document.getElementById('actionForm');
       form.action = actionUrl;
-      form.method = method;
 
-      // Add method spoofing for DELETE/PUT
+      // Set ulang method form
+      form.method = 'POST';
+
+      // Hapus spoof method sebelumnya (kalau ada)
+      const existingSpoof = form.querySelector('input[name="_method"]');
+      if (existingSpoof) existingSpoof.remove();
+
+      // Tambah spoof method jika bukan POST
       if (method !== 'POST') {
         const methodInput = document.createElement('input');
         methodInput.type = 'hidden';
@@ -244,6 +255,30 @@
       }
 
       actionModal.showModal();
+    }
+
+
+    function openEditModal(user) {
+      // Isi form edit dengan data user
+      loadUserData(user);
+
+      // Set action form-nya
+      const form = document.querySelector('#editModal form');
+      form.action = `/users/${user.uid}`;
+
+      // Hapus method spoof sebelumnya kalau ada
+      const existing = form.querySelector('input[name="_method"]');
+      if (existing) existing.remove();
+
+      // Tambah method spoof PUT
+      const methodInput = document.createElement('input');
+      methodInput.type = 'hidden';
+      methodInput.name = '_method';
+      methodInput.value = 'PUT';
+      form.appendChild(methodInput);
+
+      // Tampilkan modal
+      editModal.showModal();
     }
 
     // Example edit user data loading

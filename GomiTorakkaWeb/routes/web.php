@@ -57,5 +57,8 @@ Route::get('/posts/{post}/comments', [PostController::class, 'fetchComments']);
 
 Route::get('/adminpanel', [UserController::class, 'UserPanel'])->name('user.panel');
 
-// Hapus user berdasarkan uid dengan method DELETE
-Route::delete('/adminpanel/user/{uid}', [UserController::class, 'destroy'])->name('user.destroy');
+Route::put('/users/{uid}', [UserController::class, 'update'])->name('users.update');
+
+Route::delete('/users/{uid}', [UserController::class, 'destroy'])->name('users.destroy');
+
+
