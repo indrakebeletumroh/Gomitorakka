@@ -7,6 +7,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostCommentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\InboxController;
 
 Route::get('/', function () {
     return view('Home');
@@ -61,3 +62,23 @@ Route::delete('/users/{uid}', [UserController::class, 'destroy'])->name('users.d
 Route::post('/users/{uid}/promote', [UserController::class, 'promoteToAdmin'])->name('users.promote');
 Route::post('/users/{uid}/deactivate', [UserController::class, 'deactivate'])->name('users.deactivate');
 Route::post('/users/{uid}/activate', [UserController::class, 'activate'])->name('users.activate');
+
+Route::get('/inbox/{uid}', [InboxController::class, 'index'])->name('inbox.index');
+// Tandai pesan sebagai sudah dibaca
+Route::post('/inbox/{id}/read', [\App\Http\Controllers\InboxController::class, 'markAsRead'])->name('inbox.read');
+// Hapus pesan inbox
+Route::delete('/inbox/{id}', [InboxController::class, 'destroy'])->name('inbox.delete');
+
+Route::get('/api/inbox', function () {
+    $uid = session('uid');
+    if (!$uid) return response()->json([], 401);
+
+    $inbox = \App\Models\Inbox::where('user_id', $uid)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return response()->json($inbox);
+});
+
+Route::get('/inbox', [InboxController::class, 'getInbox']);
+Route::post('/inbox/mark-as-read', [InboxController::class, 'markAsRead']);

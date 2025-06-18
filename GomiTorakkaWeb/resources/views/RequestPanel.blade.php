@@ -24,7 +24,7 @@
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   @endif
 
-<meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 
@@ -43,36 +43,6 @@
         <p class="text-base-content/70">Manage collection requests efficiently</p>
       </div>
 
-      <!-- Filter -->
-      <div class="card bg-base-200 shadow-sm mb-8">
-        <div class="card-body py-4">
-          <div class="flex flex-col sm:flex-row gap-4 items-end">
-            <div class="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-instrument-sans">Status Filter</span>
-                </label>
-                <select class="select select-bordered">
-                  <option>All Requests</option>
-                  <option>Pending</option>
-                  <option>Confirmed</option>
-                  <option>Completed</option>
-                  <option>Cancelled</option>
-                </select>
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-instrument-sans">Date Range</span>
-                </label>
-                <input type="date" class="input input-bordered">
-              </div>
-            </div>
-            <button class="btn btn-primary w-full sm:w-auto">
-              <i class="fas fa-filter mr-2"></i>Apply Filters
-            </button>
-          </div>
-        </div>
-      </div>
 
       <!-- Table -->
       <div class="card shadow-lg bg-base-100">
@@ -204,6 +174,9 @@
   </dialog>
 
   <script>
+    // Ambil CSRF token dari meta tag, agar dinamis dan tidak hardcoded Blade tag di JS
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
     let currentMarkerId = null;
     let currentStatus = null;
 
@@ -225,20 +198,19 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}' // kalau blade, ganti ini, kalau static html buat token lain
+            'X-CSRF-TOKEN': csrfToken
           },
           body: JSON.stringify({
             status: currentStatus
           })
         });
 
-        const data = await response.json();
-
-        if (response.ok) {
+        if (!response.ok) {
+          const data = await response.json();
+          alert('Gagal update status: ' + (data.message || 'Error'));
+        } else {
           alert('Status berhasil diupdate');
           location.reload(); // reload halaman agar data terbaru tampil
-        } else {
-          alert('Gagal update status: ' + (data.message || 'Error'));
         }
       } catch (error) {
         alert('Terjadi kesalahan: ' + error.message);
@@ -256,7 +228,7 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            'X-CSRF-TOKEN': csrfToken
           },
           body: JSON.stringify({
             status: status
@@ -273,6 +245,7 @@
         });
     }
   </script>
+
 
 
 </body>

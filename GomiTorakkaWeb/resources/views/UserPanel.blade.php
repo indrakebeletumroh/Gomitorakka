@@ -37,33 +37,7 @@
       </div>
 
       <!-- Filter -->
-      <div class="card bg-base-200 shadow-sm mb-8">
-        <div class="card-body py-4">
-          <div class="flex flex-col sm:flex-row gap-4 items-end">
-            <div class="flex-1 w-full grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-instrument-sans">Role Filter</span>
-                </label>
-                <select class="select select-bordered">
-                  <option>All Roles</option>
-                  <option>Admin</option>
-                  <option>User</option>
-                </select>
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-instrument-sans">Search</span>
-                </label>
-                <input type="text" placeholder="Search users..." class="input input-bordered">
-              </div>
-            </div>
-            <button class="btn btn-primary w-full sm:w-auto">
-              <i class="fas fa-filter mr-2"></i>Apply Filters
-            </button>
-          </div>
-        </div>
-      </div>
+     
 
       <!-- Table -->
       <div class="card shadow-lg bg-base-100">

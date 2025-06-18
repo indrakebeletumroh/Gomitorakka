@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Inbox;
 use Illuminate\Http\Request;
 use App\Models\Marker;
 use Illuminate\Support\Facades\Session;
@@ -15,7 +16,7 @@ class MarkerController extends Controller
         $role = Session::get('role'); // pastikan kamu simpan 'role' saat login
 
         if ($role === 'admin') {
-            $markers = Marker::all();
+            $markers = Marker::orderBy('created_at', 'desc')->get();
         } else {
             $markers = Marker::where(function ($query) use ($uid) {
                 $query->where('status', 'approved')
@@ -23,7 +24,7 @@ class MarkerController extends Controller
                         $q->where('status', 'pending')
                             ->where('uid', $uid);
                     });
-            })->get();
+            })->orderBy('created_at', 'desc')->get();
         }
 
         return response()->json($markers);
@@ -75,8 +76,25 @@ class MarkerController extends Controller
         $marker->admin_note = $request->admin_note;
         $marker->save();
 
-        return response()->json(['message' => 'Status marker diperbarui']);
+        $message = $request->status === 'approved'
+            ? 'Your Request Has Been Approved By Admin.'
+            : 'Your Request Its Rejected By Admin.';
+
+        if (!empty($request->admin_note)) {
+            $message .= ' Catatan: ' . $request->admin_note;
+        }
+
+        Inbox::create([
+            'user_id' => $marker->uid,  // sesuaikan dengan kolom user id marker
+            'marker_id' => $marker->marker_id,
+            'title' => 'Status Permintaan Marker',
+            'message' => $message,
+            'status' => 'unread',
+        ]);
+
+        return response()->json(['message' => 'Status marker diperbarui dan pesan dikirim ke inbox']);
     }
+
 
     public function requestPanel()
     {
@@ -84,9 +102,9 @@ class MarkerController extends Controller
         $uid = Session::get('uid');
 
         if ($role === 'admin') {
-            $markers = Marker::all();
+            $markers = Marker::orderBy('created_at', 'desc')->get();
         } else {
-            $markers = Marker::where('uid', $uid)->get();
+            $markers = Marker::where('uid', $uid)->orderBy('created_at', 'desc')->get();
         }
 
         return view('RequestPanel', compact('markers'));

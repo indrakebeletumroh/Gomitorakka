@@ -38,10 +38,25 @@
 
     <!-- Profile & Inbox Button -->
     <div class="flex-none gap-2">
+
       <button onclick="toggleInbox()" class="btn btn-ghost btn-circle text-lg relative hover:text-green-600">
+        @if (Session::has('uid'))
+        @php
+        $unreadCount = \App\Models\Inbox::where('user_id', Session::get('uid'))
+        ->where('status', 'unread')
+        ->count();
+        @endphp
+
         <i class="fas fa-inbox"></i>
-        <span class="badge badge-sm badge-error absolute top-0 right-0 bg-green-600 border-green-600">1</span>
+        @if ($unreadCount > 0)
+        <span class="badge badge-sm badge-error absolute top-0 right-0 bg-green-600 border-green-600">
+          {{ $unreadCount }}
+        </span>
+        @endif
+        @endif
+
       </button>
+
       <div class="dropdown dropdown-end">
         <label tabindex="0" class="btn btn-ghost btn-circle avatar hover:ring-2 hover:ring-green-600 transition-all">
           <div class="w-10 rounded-full">
@@ -60,76 +75,101 @@
           <li><a class="text-green-600 hover:text-green-800" href="/adminpanel">Admin Panel</a></li>
           @endif
           <li><a class="text-red-500 hover:text-red-700" href="/logout">Logout</a></li>
-          
+
         </ul>
         @endif
       </div>
-    </div>
-  </div>
 
-  <!-- Mobile Menu -->
-  <ul id="mobileMenu" class="menu bg-base-100 w-full p-4 space-y-4 sm:hidden absolute top-0 left-0 right-0 shadow-md hidden border-b-2 border-green-600">
-    <li>
-      <a href="/" class="hover:text-green-600 flex items-center gap-3 text-lg border-b-2 border-transparent pb-1">
-        <i class="fas fa-home w-6 text-center"></i>
-        <span>Home</span>
-      </a>
-    </li>
-    <li>
-      <a href="/feed" class="hover:text-green-600 flex items-center gap-3 text-lg border-b-2 border-transparent pb-1">
-        <i class="fas fa-newspaper w-6 text-center"></i>
-        <span>Feed</span>
-      </a>
-    </li>
-    <li>
-      <a href="/maps" class="hover:text-green-600 flex items-center gap-3 text-lg border-b-2 border-transparent pb-1">
-        <i class="fas fa-map-marked-alt w-6 text-center"></i>
-        <span>Tracker</span>
-      </a>
-    </li>
-    <li>
-      <button class="text-xl w-full text-center hover:text-green-600 flex items-center justify-center gap-2" onclick="toggleBurgerMenu()">
-        <i class="fas fa-times"></i>
-        <span>Close</span>
-      </button>
-    </li>
-  </ul>
-
-  <!-- Inbox Panel -->
-  <div id="inboxPanel" class="absolute top-full right-5 w-80 bg-white border-2 border-green-200 rounded-lg shadow-lg p-4 z-50 hidden opacity-0 translate-y-5 transition-all duration-300 ease-in-out mt-2">
-    <div class="flex justify-between items-center mb-2">
-      <h3 class="font-bold text-lg text-green-700 flex items-center gap-2">
-        <i class="fas fa-inbox"></i>
-        <span>Inbox</span>
-      </h3>
-      <button onclick="toggleInbox()" class="btn btn-sm btn-circle btn-ghost hover:text-green-600">✕</button>
     </div>
-    <ul class="space-y-2">
-      <li class="bg-green-50 p-3 rounded-lg border border-green-100 hover:bg-green-100 transition-colors flex items-center gap-2">
-        <i class="fas fa-bell text-green-600"></i>
-        <span>Welcome to GomiTorakka!</span>
+
+    <!-- Mobile Menu -->
+    <ul id="mobileMenu" class="menu bg-base-100 w-full p-4 space-y-4 sm:hidden absolute top-0 left-0 right-0 shadow-md hidden border-b-2 border-green-600">
+      <li>
+        <a href="/" class="hover:text-green-600 flex items-center gap-3 text-lg border-b-2 border-transparent pb-1">
+          <i class="fas fa-home w-6 text-center"></i>
+          <span>Home</span>
+        </a>
+      </li>
+      <li>
+        <a href="/feed" class="hover:text-green-600 flex items-center gap-3 text-lg border-b-2 border-transparent pb-1">
+          <i class="fas fa-newspaper w-6 text-center"></i>
+          <span>Feed</span>
+        </a>
+      </li>
+      <li>
+        <a href="/maps" class="hover:text-green-600 flex items-center gap-3 text-lg border-b-2 border-transparent pb-1">
+          <i class="fas fa-map-marked-alt w-6 text-center"></i>
+          <span>Tracker</span>
+        </a>
+      </li>
+      <li>
+        <button class="text-xl w-full text-center hover:text-green-600 flex items-center justify-center gap-2" onclick="toggleBurgerMenu()">
+          <i class="fas fa-times"></i>
+          <span>Close</span>
+        </button>
       </li>
     </ul>
-  </div>
+
+    <!-- Inbox Panel -->
+    <!-- Inbox Panel -->
+    <div id="inboxPanel" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg p-4 border border-green-100 z-50 hidden opacity-0 translate-y-5 transition-all duration-300">
+      <div class="flex justify-between items-center mb-2">
+        <h3 class="text-green-700 font-semibold">Inbox</h3>
+        <button onclick="toggleInbox()" class="btn btn-sm btn-circle btn-ghost hover:text-green-600">✕</button>
+      </div>
+      <ul id="inboxList" class="space-y-2">
+        <li>Memuat pesan...</li>
+      </ul>
+
+
 </nav>
 
-<!-- Scripts -->
+@if (Session::has('username'))
 <script>
-  function toggleInbox() {
+  async function toggleInbox() {
     const panel = document.getElementById('inboxPanel');
+    const inboxList = document.getElementById('inboxList');
+
     if (panel.classList.contains('hidden')) {
+      // Tampilkan panel
       panel.classList.remove('hidden');
       setTimeout(() => {
         panel.classList.remove('opacity-0', 'translate-y-5');
       }, 10);
+
+      // Ambil data inbox dari server
+      try {
+        const response = await fetch(`/api/inbox`);
+        const data = await response.json();
+
+        // Render pesan ke dalam list
+        if (data.length === 0) {
+          inboxList.innerHTML = '<li class="text-gray-500">Tidak ada pesan.</li>';
+        } else {
+          inboxList.innerHTML = data.map(item => `
+            <li class="bg-green-50 p-3 rounded-lg border border-green-100 hover:bg-green-100 transition-colors">
+              <div class="font-semibold">${item.title}</div>
+              <div class="text-sm text-gray-700">${item.message}</div>
+            </li>
+          `).join('');
+        }
+      } catch (error) {
+        inboxList.innerHTML = '<li class="text-red-500">Gagal memuat pesan.</li>';
+      }
     } else {
+      // Tutup panel
       panel.classList.add('opacity-0', 'translate-y-5');
       setTimeout(() => {
         panel.classList.add('hidden');
       }, 300);
     }
   }
+</script>
 
+@endif
+
+<!-- Scripts -->
+<script>
   function toggleBurgerMenu() {
     const mobileMenu = document.getElementById("mobileMenu");
     mobileMenu.classList.toggle("hidden");
