@@ -38,9 +38,9 @@
 
     <!-- Profile & Inbox Button -->
     <div class="flex-none gap-2">
-
+      @if (Session::has('uid'))
       <button onclick="toggleInbox()" class="btn btn-ghost btn-circle text-lg relative hover:text-green-600">
-        @if (Session::has('uid'))
+
         @php
         $unreadCount = \App\Models\Inbox::where('user_id', Session::get('uid'))
         ->where('status', 'unread')
@@ -53,10 +53,10 @@
           {{ $unreadCount }}
         </span>
         @endif
-        @endif
-
       </button>
+      @endif
 
+      @if (Session::has('uid'))
       <div class="dropdown dropdown-end">
         <label tabindex="0" class="btn btn-ghost btn-circle avatar hover:ring-2 hover:ring-green-600 transition-all">
           <div class="w-10 rounded-full">
@@ -79,6 +79,11 @@
         </ul>
         @endif
       </div>
+      @else
+      <button class="btn btn-primary text-white hover:bg-green-400 hover:border-none hover:text-gray-700"><a href="/login">LOGIN</a></button>
+      @endif
+
+
 
     </div>
 

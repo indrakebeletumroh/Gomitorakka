@@ -13,9 +13,6 @@ class PostController extends Controller
 {
     public function index()
     {
-        if (!Session::has('logged_in') || !Session::get('logged_in')) {
-            return redirect()->route('login');
-        }
 
         $posts = Post::withCount('comments')
              ->orderBy('created_at', 'desc')

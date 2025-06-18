@@ -157,9 +157,10 @@
 
         </div>
     </dialog>
-
+    
     <div class="container mx-auto px-4 py-8 max-w-4xl">
         <div class="bg-white rounded-lg shadow-md border border-gray-100 mb-8 p-4">
+            @if (Session::has('username'))
             <div class="flex items-start gap-4">
                 <div class="avatar">
                     <div class="w-12 rounded-full">
@@ -191,8 +192,9 @@
                     </form>
                 </div>
             </div>
+            @endif
         </div>
-
+        
         <div class="space-y-8">
             @foreach ($posts as $post)
             <div class="bg-white rounded-lg shadow-md border border-gray-100 px-5 py-2 ">

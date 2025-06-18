@@ -76,24 +76,32 @@ class MarkerController extends Controller
         $marker->admin_note = $request->admin_note;
         $marker->save();
 
+        // Buat pesan
         $message = $request->status === 'approved'
             ? 'Your Request Has Been Approved By Admin.'
-            : 'Your Request Its Rejected By Admin.';
+            : 'Your Request Is Rejected By Admin.';
 
         if (!empty($request->admin_note)) {
             $message .= ' Catatan: ' . $request->admin_note;
         }
 
+        // Kirim ke inbox
         Inbox::create([
-            'user_id' => $marker->uid,  // sesuaikan dengan kolom user id marker
+            'user_id' => $marker->uid,
             'marker_id' => $marker->marker_id,
             'title' => 'Status Permintaan Marker',
             'message' => $message,
             'status' => 'unread',
         ]);
 
+        // ❗️Hapus marker jika status = rejected
+        if ($request->status === 'rejected') {
+            $marker->delete();
+        }
+
         return response()->json(['message' => 'Status marker diperbarui dan pesan dikirim ke inbox']);
     }
+
 
 
     public function requestPanel()
