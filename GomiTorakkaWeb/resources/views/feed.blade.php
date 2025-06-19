@@ -171,11 +171,17 @@
         }
 
         .post-content.collapsed {
-            max-height: 1.5em; /* 1 line */
             overflow: hidden;
             display: -webkit-box;
-            -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
+        }
+        
+        .post-content.has-image.collapsed {
+            -webkit-line-clamp: 1; /* 1 line for posts with images */
+        }
+        
+        .post-content.no-image.collapsed {
+            -webkit-line-clamp: 5; /* 5 lines for posts without images */
         }
 
         .comment-content.collapsed {
@@ -365,9 +371,9 @@
                 <div class="flex-1">
                     <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data" id="postForm">
                         @csrf
-                        <textarea name="content" id="postContent" rows="3" class="textarea textarea-bordered w-full mb-4" placeholder="What's on your mind?" maxlength="10000">{{ old('content') }}</textarea>
+                        <textarea name="content" id="postContent" rows="3" class="textarea textarea-bordered w-full mb-4" placeholder="What's on your mind?" maxlength="4000" required>{{ old('content') }}</textarea>
                         <div class="text-right text-xs text-gray-500 mb-4">
-                            <span id="postCharCount">0</span>/10000 characters
+                            <span id="postCharCount">0</span>/4000 characters
                         </div>
 
                         <div class="mb-4">
@@ -430,12 +436,10 @@
                     @endif
 
                     <div class="post-content-wrapper">
-                        <div class="post-content @if(str_word_count($post->content) > 15) collapsed @endif">
+                        <div class="post-content collapsed @if($post->image) has-image @else no-image @endif" id="postContent-{{ $post->post_id }}">
                             {!! nl2br(e($post->content)) !!}
                         </div>
-                        @if (str_word_count($post->content) > 15)
-                        <button class="read-more-btn">Read more</button>
-                        @endif
+                        <button class="read-more-btn" data-post-id="{{ $post->post_id }}">Read more</button>
                     </div>
 
                     <div class="post-actions">
@@ -473,18 +477,11 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             // Initialize post content read more functionality
-            document.querySelectorAll('.post-content-wrapper').forEach(wrapper => {
-                const content = wrapper.querySelector('.post-content');
-                const btn = wrapper.querySelector('.read-more-btn');
-
-                if (!btn) return;
-
-                btn.addEventListener('click', () => {
-                    content.classList.toggle('collapsed');
-                    btn.textContent = content.classList.contains('collapsed') ? 'Read more' : 'Show less';
-                });
-            });
-
+            initializeReadMoreButtons();
+            
+            // Initialize overflow detection for posts
+            checkTextOverflow();
+            
             // Character counter for post content
             const postTextarea = document.getElementById('postContent');
             if (postTextarea) {
@@ -511,6 +508,32 @@
                 });
             }
         });
+        
+        function initializeReadMoreButtons() {
+            document.querySelectorAll('.read-more-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const postId = this.dataset.postId;
+                    const content = document.getElementById(`postContent-${postId}`);
+                    content.classList.toggle('collapsed');
+                    this.textContent = content.classList.contains('collapsed') ? 'Read more' : 'Show less';
+                });
+            });
+        }
+        
+        function checkTextOverflow() {
+            document.querySelectorAll('.post-content').forEach(content => {
+                const btn = content.nextElementSibling;
+                if (!btn || !btn.classList.contains('read-more-btn')) return;
+                
+                // Check if content is overflowing
+                const isOverflowing = content.scrollHeight > content.clientHeight;
+                
+                // Hide button if not overflowing
+                if (!isOverflowing) {
+                    btn.style.display = 'none';
+                }
+            });
+        }
 
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
