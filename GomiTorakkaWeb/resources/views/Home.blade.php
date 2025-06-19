@@ -147,34 +147,14 @@
   <div class="py-28 bg-gray-50">
     <div class="container mx-auto px-4">
       <div class="text-center mb-16">
-        <h1 class="text-4xl font-bold text-green-600 mb-6 animate-fade-in-up">Our Eco-Friendly Features</h1>
+        <h1 class="text-4xl font-bold text-green-600 mb-6 animate-fade-in-up">Find Bins Nearby, Connect with Others, and Care for the Planet</h1>
         <p class="text-xl text-gray-700 mx-auto max-w-4xl animate-fade-in-up">
-          GomiTorakka combines technology with sustainability to transform how you manage waste. Our platform helps you reduce environmental impact while making waste management effortless.
+          GomiTorakka isn’t just another waste management tool — it’s a community-driven platform built to help you take action for the environment. With powerful features designed for everyday use, we make responsible waste disposal easier, smarter, and more connected than ever.
         </p>
       </div>
 
       <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-        <!-- Feature 1 -->
-        <div class="feature-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg animate-fade-in-up flex items-start">
-          <div class="feature-icon text-green-500">
-            <i class="fas fa-calendar-check text-2xl"></i>
-          </div>
-          <div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-2">Smart Pickup Scheduling</h3>
-            <p class="text-gray-600">Automated reminders and optimized pickup schedules tailored to your location and waste generation patterns.</p>
-          </div>
-        </div>
 
-        <!-- Feature 2 -->
-        <div class="feature-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg animate-fade-in-up flex items-start">
-          <div class="feature-icon text-green-500">
-            <i class="fas fa-recycle text-2xl"></i>
-          </div>
-          <div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-2">Waste Sorting Guide</h3>
-            <p class="text-gray-600">Interactive guides to help you properly separate recyclables, compost, and landfill waste with confidence.</p>
-          </div>
-        </div>
 
         <!-- Feature 3 -->
         <div class="feature-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg animate-fade-in-up flex items-start">
@@ -182,8 +162,9 @@
             <i class="fas fa-chart-line text-2xl"></i>
           </div>
           <div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-2">Real-Time Analytics</h3>
-            <p class="text-gray-600">Track your waste reduction progress with detailed reports and environmental impact metrics.</p>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">Interactive Community Feed
+            </h3>
+            <p class="text-gray-600">Share eco-friendly tips, cleanup events, and your own recycling habits. Connect with others who care about the planet through posts, likes, and comments.</p>
           </div>
         </div>
 
@@ -193,50 +174,43 @@
             <i class="fas fa-map-marked-alt text-2xl"></i>
           </div>
           <div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-2">Collection Point Locator</h3>
-            <p class="text-gray-600">Find nearby recycling centers and special waste disposal facilities with our interactive map.</p>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">Nearby Trash Bin Finder</h3>
+            <p class="text-gray-600">Quickly locate the closest trash bins and recycling stations based on your current location. No more guessing where to throw things away — let the map guide you.</p>
           </div>
         </div>
 
-        <!-- Feature 5 -->
-        <div class="feature-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg animate-fade-in-up flex items-start">
-          <div class="feature-icon text-green-500">
-            <i class="fas fa-leaf text-2xl"></i>
-          </div>
-          <div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-2">Carbon Footprint Tracker</h3>
-            <p class="text-gray-600">See how your recycling efforts translate into CO2 savings and environmental benefits.</p>
-          </div>
-        </div>
 
-        <!-- Feature 6 -->
-        <div class="feature-card bg-white p-6 rounded-xl shadow-md hover:shadow-lg animate-fade-in-up flex items-start">
-          <div class="feature-icon text-green-500">
-            <i class="fas fa-bell text-2xl"></i>
-          </div>
-          <div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-2">Custom Notifications</h3>
-            <p class="text-gray-600">Personalized alerts for collection days, special disposals, and community clean-up events.</p>
-          </div>
-        </div>
       </div>
 
       <!-- Stats Section -->
-      <div class="mt-20 grid md:grid-cols-3 gap-6 max-w-6xl mx-auto animate-fade-in-up">
-        <div class="bg-white p-6 rounded-xl shadow text-center">
-          <div class="text-4xl font-bold text-green-600 mb-2">10K+</div>
-          <div class="text-gray-600">Active Users</div>
+      <div class="mt-20 grid md:grid-cols-3 sm:grid-cols-2 gap-6 max-w-7xl mx-auto animate-fade-in-up">
+        @php
+        $stats = [
+        ['value' => $activeUserCount, 'label' => 'Active Users'],
+        ['value' => $inactiveUsers, 'label' => 'Inactive Users'],
+        ['value' => $totalUsers, 'label' => 'Total Users'],
+        
+        ];
+        @endphp
+
+        @foreach ($stats as $stat)
+        <div class="bg-white p-6 rounded-2xl shadow-md text-center hover:shadow-xl transition duration-300 border border-green-100">
+          <div class="text-3xl font-bold text-green-600 mb-1">
+            {{ isset($stat['user']) ? $stat['user'] : number_format($stat['value']) }}
+          </div>
+          <div class="text-sm text-gray-500">
+            {{ $stat['label'] }}
+            @if(isset($stat['user']))
+            ({{ number_format($stat['value']) }} reports)
+            @endif
+          </div>
         </div>
-        <div class="bg-white p-6 rounded-xl shadow text-center">
-          <div class="text-4xl font-bold text-green-600 mb-2">500+</div>
-          <div class="text-gray-600">Tons Recycled</div>
-        </div>
-        <div class="bg-white p-6 rounded-xl shadow text-center">
-          <div class="text-4xl font-bold text-green-600 mb-2">100%</div>
-          <div class="text-gray-600">Eco-Friendly</div>
-        </div>
+        @endforeach
       </div>
+
+
     </div>
+  </div>
   </div>
 
   @include('layouts.footer')

@@ -197,9 +197,9 @@
 
         <div class="space-y-8">
             @foreach ($posts as $post)
-            <div class="bg-white rounded-lg shadow-md border border-gray-100 px-5 py-2 ">
+            <div class="bg-white rounded-lg shadow-md border border-gray-100 px-5 py-2">
                 @if ($currentUserId == $post->user_id || $currentUserRole === 'admin')
-                <div class="relative">
+                <div class="relative flex justify-end">
                     <button onclick="toggleDropdown('{{ $post->post_id }}')" class="text-gray-500 hover:text-gray-700 focus:outline-none text-xl">
                         ⋮
                     </button>
@@ -215,6 +215,16 @@
                 </div>
                 @endif
 
+                <!-- New post header with profile picture and username -->
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="avatar">
+                        <div class="w-10 rounded-full">
+                            <img src="{{ $post->user->profile_picture ? asset('storage/' . $post->user->profile_picture) : asset('/images/download.png') }}" alt="{{ $post->user->username }}" />
+                        </div>
+                    </div>
+                    <div class="font-semibold">{{ $post->user->username }}</div>
+                </div>
+
                 @if ($post->image)
                 <div class="aspect-square bg-gray-100">
                     <img src="{{ asset('storage/' . $post->image) }}" class="w-full h-full object-cover" alt="Post image" />
@@ -222,6 +232,7 @@
                 @endif
 
                 <div class="flex items-center space-x-4 p-3">
+                    <!-- Like, comment, share buttons remain the same -->
                     <button class="like-btn" data-post-id="{{ $post->post_id }}">
                         <i class="{{ $post->isLikedBy(session('uid')) ? 'fas text-red-500' : 'far' }} fa-heart"></i>
                     </button>
@@ -236,10 +247,10 @@
                     <button class="text-2xl hover:text-green-600 share-btn" data-post-id="{{ $post->post_id }}">
                         <i class="far fa-paper-plane"></i>
                     </button>
-
                 </div>
+
+                <!-- Post content remains the same -->
                 <div class="post-content-wrapper">
-                    <div class="username font-semibold -mb-12">{{ $post->user->username }}</div>
                     <div class="post-content whitespace-pre-wrap break-words max-h-[4.5em] overflow-hidden transition-[max-height] duration-300 ease-in-out">
                         {!! nl2br(e($post->content)) !!}
                     </div>

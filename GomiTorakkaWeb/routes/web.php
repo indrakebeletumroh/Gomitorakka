@@ -35,6 +35,7 @@ Route::get('/login', [AuthController::class, 'form_login'])->name('login');
 Route::post('/login/submit', [AuthController::class, 'login'])->name('form_login.submit');
 
 Route::get('/markers', [MarkerController::class, 'index']);
+Route::get('/', [UserController::class, 'home'])->name('home');
 
 Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/edit-profile', function () {

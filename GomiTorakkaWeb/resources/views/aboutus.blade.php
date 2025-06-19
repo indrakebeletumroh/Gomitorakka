@@ -87,7 +87,7 @@
                     </figure>
                     <div class="card-body items-center text-center">
                         <h3 class="card-title">Indra</h3>
-                        <p class="text-sm opacity-70">Backend Developer | Vice Manager</p>
+                        <p class="text-sm opacity-70">Head Backend Developer | Vice Project Manager</p>
                         <p class="text-sm">
                             Architect of our robust backend systems and infrastructure, ensuring seamless data flow and reliability.
                         </p>
@@ -115,7 +115,7 @@
                     </figure>
                     <div class="card-body items-center text-center">
                         <h3 class="card-title">Yanuar</h3>
-                        <p class="text-sm opacity-70">Frontend Lead | Backend Assist | Developer Manager</p>
+                        <p class="text-sm opacity-70">Frontend Lead | Backend Developer | Project Manager</p>
                         <p class="text-sm">
                             Leads our UI/UX development while bridging frontend and backend systems for optimal performance.
                         </p>
@@ -143,7 +143,7 @@
                     </figure>
                     <div class="card-body items-center text-center">
                         <h3 class="card-title">Arestu</h3>
-                        <p class="text-sm opacity-70">Frontend Developer | Member</p>
+                        <p class="text-sm opacity-70">Frontend Developer | UI Designer | Member</p>
                         <p class="text-sm">
                             Crafts beautiful and intuitive interfaces that make waste management accessible to everyone.
                         </p>

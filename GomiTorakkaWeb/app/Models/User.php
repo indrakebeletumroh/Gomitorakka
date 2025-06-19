@@ -34,4 +34,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Marker::class, 'uid', 'uid');
     }
+
+
 }

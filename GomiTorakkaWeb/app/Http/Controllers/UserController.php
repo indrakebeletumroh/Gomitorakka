@@ -41,7 +41,7 @@ class UserController extends Controller
     // Hapus user dengan pengecekan supaya user tidak bisa hapus akun sendiri
 
 
-    
+
     public function update(Request $request, $uid)
     {
         $user = User::where('uid', $uid)->firstOrFail();
@@ -107,5 +107,22 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->back()->with('success', 'User activated successfully.');
+    }
+
+    public function home()
+    {
+        $activeUserCount = User::where('is_active', 1)->count();
+        $inactiveUsers = User::where('is_active', 0)->count();
+        $totalUsers = User::count();
+        $adminCount = User::where('role', 'admin')->count();
+        $mostReportedUser = User::orderByDesc('report_count')->first();
+
+        return view('Home', compact(
+            'activeUserCount',
+            'inactiveUsers',
+            'totalUsers',
+            'adminCount',
+            'mostReportedUser'
+        ));
     }
 }
