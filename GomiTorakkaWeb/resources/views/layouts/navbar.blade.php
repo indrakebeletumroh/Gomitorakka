@@ -149,17 +149,23 @@
 
         // Render pesan ke dalam list
         if (data.length === 0) {
-          inboxList.innerHTML = '<li class="text-gray-500">Tidak ada pesan.</li>';
+          inboxList.innerHTML = '<li class="text-gray-500">No message.</li>';
         } else {
-          inboxList.innerHTML = data.map(item => `
-            <li class="bg-green-50 p-3 rounded-lg border border-green-100 hover:bg-green-100 transition-colors">
-              <div class="font-semibold">${item.title}</div>
-              <div class="text-sm text-gray-700">${item.message}</div>
-            </li>
-          `).join('');
+          inboxList.innerHTML = data.map(item => {
+            const isRejected = item.message.includes("Your Request Is Rejected By Admin.");
+            const bgColor = isRejected ? "bg-red-100 border-red-100 hover:bg-red-50" : "bg-green-50 border-green-100 hover:bg-green-100";
+
+            return `
+              <li class="${bgColor} p-3 rounded-lg border transition-colors">
+                <div class="font-semibold">${item.title}</div>
+                <div class="text-sm text-gray-700">${item.message}</div>
+              </li>
+            `;
+          }).join('');
+
         }
       } catch (error) {
-        inboxList.innerHTML = '<li class="text-red-500">Gagal memuat pesan.</li>';
+        inboxList.innerHTML = '<li class="text-red-500">Failed to load message.</li>';
       }
     } else {
       // Tutup panel
