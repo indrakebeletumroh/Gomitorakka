@@ -157,7 +157,7 @@
 
         </div>
     </dialog>
-    
+
     <div class="container mx-auto px-4 py-8 max-w-4xl">
         <div class="bg-white rounded-lg shadow-md border border-gray-100 mb-8 p-4">
             @if (Session::has('username'))
@@ -194,21 +194,26 @@
             </div>
             @endif
         </div>
-        
+
         <div class="space-y-8">
             @foreach ($posts as $post)
             <div class="bg-white rounded-lg shadow-md border border-gray-100 px-5 py-2 ">
-                <div class="flex items-center p-4 border-b border-gray-100">
-                    <div class="avatar">
-                        <div class="w-10 rounded-full ring-1 ring-gray-200">
-                            <img src="{{ $post->user->profile_picture ? asset('storage/' . $post->user->profile_picture) : asset('/images/download.png') }}" />
-                        </div>
-                    </div>
-                    <div class="ml-3">
-                        <p class="font-semibold text-sm">{{ $post->user->username }}</p>
-                        <p class="text-xs text-gray-500">{{ $post->user->location ?? 'Unknown Location' }}</p>
+                @if ($currentUserId == $post->user_id || $currentUserRole === 'admin')
+                <div class="relative">
+                    <button onclick="toggleDropdown('{{ $post->post_id }}')" class="text-gray-500 hover:text-gray-700 focus:outline-none text-xl">
+                        ⋮
+                    </button>
+                    <div id="dropdown-{{ $post->post_id }}" class="hidden absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow z-10">
+                        <form action="{{ route('posts.destroy', $post->post_id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus postingan ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                Hapus
+                            </button>
+                        </form>
                     </div>
                 </div>
+                @endif
 
                 @if ($post->image)
                 <div class="aspect-square bg-gray-100">

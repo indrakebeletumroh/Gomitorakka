@@ -13,14 +13,18 @@ class PostController extends Controller
 {
     public function index()
     {
-
         $posts = Post::withCount('comments')
-             ->orderBy('created_at', 'desc')
-             ->get();
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-
-        return view('feed', ['posts' => $posts]);
+        return view('feed', [
+            'posts' => $posts,
+            'currentUserId' => Session::get('uid'),
+            'currentUserRole' => Session::get('role'),
+        ]);
     }
+
+
 
     public function store(Request $request)
     {
@@ -57,46 +61,60 @@ class PostController extends Controller
         }
     }
 
-   public function toggleLike($postId)
-{
-    try {
-        $userId = session('uid'); // pastikan session ada
+    public function toggleLike($postId)
+    {
+        try {
+            $userId = session('uid'); // pastikan session ada
 
-        if (!$userId) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+            if (!$userId) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
 
-        $like = Like::where('user_id', $userId)->where('post_id', $postId)->first();
+            $like = Like::where('user_id', $userId)->where('post_id', $postId)->first();
 
-        if ($like) {
-            $like->delete();
-            $status = 'unliked';
-        } else {
-            Like::create([
-                'user_id' => $userId,
-                'post_id' => $postId,
+            if ($like) {
+                $like->delete();
+                $status = 'unliked';
+            } else {
+                Like::create([
+                    'user_id' => $userId,
+                    'post_id' => $postId,
+                ]);
+                $status = 'liked';
+            }
+
+            $likesCount = Like::where('post_id', $postId)->count();
+
+            return response()->json([
+                'status' => $status,
+                'likesCount' => $likesCount,
             ]);
-            $status = 'liked';
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function fetchComments($postId)
+    {
+        $comments = PostComment::with('user')
+            ->where('post_id', $postId)
+            ->latest()
+            ->get();
+
+        return response()->json($comments);
+    }
+
+    public function destroy($id)
+    {
+        $post = Post::findOrFail($id);
+        $userId = Session::get('uid');
+        $role = Session::get('role');
+
+        // Cek apakah user adalah pemilik atau admin
+        if ($post->user_id != $userId && $role !== 'admin') {
+            return redirect()->back()->with('error', 'Anda tidak punya izin untuk menghapus postingan ini.');
         }
 
-        $likesCount = Like::where('post_id', $postId)->count();
-
-        return response()->json([
-            'status' => $status,
-            'likesCount' => $likesCount,
-        ]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
+        $post->delete();
+        return redirect()->route('posts.index')->with('success', 'Postingan berhasil dihapus.');
     }
-}
-public function fetchComments($postId)
-{
-    $comments = PostComment::with('user')
-        ->where('post_id', $postId)
-        ->latest()
-        ->get();
-
-    return response()->json($comments);
-}
-
 }
