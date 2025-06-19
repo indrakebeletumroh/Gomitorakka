@@ -76,45 +76,234 @@
         .liked {
             color: #dc2626;
         }
+
+        /* Improved post styling */
+        .post-container {
+            position: relative;
+        }
+
+        .post-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 8px 16px;
+        }
+
+        .post-actions span {
+            font-size: 0.875rem;
+        }
+
+        /* Comment modal styling */
+        .comment-modal-content {
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .comment-list {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        /* Fixed size for profile pictures */
+        .fixed-avatar {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+        }
+
+        .fixed-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* Improved comment styling */
+        .comment-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .comment-content-wrapper {
+            flex: 1;
+        }
+
+        .comment-text {
+            white-space: pre-wrap;
+            word-break: break-word;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .comment-meta {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .comment-username {
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-right: 6px;
+        }
+
+        .comment-time {
+            color: #6b7280;
+            font-size: 0.75rem;
+        }
+
+        /* Post content styling */
+        .post-content-wrapper {
+            padding: 0 16px 8px;
+            margin-bottom: 0;
+        }
+
+        .post-content {
+            white-space: pre-wrap;
+            word-break: break-word;
+            line-height: 1.5;
+            margin: 0;
+            font-size: 0.875rem;
+            text-align: left;
+        }
+
+        .post-content.collapsed {
+            max-height: 1.5em; /* 1 line */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+        }
+
+        .comment-content.collapsed {
+            max-height: 3em; /* 2 lines */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .read-more-btn {
+            color: #3b82f6;
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 0.875rem;
+            cursor: pointer;
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        .read-more-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* Dropdown menu styling */
+        .post-dropdown {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 10;
+            min-width: 120px;
+        }
+
+        .dropdown-item {
+            padding: 8px 12px;
+            font-size: 0.875rem;
+            color: #dc2626;
+            cursor: pointer;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        /* Post header styling */
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+        }
+
+        .post-username {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .post-time {
+            color: #6b7280;
+            font-size: 0.75rem;
+            margin-top: 2px;
+        }
+
+        /* Comment input styling */
+        .comment-input-container {
+            padding: 12px 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        /* Post image styling */
+        .post-image-container {
+            padding: 0 16px;
+            margin-bottom: 8px;
+        }
+
+        .post-image {
+            max-width: 100%;
+            max-height: 500px;
+            border-radius: 8px;
+            object-fit: contain;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        /* Custom scrollbar */
+        .comment-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .comment-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .comment-list::-webkit-scrollbar-thumb {
+            background: #c5c5c5;
+            border-radius: 10px;
+        }
+        
+        .comment-list::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        /* Empty state styling */
+        .empty-content {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .empty-content i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #9ca3af;
+        }
     </style>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const maxHeightCollapsed = 72; // 4.5em kira-kira pixel, sesuaikan kalau font beda
-
-            document.querySelectorAll('.post-content-wrapper').forEach(wrapper => {
-                const content = wrapper.querySelector('.post-content');
-                const btn = wrapper.querySelector('.read-more-btn');
-
-                // Sembunyikan tombol kalau konten pendek
-                if (content.scrollHeight <= maxHeightCollapsed) {
-                    btn.style.display = 'none';
-                    return;
-                }
-
-                // Mulai dalam keadaan collapsed
-                content.style.maxHeight = maxHeightCollapsed + 'px';
-                content.style.overflow = 'hidden';
-
-                btn.textContent = 'Read more';
-
-                btn.addEventListener('click', () => {
-                    if (content.style.maxHeight === 'none') {
-                        // Collapse
-                        content.style.maxHeight = maxHeightCollapsed + 'px';
-                        btn.textContent = 'Read more';
-                        content.style.overflow = 'hidden';
-                    } else {
-                        // Expand
-                        content.style.maxHeight = 'none';
-                        btn.textContent = 'Show less';
-                        content.style.overflow = 'visible';
-                    }
-                });
-            });
-        });
-    </script>
-
 </head>
 
 <body class="animate-fade-in">
@@ -134,27 +323,34 @@
     </dialog>
 
     <dialog id="commentModal" class="modal">
-        <div class="modal-box w-full max-w-lg">
-            <h3 class="font-bold text-lg mb-4">Add a Comment</h3>
+        <div class="modal-box w-full max-w-lg comment-modal-content">
+            <h3 class="font-bold text-lg mb-4">Comments</h3>
 
-            <div id="commentList" class="space-y-4 max-h-60 overflow-y-auto mb-4"></div>
+            <div id="commentList" class="comment-list mb-4"></div>
 
-            <form id="commentForm" method="POST" action="">
+            <form id="commentForm" method="POST" action="" class="comment-input-container">
                 @csrf
                 <div class="flex items-start gap-3">
-                    <div class="avatar">
-                        <div class="w-10 rounded-full">
-                            <img src="{{ Session::has('profile_picture') ? asset('storage/' . Session::get('profile_picture')) : asset('/images/download.png') }}" />
+                    <div class="fixed-avatar">
+                        <img src="{{ Session::has('profile_picture') ? asset('storage/' . Session::get('profile_picture')) : asset('/images/download.png') }}" />
+                    </div>
+                    <div class="flex-1">
+                        <textarea name="comment"
+                            class="textarea textarea-bordered w-full bg-gray-100 text-gray-800"
+                            rows="3"
+                            placeholder="Write your comment here..."
+                            maxlength="2000"
+                            required></textarea>
+                        <div class="text-right text-xs text-gray-500 mt-1">
+                            <span id="commentCharCount">0</span>/2000 characters
                         </div>
                     </div>
-                    <textarea name="comment" class="textarea textarea-bordered w-full bg-gray-100 text-gray-800" rows="3" placeholder="Write your comment here..." required></textarea>
                 </div>
-                <div class="modal-action">
+                <div class="modal-action mt-4">
                     <button type="submit" class="btn btn-primary">Submit</button>
                     <button type="button" class="btn" onclick="commentModal.close()">Cancel</button>
                 </div>
             </form>
-
         </div>
     </dialog>
 
@@ -162,16 +358,17 @@
         <div class="bg-white rounded-lg shadow-md border border-gray-100 mb-8 p-4">
             @if (Session::has('username'))
             <div class="flex items-start gap-4">
-                <div class="avatar">
-                    <div class="w-12 rounded-full">
-                        <img src="{{ Session::has('profile_picture') ? asset('storage/' . Session::get('profile_picture')) : asset('/images/download.png') }}" alt="User avatar" />
-                    </div>
+                <div class="fixed-avatar">
+                    <img src="{{ Session::has('profile_picture') ? asset('storage/' . Session::get('profile_picture')) : asset('/images/download.png') }}" alt="User avatar" />
                 </div>
 
                 <div class="flex-1">
-                    <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data" id="postForm">
                         @csrf
-                        <textarea name="content" rows="3" class="textarea textarea-bordered w-full mb-4" placeholder="What's on your mind?" required>{{ old('content') }}</textarea>
+                        <textarea name="content" id="postContent" rows="3" class="textarea textarea-bordered w-full mb-4" placeholder="What's on your mind?" maxlength="10000">{{ old('content') }}</textarea>
+                        <div class="text-right text-xs text-gray-500 mb-4">
+                            <span id="postCharCount">0</span>/10000 characters
+                        </div>
 
                         <div class="mb-4">
                             <input type="file" name="image" id="imageInput" class="hidden" accept="image/*" />
@@ -195,71 +392,77 @@
             @endif
         </div>
 
-        <div class="space-y-8">
-            @foreach ($posts as $post)
-            <div class="bg-white rounded-lg shadow-md border border-gray-100 px-5 py-2">
-                @if ($currentUserId == $post->user_id || $currentUserRole === 'admin')
-                <div class="relative flex justify-end">
-                    <button onclick="toggleDropdown('{{ $post->post_id }}')" class="text-gray-500 hover:text-gray-700 focus:outline-none text-xl">
-                        ⋮
-                    </button>
-                    <div id="dropdown-{{ $post->post_id }}" class="hidden absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow z-10">
-                        <form action="{{ route('posts.destroy', $post->post_id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus postingan ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                                Hapus
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                @endif
-
-                <!-- New post header with profile picture and username -->
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="avatar">
-                        <div class="w-10 rounded-full">
-                            <img src="{{ $post->user->profile_picture ? asset('storage/' . $post->user->profile_picture) : asset('/images/download.png') }}" alt="{{ $post->user->username }}" />
+        <div class="space-y-8" id="postsContainer">
+            @if($posts->count() > 0)
+                @foreach ($posts as $post)
+                <div class="post-container bg-white rounded-lg shadow-md border border-gray-100">
+                    @if ($currentUserId == $post->user_id || $currentUserRole === 'admin')
+                    <div class="post-dropdown">
+                        <button onclick="toggleDropdown('{{ $post->post_id }}')" class="text-gray-500 hover:text-gray-700 focus:outline-none text-xl">
+                            ⋮
+                        </button>
+                        <div id="dropdown-{{ $post->post_id }}" class="hidden dropdown-menu">
+                            <form action="{{ route('posts.destroy', $post->post_id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="dropdown-item">
+                                    Delete
+                                </button>
+                            </form>
                         </div>
                     </div>
-                    <div class="font-semibold">{{ $post->user->username }}</div>
-                </div>
+                    @endif
 
-                @if ($post->image)
-                <div class="aspect-square bg-gray-100">
-                    <img src="{{ asset('storage/' . $post->image) }}" class="w-full h-full object-cover" alt="Post image" />
-                </div>
-                @endif
-
-                <div class="flex items-center space-x-4 p-3">
-                    <!-- Like, comment, share buttons remain the same -->
-                    <button class="like-btn" data-post-id="{{ $post->post_id }}">
-                        <i class="{{ $post->isLikedBy(session('uid')) ? 'fas text-red-500' : 'far' }} fa-heart"></i>
-                    </button>
-                    <span class="likes-count" data-post-id="{{ $post->post_id }}">{{ $post->likes_count }} likes</span>
-
-                    <button class="text-2xl hover:text-green-600 comment-btn" data-post-id="{{ $post->post_id }}">
-                        <i class="far fa-comment"></i>
-                    </button>
-
-                    <span class="comments-count" data-post-id="{{ $post->post_id }}">{{ $post->comments_count }} comments</span>
-
-                    <button class="text-2xl hover:text-green-600 share-btn" data-post-id="{{ $post->post_id }}">
-                        <i class="far fa-paper-plane"></i>
-                    </button>
-                </div>
-
-                <!-- Post content remains the same -->
-                <div class="post-content-wrapper">
-                    <div class="post-content whitespace-pre-wrap break-words max-h-[4.5em] overflow-hidden transition-[max-height] duration-300 ease-in-out">
-                        {!! nl2br(e($post->content)) !!}
+                    <div class="post-header">
+                        <div class="fixed-avatar">
+                            <img src="{{ $post->user->profile_picture ? asset('storage/' . $post->user->profile_picture) : asset('/images/download.png') }}" alt="{{ $post->user->username }}" />
+                        </div>
+                        <div>
+                            <div class="post-username">{{ $post->user->username }}</div>
+                            <div class="post-time">{{ $post->created_at->diffForHumans() }}</div>
+                        </div>
                     </div>
-                    <button class="read-more-btn text-blue-500 mt-1 text-sm cursor-pointer">Read more</button>
-                </div>
 
-                <p class="text-gray-500 text-xs mt-2 px-4 pb-2">{{ $post->created_at->diffForHumans() }}</p>
-            </div>
-            @endforeach
+                    @if ($post->image)
+                    <div class="post-image-container">
+                        <img src="{{ asset('storage/' . $post->image) }}" class="post-image" alt="Post image" />
+                    </div>
+                    @endif
+
+                    <div class="post-content-wrapper">
+                        <div class="post-content @if(str_word_count($post->content) > 15) collapsed @endif">
+                            {!! nl2br(e($post->content)) !!}
+                        </div>
+                        @if (str_word_count($post->content) > 15)
+                        <button class="read-more-btn">Read more</button>
+                        @endif
+                    </div>
+
+                    <div class="post-actions">
+                        <button class="like-btn" data-post-id="{{ $post->post_id }}">
+                            <i class="{{ $post->isLikedBy(session('uid')) ? 'fas text-red-500' : 'far' }} fa-heart"></i>
+                        </button>
+                        <span class="likes-count" data-post-id="{{ $post->post_id }}">{{ $post->likes_count }} likes</span>
+
+                        <button class="text-xl hover:text-green-600 comment-btn" data-post-id="{{ $post->post_id }}">
+                            <i class="far fa-comment"></i>
+                        </button>
+
+                        <span class="comments-count" data-post-id="{{ $post->post_id }}">{{ $post->comments_count }} comments</span>
+
+                        <button class="text-xl hover:text-green-600 share-btn" data-post-id="{{ $post->post_id }}">
+                            <i class="far fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+                @endforeach
+            @else
+                <div class="empty-content bg-white rounded-lg shadow-md border border-gray-100 p-8 text-center">
+                    <i class="fas fa-comment-slash text-4xl mb-4"></i>
+                    <h3 class="text-lg font-medium mb-2">No posts yet</h3>
+                    <p class="text-gray-600">Be the first to share something with the community!</p>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -267,6 +470,47 @@
     <script>
         let cropper = null;
         let originalImageFile = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize post content read more functionality
+            document.querySelectorAll('.post-content-wrapper').forEach(wrapper => {
+                const content = wrapper.querySelector('.post-content');
+                const btn = wrapper.querySelector('.read-more-btn');
+
+                if (!btn) return;
+
+                btn.addEventListener('click', () => {
+                    content.classList.toggle('collapsed');
+                    btn.textContent = content.classList.contains('collapsed') ? 'Read more' : 'Show less';
+                });
+            });
+
+            // Character counter for post content
+            const postTextarea = document.getElementById('postContent');
+            if (postTextarea) {
+                postTextarea.addEventListener('input', function() {
+                    const charCount = this.value.length;
+                    document.getElementById('postCharCount').textContent = charCount;
+                });
+                
+                // Initialize character count
+                document.getElementById('postCharCount').textContent = postTextarea.value.length;
+            }
+            
+            // Add validation for empty posts
+            const postForm = document.getElementById('postForm');
+            if (postForm) {
+                postForm.addEventListener('submit', function(e) {
+                    const content = document.getElementById('postContent').value.trim();
+                    const hasImage = document.getElementById('imageInput').files.length > 0;
+                    
+                    if (!content && !hasImage) {
+                        e.preventDefault();
+                        alert('Post cannot be empty. Please write something or upload an image.');
+                    }
+                });
+            }
+        });
 
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -293,7 +537,7 @@
                 cropper.destroy();
             }
             cropper = new Cropper(image, {
-                aspectRatio: 1,
+                aspectRatio: NaN, // Free aspect ratio (rectangular)
                 viewMode: 2,
                 autoCropArea: 1,
                 responsive: true,
@@ -359,17 +603,6 @@
             document.getElementById('removeImageBtn').classList.add('hidden');
         }
 
-        document.getElementById('removeImageBtn').classList.add('hidden');
-
-        document.querySelectorAll('.like-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const icon = btn.querySelector('i.fa-heart');
-                icon.classList.toggle('far');
-                icon.classList.toggle('fas');
-                icon.classList.toggle('liked');
-            });
-        });
-
         document.querySelectorAll('.like-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const postId = this.dataset.postId;
@@ -412,21 +645,21 @@
             const seconds = Math.floor((now - commentDate) / 1000);
 
             let interval = Math.floor(seconds / 31536000);
-            if (interval > 1) return interval + " tahun yang lalu";
+            if (interval > 1) return interval + " years ago";
 
             interval = Math.floor(seconds / 2592000);
-            if (interval > 1) return interval + " bulan yang lalu";
+            if (interval > 1) return interval + " months ago";
 
             interval = Math.floor(seconds / 86400);
-            if (interval > 1) return interval + " hari yang lalu";
+            if (interval > 1) return interval + " days ago";
 
             interval = Math.floor(seconds / 3600);
-            if (interval > 1) return interval + " jam yang lalu";
+            if (interval > 1) return interval + " hours ago";
 
             interval = Math.floor(seconds / 60);
-            if (interval > 1) return interval + " menit yang lalu";
+            if (interval > 1) return interval + " minutes ago";
 
-            return "baru saja";
+            return "just now";
         }
 
         function loadComments(postId) {
@@ -448,27 +681,58 @@
                         const timeAgoText = timeAgo(comment.created_at);
 
                         const html = `
-                    <div class="flex items-start gap-3">
-                        <div class="avatar">
-                            <div class="w-10 rounded-full">
-                                <img src="${profilePic}" />
+                            <div class="comment-item">
+                                <div class="fixed-avatar">
+                                    <img src="${profilePic}" />
+                                </div>
+                                <div class="comment-content-wrapper">
+                                    <div class="comment-meta">
+                                        <span class="comment-username">${user.username}</span>
+                                        <span class="comment-time">${timeAgoText}</span>
+                                    </div>
+                                    <div class="comment-text ${comment.comment.length > 100 ? 'comment-content collapsed' : ''}">${comment.comment}</div>
+                                    ${comment.comment.length > 100 ? '<button class="read-more-btn">Read more</button>' : ''}
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-sm">${user.username} <span class="text-xs text-gray-400">· ${timeAgoText}</span></p>
-                            <p class="text-sm text-gray-700">${comment.comment}</p>
-                        </div>
-                    </div>
-                `;
-                        commentList.innerHTML += html;
+                        `;
+                        commentList.insertAdjacentHTML('beforeend', html);
+                    });
+
+                    // Add event listeners to comment read more buttons
+                    document.querySelectorAll('#commentList .read-more-btn').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const content = this.previousElementSibling;
+                            content.classList.toggle('collapsed');
+                            this.textContent = content.classList.contains('collapsed') ? 'Read more' : 'Show less';
+                        });
                     });
                 });
         }
 
         const commentModal = document.getElementById('commentModal');
 
+        // Add character counter for comments
+        const commentTextarea = document.querySelector('#commentForm textarea');
+        if (commentTextarea) {
+            commentTextarea.addEventListener('input', function() {
+                const charCount = this.value.length;
+                document.getElementById('commentCharCount').textContent = charCount;
+            });
+        }
+
         document.getElementById('commentForm').addEventListener('submit', function(e) {
             e.preventDefault();
+
+            const commentText = this.querySelector('textarea').value;
+            if (commentText.trim().length === 0) {
+                alert('Comment cannot be empty');
+                return;
+            }
+            
+            if (commentText.length > 2000) {
+                alert('Comment cannot exceed 2000 characters');
+                return;
+            }
 
             const form = this;
             const url = form.action;
@@ -486,7 +750,8 @@
                 .then(data => {
                     if (data.success) {
                         form.reset();
-                        commentModal.close();
+                        document.getElementById('commentCharCount').textContent = '0';
+                        loadComments(data.post_id || document.querySelector('.comment-btn').dataset.postId);
                     }
                 });
         });
@@ -496,8 +761,8 @@
                 const postId = this.dataset.postId;
                 const postUrl = `${window.location.origin}/posts/${postId}`;
                 const shareData = {
-                    title: 'Lihat Postingan Ini',
-                    text: 'Cek postingan keren di GomiTorakka!',
+                    title: 'Check out this post',
+                    text: 'See this interesting post on GomiTorakka!',
                     url: postUrl
                 };
 
@@ -509,30 +774,29 @@
                         console.error('Share failed:', err.message);
                     }
                 } else {
-                    // fallback
                     navigator.clipboard.writeText(postUrl).then(() => {
-                        alert("Link disalin ke clipboard!");
+                        alert("Link copied to clipboard!");
                     });
                 }
             });
         });
 
         function toggleDropdown(postId) {
-            // Sembunyikan semua dropdown lain
+            // Hide all other dropdowns
             document.querySelectorAll('[id^="dropdown-"]').forEach(drop => {
                 if (!drop.id.endsWith(postId)) {
                     drop.classList.add('hidden');
                 }
             });
 
-            // Toggle dropdown yang diklik
+            // Toggle clicked dropdown
             const dropdown = document.getElementById('dropdown-' + postId);
             if (dropdown) {
                 dropdown.classList.toggle('hidden');
             }
         }
 
-        // Klik di luar dropdown akan menutup semua
+        // Click outside dropdown will close all
         document.addEventListener('click', function(event) {
             const isDropdownButton = event.target.matches('button[onclick^="toggleDropdown"]');
             if (!isDropdownButton) {
