@@ -59,7 +59,7 @@
         <section class="mb-16">
             <div class="flex flex-col md:flex-row gap-8 items-center">
                 <div class="md:w-1/2">
-                    <img src="https://images.unsplash.com/photo-1565402170291-8491f14678db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80"
                         alt="Smart Waste Management"
                         class="rounded-lg shadow-lg w-full">
                 </div>
