@@ -26,7 +26,6 @@
     @endif
 
     <style>
-
         .profile-picture-container {
             position: relative;
             width: 15rem;
@@ -63,7 +62,7 @@
             width: 100%;
             height: 100%;
             transition: all 0.3s ease-in-out;
-            
+
         }
 
         .profile-picture-container label {
@@ -214,6 +213,7 @@
     <div class="flex justify-center items-center py-22">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
             <form class="flex flex-col" enctype="multipart/form-data" method="POST" action="{{ route('profile.update') }}">
+                <h1 class="text-4xl font-semibold text-gray-800 mb-6 text-center">Profile</h1>
                 @if($errors->any())
                 <div class="alert alert-error mb-4">
                     <ul>
@@ -225,12 +225,11 @@
                 @endif
 
                 @if(session('success'))
-                <div class="alert alert-success mb-4">
+                <div id="myAlert" class="alert alert-success mb-4 text-white">
                     {{ session('success') }}
                 </div>
                 @endif
                 @csrf
-                <h1 class="text-4xl font-semibold text-gray-800 mb-6 text-center">Profile</h1>
 
                 <div class="flex flex-col md:flex-row gap-8 ">
                     <!-- Left Column - Profile Picture -->
@@ -408,6 +407,14 @@
                 icon.innerHTML = '<i class="far fa-copy"></i>';
             }, 2000);
         }
+
+        setTimeout(function() {
+            const alert = document.getElementById('myAlert');
+            if (alert) {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0'; // jadi transparan
+            }
+        }, 3000); // setelah 3 detik
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
