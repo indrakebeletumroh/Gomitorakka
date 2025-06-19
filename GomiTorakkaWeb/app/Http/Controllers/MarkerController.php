@@ -135,7 +135,7 @@ class MarkerController extends Controller
         Inbox::create([
             'user_id' => $marker->uid,
             'marker_id' => $marker->marker_id,
-            'title' => 'Status Permintaan Marker',
+            'title' => 'Status Request Marker',
             'message' => $message,
             'status' => 'unread',
         ]);

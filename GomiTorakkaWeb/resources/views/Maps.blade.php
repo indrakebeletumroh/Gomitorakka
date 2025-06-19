@@ -2,6 +2,8 @@
 <html data-theme="emerald">
 
 <head>
+    <meta name="is-logged-in" content="{{ session()->has('uid') ? 'true' : 'false' }}">
+
     <title>Waste Management Map - GomiTorakka</title>
     <link rel="icon" href="{{ asset('images/restuIcon.ico') }}" type="image/x-icon">
 
@@ -723,8 +725,14 @@
             document.getElementById('map').classList.remove('crosshair-cursor');
         }
 
-        // Add marker button
+        const isLoggedIn = document.querySelector('meta[name="is-logged-in"]').getAttribute('content') === 'true';
+
         document.getElementById('btn-tambah-marker').addEventListener('click', () => {
+            if (!isLoggedIn) {
+                window.location.href = '/login'; // arahkan ke halaman login
+                return;
+            }
+
             isAddingMarker = true;
             document.getElementById('map').classList.add('crosshair-cursor');
             document.getElementById('infoText').textContent = 'Click on map to add waste point';
@@ -735,11 +743,16 @@
             }, 3000);
         });
 
+
+
         // Map click handler
         map.on('click', function(e) {
             if (!isAddingMarker) return;
 
-            const { lat, lng } = e.latlng;
+            const {
+                lat,
+                lng
+            } = e.latlng;
             selectedLatLng = e.latlng;
 
             // Remove previous temp marker if exists
@@ -798,54 +811,54 @@
             }
 
             fetch("/markers", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify({
-                    latitude: selectedLatLng.lat,
-                    longitude: selectedLatLng.lng,
-                    description: markerData.description,
-                    image: markerData.image
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        latitude: selectedLatLng.lat,
+                        longitude: selectedLatLng.lng,
+                        description: markerData.description,
+                        image: markerData.image
+                    })
                 })
-            })
-            .then(async response => {
-                const contentType = response.headers.get("content-type");
-                if (contentType && contentType.indexOf("application/json") !== -1) {
-                    return response.json();
-                } else {
-                    const text = await response.text();
-                    throw new Error(text.includes('<!DOCTYPE html>') ? 
-                        'Anda perlu login terlebih dahulu' : text);
-                }
-            })
-            .then(data => {
-                if (!data.latitude || !data.longitude) {
-                    throw new Error('Invalid marker data from server');
-                }
+                .then(async response => {
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.indexOf("application/json") !== -1) {
+                        return response.json();
+                    } else {
+                        const text = await response.text();
+                        throw new Error(text.includes('<!DOCTYPE html>') ?
+                            'Anda perlu login terlebih dahulu' : text);
+                    }
+                })
+                .then(data => {
+                    if (!data.latitude || !data.longitude) {
+                        throw new Error('Invalid marker data from server');
+                    }
 
-                const newMarker = L.marker([data.latitude, data.longitude], {
-                    icon: createTempatSampahIcon(data.status)
-                }).addTo(tempatSampahLayer);
+                    const newMarker = L.marker([data.latitude, data.longitude], {
+                        icon: createTempatSampahIcon(data.status)
+                    }).addTo(tempatSampahLayer);
 
-                newMarker.description = data.description;
-                newMarker.status = data.status;
-                newMarker.image = data.image;
+                    newMarker.description = data.description;
+                    newMarker.status = data.status;
+                    newMarker.image = data.image;
 
-                newMarker.on("click", function() {
-                    showMarkerDetails(data);
+                    newMarker.on("click", function() {
+                        showMarkerDetails(data);
+                    });
+
+                    closeDrawer();
+                })
+                .catch(error => {
+                    console.error("Error saving marker:", error);
+                    alert("Gagal menyimpan marker: " + error.message);
+                })
+                .finally(() => {
+                    hideLoading();
                 });
-
-                closeDrawer();
-            })
-            .catch(error => {
-                console.error("Error saving marker:", error);
-                alert("Gagal menyimpan marker: " + error.message);
-            })
-            .finally(() => {
-                hideLoading();
-            });
         }
 
         // Image upload handler
@@ -875,41 +888,41 @@
             formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
 
             fetch('/upload-marker-image', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => {
-                        throw new Error(err.message || 'Server error');
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success && data.filename) {
-                    document.getElementById('croppedImageFilename').value = data.filename;
-                    
-                    // Show preview
-                    const previewContainer = document.getElementById('imagePreviewContainer');
-                    const imagePreview = document.getElementById('imagePreview');
-                    imagePreview.src = data.path;
-                    previewContainer.style.display = 'block';
-                } else {
-                    throw new Error(data.message || 'Upload gambar gagal');
-                }
-            })
-            .catch(error => {
-                console.error('Error uploading image:', error);
-                alert('Gagal mengupload gambar: ' + (error.message || 'Terjadi kesalahan'));
-            })
-            .finally(() => {
-                hideLoading();
-            });
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.message || 'Server error');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success && data.filename) {
+                        document.getElementById('croppedImageFilename').value = data.filename;
+
+                        // Show preview
+                        const previewContainer = document.getElementById('imagePreviewContainer');
+                        const imagePreview = document.getElementById('imagePreview');
+                        imagePreview.src = data.path;
+                        previewContainer.style.display = 'block';
+                    } else {
+                        throw new Error(data.message || 'Upload gambar gagal');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error uploading image:', error);
+                    alert('Gagal mengupload gambar: ' + (error.message || 'Terjadi kesalahan'));
+                })
+                .finally(() => {
+                    hideLoading();
+                });
         });
 
         // Close drawer when clicking outside
