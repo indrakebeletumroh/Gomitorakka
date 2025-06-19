@@ -11,40 +11,6 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
-@plugin "tailwindcss-motion", "daisyui/theme" {
-  name: "gremerald";
-  default: false;
-  prefersdark: false;
-  color-scheme: "light";
-  --color-base-100: oklch(96% 0.007 247.896);
-  --color-base-200: oklch(100% 0 0);
-  --color-base-300: oklch(96% 0.044 156.743);
-  --color-base-content: oklch(21% 0.034 264.665);
-  --color-primary: oklch(87% 0.15 154.449);
-  --color-primary-content: oklch(0% 0 0);
-  --color-secondary: oklch(100% 0 0);
-  --color-secondary-content: oklch(0% 0 0);
-  --color-accent: oklch(87% 0.15 154.449);
-  --color-accent-content: oklch(0% 0 0);
-  --color-neutral: oklch(12% 0.042 264.695);
-  --color-neutral-content: oklch(98% 0.003 247.858);
-  --color-info: oklch(84% 0.143 164.978);
-  --color-info-content: oklch(0% 0 0);
-  --color-success: oklch(90% 0.093 164.15);
-  --color-success-content: oklch(27% 0.072 132.109);
-  --color-warning: oklch(75% 0.183 55.934);
-  --color-warning-content: oklch(0% 0 0);
-  --color-error: oklch(70% 0.191 22.216);
-  --color-error-content: oklch(25% 0.092 26.042);
-  --radius-selector: 0.25rem;
-  --radius-field: 0.5rem;
-  --radius-box: 0.5rem;
-  --size-selector: 0.25rem;
-  --size-field: 0.25rem;
-  --border: 1px;
-  --depth: 1;
-  --noise: 0;
-}
-;
+
 
   

@@ -50,7 +50,7 @@ Route::middleware([CheckLogin::class])->group(function () {
 
     Route::post('/markers', [MarkerController::class, 'store']);
     Route::post('/markers/{id}/status', [MarkerController::class, 'updateStatus']);
-
+    Route::post('/upload-marker-image', [MarkerController::class, 'uploadImage']);
     // Post & Like
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
     Route::post('/posts/{post}/like', [PostController::class, 'toggleLike'])->name('posts.like');

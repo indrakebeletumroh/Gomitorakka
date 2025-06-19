@@ -13,6 +13,7 @@ class CreateMarkersTable extends Migration
             $table->unsignedBigInteger('uid'); // tetap simpan uid sebagai kolom relasi manual
             $table->decimal('latitude', 10, 7);
             $table->decimal('longitude', 10, 7);
+            $table->string('image')->nullable();
             $table->string('description')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->text('admin_note')->nullable();
