@@ -47,6 +47,8 @@
         body {
             font-family: 'Instrument Sans', 'Roboto', sans-serif;
             overflow-x: hidden;
+            margin: 0;
+            padding: 0;
         }
 
         #map {
@@ -72,15 +74,12 @@
         .map-controls {
             position: absolute;
             bottom: 20px;
-            /* ubah dari top ke bottom */
             left: 20px;
-            /* ubah dari right ke left */
             z-index: 1000;
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-
 
         .map-btn {
             width: 50px;
@@ -99,7 +98,7 @@
         }
 
         .map-btn:hover {
-            transform: translateY(-3px) scale(1.1);
+            transform: translateY(-3px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
             background: var(--primary-color);
             color: white;
@@ -306,8 +305,8 @@
             }
 
             .map-controls {
-                top: 10px;
-                right: 10px;
+                bottom: 10px;
+                left: 10px;
             }
 
             .map-btn {
@@ -315,6 +314,99 @@
                 height: 44px;
                 font-size: 18px;
             }
+
+            #markerFormDrawer {
+                width: 85%;
+                left: -85%;
+            }
+        }
+
+        /* Form drawer styles */
+        #markerFormOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1999;
+        }
+
+        #markerFormDrawer {
+            position: fixed;
+            top: 0;
+            left: -400px;
+            width: 350px;
+            height: 100%;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            padding: 20px;
+            transition: left 0.3s ease-in-out;
+            overflow-y: auto;
+        }
+
+        #markerStatus {
+            margin: 10px 0 20px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: 600;
+            color: white;
+            width: fit-content;
+        }
+
+        #markerDesc {
+            width: 100%;
+            margin: 10px 0 20px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .drawer-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .drawer-btn {
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .drawer-btn-cancel {
+            background-color: #ccc;
+            color: #333;
+        }
+
+        .drawer-btn-submit {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Image preview */
+        .image-preview-container {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .image-preview-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
         }
     </style>
 </head>
@@ -322,13 +414,13 @@
 <body>
     @include('layouts.navbar')
 
-    <div class="container mx-auto px-4 py-8 animate_animated animate_fadeIn">
+    <div class="container mx-auto px-4 py-8 animate__animated animate__fadeIn">
         <div class="text-center mb-8">
             <h1 class="text-4xl font-bold text-gray-800 mb-2">Waste Management Map</h1>
             <p class="text-lg text-gray-600">Track and manage waste collection points in your area</p>
         </div>
 
-        <div class="map-container animate_animated animate_fadeInUp">
+        <div class="map-container animate__animated animate__fadeInUp">
             <!-- Loading Overlay -->
             <div class="loading-overlay" id="loadingOverlay">
                 <div class="loading-spinner"></div>
@@ -348,22 +440,47 @@
             <div id="map"></div>
 
             <!-- Info Box -->
-            <div id="infoBox" class="animate_animated animate_fadeIn">
+            <div id="infoBox" class="animate__animated animate__fadeIn">
                 <i class="fas fa-trash-alt"></i>
                 <span id="infoText">Waste Collection Point</span>
             </div>
 
-            <div id="markerFormOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; background: rgba(0,0,0,0.3); z-index: 1999;">
-                <div id="markerFormDrawer" style="position: fixed; top: 0; left: -400px; width: 350px; height: 100%; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.3); z-index: 2000; padding: 20px; transition: left 0.3s ease-in-out;">
-                    <label>Status:</label><br>
-                    <div id="markerStatus" style="margin: 10px 0 20px 0; padding: 10px; border-radius: 5px; font-weight: 600; color: white; width: fit-content;">
-                        <!-- status text & warna akan di-set lewat JS -->
+            <!-- Marker Form Drawer -->
+            <div id="markerFormOverlay">
+                <div id="markerFormDrawer">
+                    <h3 class="text-xl font-bold mb-4">Waste Point Details</h3>
+
+                    <label>Status:</label>
+                    <!-- Image preview container -->
+                    <div class="image-preview-container" id="imagePreviewContainer">
+                        <div class="image-preview-title">Image Preview:</div>
+                        <img id="imagePreview" class="image-preview" />
                     </div>
-                    <label for="markerDesc">Deskripsi:</label>
-                    <textarea id="markerDesc" placeholder="Contoh: Dekat pos ronda" style="width: 100%; margin: 10px 0 20px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px; resize: vertical; min-height: 300px;"></textarea>
-                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                        <button id="cancelDrawerBtn" style="background-color: #ccc; border: none; padding: 10px 15px; border-radius: 5px;">Batal</button>
-                        <button id="submitDrawerBtn" style="background-color: #4CAF50; color: white; border: none; padding: 10px 15px; border-radius: 5px;">Simpan</button>
+                    <div id="markerStatus">
+                        <!-- Status will be set via JS -->
+                    </div>
+
+                    <label for="markerDesc">Description:</label>
+                    <textarea id="markerDesc" placeholder="e.g., Near the guard post"></textarea>
+
+                    <div class="mb-4">
+                        <label for="imageInput" class="block text-sm font-medium text-gray-700 mb-1">Upload Marker Image</label>
+                        <label for="imageInput" class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                <svg class="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                                </svg>
+                                <p class="text-sm text-gray-500">Click to upload</p>
+                            </div>
+                            <input id="imageInput" type="file" accept="image/*" class="hidden" />
+                        </label>
+                    </div>
+
+                    <input type="hidden" id="croppedImageFilename" />
+
+                    <div class="drawer-footer">
+                        <button id="cancelDrawerBtn" class="drawer-btn drawer-btn-cancel">Cancel</button>
+                        <button id="submitDrawerBtn" class="drawer-btn drawer-btn-submit">Save</button>
                     </div>
                 </div>
             </div>
@@ -373,6 +490,7 @@
     @include('layouts.footer')
 
     <script>
+        // Initialize map
         var map = L.map('map', {
             center: [-6.7342685, 108.5380800],
             zoom: 15,
@@ -384,63 +502,146 @@
         var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}').addTo(map);
         var openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
 
-        // Layer tempat sampah
+        // Waste collection layer
         var tempatSampahLayer = L.layerGroup().addTo(map);
         var overlays = {
-            "Tempat Sampah Umum": tempatSampahLayer
+            "Waste Collection Points": tempatSampahLayer
         };
 
-        // Kontrol layer
+        // Layer control
         L.control.layers({
             "Satellite": satellite,
             "OSM": openStreetMap
         }, overlays).addTo(map);
 
-        // Tambah search lokasi (geocoder)
+        // Add geocoder
         L.Control.geocoder({
             defaultMarkGeocode: true
         }).addTo(map);
 
-        // Icon custom
-        const tempatSampahIcon = L.divIcon({
-            className: '',
-            html: ` 
-                <div style="position: relative; pointer-events: auto; cursor: pointer; width: 20px; height: 20px; background-color: #4CAF50; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 3px rgba(0,0,0,0.5);">
-                    <i class="fa fa-trash" style="color: white; font-size: 10px;"></i>
-                    <div style="position: absolute; bottom: -6px; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid #4CAF50;"></div>
-                </div>
-            `,
-            iconSize: [20, 26],
-            iconAnchor: [10, 26],
-            popupAnchor: [0, -20]
-        });
+        // Custom icon function
+        function createTempatSampahIcon(status) {
+            let color;
+            switch (status) {
+                case "approved":
+                    color = "#4CAF50"; // green
+                    break;
+                case "pending":
+                    color = "#FFC107"; // yellow
+                    break;
+                case "rejected":
+                    color = "#F44336"; // red
+                    break;
+                default:
+                    color = "#9E9E9E"; // gray
+            }
 
-        // Ambil marker dari database
-        fetch("/markers")
-            .then(res => res.json())
-            .then(data => {
-                data.forEach(marker => {
-                    const m = L.marker([marker.latitude, marker.longitude], {
-                        icon: createTempatSampahIcon(marker.status)
-                    }).addTo(tempatSampahLayer);
-
-                    m.description = marker.description || "Tempat Sampah";
-
-                    m.on("click", function() {
-                        selectedLatLng = {
-                            lat: marker.latitude,
-                            lng: marker.longitude
-                        };
-                        descInput.value = m.description;
-                        openDrawer(true, marker.status); // buka drawer mode VIEW + status
-                    });
-
-                });
+            return L.divIcon({
+                className: '',
+                html: `
+                    <div style="position: relative; pointer-events: auto; cursor: pointer; width: 24px; height: 24px; background-color: ${color}; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 5px rgba(0,0,0,0.5);">
+                        <i class="fa fa-trash" style="color: white; font-size: 12px;"></i>
+                        <div style="position: absolute; bottom: -8px; width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 8px solid ${color};"></div>
+                    </div>
+                `,
+                iconSize: [24, 32],
+                iconAnchor: [12, 32],
+                popupAnchor: [0, -25]
             });
+        }
 
+        // Show loading overlay
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('active');
+        }
 
+        // Hide loading overlay
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('active');
+        }
 
-        // Lacak lokasi saya
+        // Fetch markers from server
+        function fetchMarkers() {
+            showLoading();
+            fetch("/markers")
+                .then(res => res.json())
+                .then(data => {
+                    tempatSampahLayer.clearLayers();
+
+                    data.forEach(marker => {
+                        const m = L.marker([marker.latitude, marker.longitude], {
+                            icon: createTempatSampahIcon(marker.status)
+                        }).addTo(tempatSampahLayer);
+
+                        m.description = marker.description || "Waste Collection Point";
+                        m.status = marker.status;
+                        m.image = marker.image || null;
+
+                        m.on("click", function() {
+                            showMarkerDetails(marker);
+                        });
+                    });
+                })
+                .catch(err => {
+                    console.error("Error fetching markers:", err);
+                })
+                .finally(() => {
+                    hideLoading();
+                });
+        }
+
+        // Show marker details in drawer
+        function showMarkerDetails(marker) {
+            selectedMarker = marker;
+
+            // Set drawer content
+            document.getElementById('markerDesc').value = marker.description || '';
+            document.getElementById('croppedImageFilename').value = marker.image || '';
+
+            // Set status display
+            const statusDiv = document.getElementById('markerStatus');
+            let statusText, statusColor;
+
+            switch (marker.status.toLowerCase()) {
+                case 'approved':
+                    statusText = 'Approved';
+                    statusColor = '#4CAF50';
+                    break;
+                case 'pending':
+                    statusText = 'Pending Approval';
+                    statusColor = '#FFC107';
+                    break;
+                case 'rejected':
+                    statusText = 'Rejected';
+                    statusColor = '#F44336';
+                    break;
+                default:
+                    statusText = 'Unknown';
+                    statusColor = '#9E9E9E';
+            }
+
+            statusDiv.textContent = statusText;
+            statusDiv.style.backgroundColor = statusColor;
+
+            // Show image preview if exists
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            const imagePreview = document.getElementById('imagePreview');
+
+            if (marker.image_url) {
+                imagePreview.src = marker.image_url;
+                previewContainer.style.display = 'block';
+            } else if (marker.image) {
+                imagePreview.src = '/storage/marker-images/' + marker.image;
+                previewContainer.style.display = 'block';
+            } else {
+                previewContainer.style.display = 'none';
+            }
+
+            // Open drawer
+            openDrawer(true);
+        }
+
+        // Locate user
         document.getElementById('btn-lacak').addEventListener('click', function() {
             map.locate({
                 setView: true,
@@ -451,7 +652,7 @@
                 const radius = 5;
 
                 L.marker(e.latlng).addTo(map)
-                    .bindPopup("Lokasi Saat Ini").openPopup();
+                    .bindPopup("Your Location").openPopup();
 
                 L.circle(e.latlng, {
                     radius: radius,
@@ -460,191 +661,267 @@
                     fillOpacity: 0.3
                 }).addTo(map);
             });
-
         });
 
+        // Variables
         let isAddingMarker = false;
         let tempMarker = null;
         let selectedLatLng = null;
+        let selectedMarker = null;
 
-        const drawer = document.getElementById("markerFormDrawer");
-        const descInput = document.getElementById("markerDesc");
-        const cancelBtn = document.getElementById("cancelDrawerBtn");
-        const submitBtn = document.getElementById("submitDrawerBtn");
+        // Drawer functions
+        function openDrawer(isViewMode = false) {
+            const drawer = document.getElementById('markerFormDrawer');
+            const overlay = document.getElementById('markerFormOverlay');
+            const descInput = document.getElementById('markerDesc');
+            const statusDiv = document.getElementById('markerStatus');
+            const submitBtn = document.getElementById('submitDrawerBtn');
 
-        function createTempatSampahIcon(status) {
-            let color;
-            switch (status) {
-                case "approved":
-                    color = "#4CAF50"; // hijau
-                    break;
-                case "pending":
-                    color = "#FFC107"; // kuning
-                    break;
-                default:
-                    color = "#FF0000"; // abu-abu
-            }
-
-            return L.divIcon({
-                className: '',
-                html: ` 
-            <div style="position: relative; pointer-events: auto; cursor: pointer; width: 20px; height: 20px; background-color: ${color}; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 3px rgba(0,0,0,0.5);">
-                <i class="fa fa-trash" style="color: white; font-size: 10px;"></i>
-                <div style="position: absolute; bottom: -6px; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid ${color};"></div>
-            </div>
-        `,
-                iconSize: [20, 26],
-                iconAnchor: [10, 26],
-                popupAnchor: [0, -20]
-            });
-        }
-
-        let isViewMode = false;
-
-        function openDrawer(isView = false, status = null) {
-            document.getElementById("markerFormOverlay").style.display = "block";
+            overlay.style.display = 'block';
             setTimeout(() => {
-                drawer.style.left = "0";
-            }, 10); // Delay kecil biar animasi jalan
-
-            isViewMode = isView;
+                drawer.style.left = '0';
+            }, 10);
 
             if (isViewMode) {
+                // View mode - disable editing
                 descInput.readOnly = true;
-                submitBtn.style.display = "none";
-                cancelBtn.style.display = "none";
-
-                // Tampilkan status dengan warna
-                const statusDiv = document.getElementById("markerStatus");
-                if (status) {
-                    let bgColor;
-                    let text;
-                    switch (status.toLowerCase()) {
-                        case "approved":
-                            bgColor = "#4CAF50"; // hijau
-                            text = "Approved";
-                            break;
-                        case "pending":
-                            bgColor = "#FFC107"; // kuning
-                            text = "Pending";
-                            break;
-                        case "rejected":
-                            bgColor = "#F44336"; // merah
-                            text = "Rejected";
-                            break;
-                        default:
-                            bgColor = "#888";
-                            text = "Unknown";
-                    }
-                    statusDiv.style.backgroundColor = bgColor;
-                    statusDiv.textContent = text;
-                    statusDiv.style.display = "block";
-                } else {
-                    statusDiv.style.display = "none";
-                }
+                document.getElementById('imageInput').disabled = true;
+                submitBtn.style.display = 'none';
+                statusDiv.style.display = 'block';
             } else {
+                // Edit/Add mode - enable editing
                 descInput.readOnly = false;
-                submitBtn.style.display = "inline-block";
-                cancelBtn.style.display = "inline-block";
-
-                // Sembunyikan status kalau form input baru
-                const statusDiv = document.getElementById("markerStatus");
-                statusDiv.style.display = "none";
-
-                descInput.value = "";
+                document.getElementById('imageInput').disabled = false;
+                submitBtn.style.display = 'block';
+                statusDiv.style.display = 'none';
+                document.getElementById('imagePreviewContainer').style.display = 'none';
             }
         }
 
-
         function closeDrawer() {
-            drawer.style.left = "-400px";
-            setTimeout(() => {
-                document.getElementById("markerFormOverlay").style.display = "none";
-            }, 300); // Tunggu animasi selesai
+            const drawer = document.getElementById('markerFormDrawer');
+            const overlay = document.getElementById('markerFormOverlay');
 
+            drawer.style.left = '-400px';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 300);
+
+            // Reset form
+            document.getElementById('markerDesc').value = '';
+            document.getElementById('imageInput').value = '';
+            document.getElementById('croppedImageFilename').value = '';
+            document.getElementById('imagePreviewContainer').style.display = 'none';
+
+            // Cleanup
             if (tempMarker) {
                 map.removeLayer(tempMarker);
                 tempMarker = null;
             }
-            selectedLatLng = null;
+
             isAddingMarker = false;
-            isViewMode = false;
             document.getElementById('map').classList.remove('crosshair-cursor');
         }
 
-
-
+        // Add marker button
         document.getElementById('btn-tambah-marker').addEventListener('click', () => {
             isAddingMarker = true;
             document.getElementById('map').classList.add('crosshair-cursor');
+            document.getElementById('infoText').textContent = 'Click on map to add waste point';
+            document.getElementById('infoBox').style.display = 'flex';
+
+            setTimeout(() => {
+                document.getElementById('infoBox').style.display = 'none';
+            }, 3000);
         });
 
+        // Map click handler
         map.on('click', function(e) {
             if (!isAddingMarker) return;
 
-            const {
-                lat,
-                lng
-            } = e.latlng;
+            const { lat, lng } = e.latlng;
             selectedLatLng = e.latlng;
 
+            // Remove previous temp marker if exists
+            if (tempMarker) {
+                map.removeLayer(tempMarker);
+            }
+
+            // Create new temp marker
             tempMarker = L.marker([lat, lng], {
                 icon: createTempatSampahIcon("pending")
             }).addTo(tempatSampahLayer);
 
+            // Open form drawer
             openDrawer();
         });
 
-        cancelBtn.addEventListener("click", () => {
+        // Cancel drawer button
+        document.getElementById('cancelDrawerBtn').addEventListener('click', () => {
             closeDrawer();
         });
 
-        submitBtn.addEventListener("click", () => {
-            const desc = descInput.value.trim();
-            if (!desc || !selectedLatLng) {
-                alert("Deskripsi tidak boleh kosong.");
+        // Submit drawer button
+        document.getElementById('submitDrawerBtn').addEventListener('click', () => {
+            const desc = document.getElementById('markerDesc').value.trim();
+            const image = document.getElementById('croppedImageFilename').value;
+
+            if (!desc) {
+                alert("Description is required");
+                return;
+            }
+
+            if (!selectedLatLng) {
+                alert("Please select a location on the map");
+                return;
+            }
+
+            const markerData = {
+                latitude: selectedLatLng.lat,
+                longitude: selectedLatLng.lng,
+                description: desc,
+                status: "pending",
+                image: image
+            };
+
+            saveMarker(markerData);
+        });
+
+        // Save marker to server
+        function saveMarker(markerData) {
+            showLoading();
+
+            if (!selectedLatLng || isNaN(selectedLatLng.lat) || isNaN(selectedLatLng.lng)) {
+                alert('Lokasi tidak valid. Silakan pilih lokasi di peta.');
+                hideLoading();
                 return;
             }
 
             fetch("/markers", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        latitude: selectedLatLng.lat,
-                        longitude: selectedLatLng.lng,
-                        description: desc,
-                        status: "pending"
-                    })
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    latitude: selectedLatLng.lat,
+                    longitude: selectedLatLng.lng,
+                    description: markerData.description,
+                    image: markerData.image
                 })
-                .then(res => res.json())
-                .then(data => {
-                    // Hapus tempMarker lama
-                    if (tempMarker) {
-                        map.removeLayer(tempMarker);
-                        tempMarker = null;
-                    }
+            })
+            .then(async response => {
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    return response.json();
+                } else {
+                    const text = await response.text();
+                    throw new Error(text.includes('<!DOCTYPE html>') ? 
+                        'Anda perlu login terlebih dahulu' : text);
+                }
+            })
+            .then(data => {
+                if (!data.latitude || !data.longitude) {
+                    throw new Error('Invalid marker data from server');
+                }
 
-                    // Tutup drawer dan reset form
-                    closeDrawer();
+                const newMarker = L.marker([data.latitude, data.longitude], {
+                    icon: createTempatSampahIcon(data.status)
+                }).addTo(tempatSampahLayer);
 
-                    // Refresh halaman
-                    location.reload();
-                })
-                .catch(err => {
-                    alert("Gagal menyimpan marker.");
-                    console.error(err);
+                newMarker.description = data.description;
+                newMarker.status = data.status;
+                newMarker.image = data.image;
+
+                newMarker.on("click", function() {
+                    showMarkerDetails(data);
                 });
+
+                closeDrawer();
+            })
+            .catch(error => {
+                console.error("Error saving marker:", error);
+                alert("Gagal menyimpan marker: " + error.message);
+            })
+            .finally(() => {
+                hideLoading();
+            });
+        }
+
+        // Image upload handler
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Validasi tipe file
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+            if (!validImageTypes.includes(file.type)) {
+                alert('Hanya file JPG, PNG, atau GIF yang diizinkan');
+                this.value = '';
+                return;
+            }
+
+            // Validasi ukuran file (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Ukuran file maksimal 2MB');
+                this.value = '';
+                return;
+            }
+
+            showLoading();
+
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+
+            fetch('/upload-marker-image', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Server error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success && data.filename) {
+                    document.getElementById('croppedImageFilename').value = data.filename;
+                    
+                    // Show preview
+                    const previewContainer = document.getElementById('imagePreviewContainer');
+                    const imagePreview = document.getElementById('imagePreview');
+                    imagePreview.src = data.path;
+                    previewContainer.style.display = 'block';
+                } else {
+                    throw new Error(data.message || 'Upload gambar gagal');
+                }
+            })
+            .catch(error => {
+                console.error('Error uploading image:', error);
+                alert('Gagal mengupload gambar: ' + (error.message || 'Terjadi kesalahan'));
+            })
+            .finally(() => {
+                hideLoading();
+            });
         });
 
-
-
-        document.getElementById("markerFormOverlay").addEventListener("click", function(e) {
-            if (!drawer.contains(e.target)) {
+        // Close drawer when clicking outside
+        document.getElementById('markerFormOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
                 closeDrawer();
             }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchMarkers();
         });
     </script>
 </body>

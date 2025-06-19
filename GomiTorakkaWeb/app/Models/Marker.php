@@ -10,6 +10,18 @@ class Marker extends Model
 
     protected $primaryKey = 'marker_id'; // kalau kamu pakai custom primary key
 
+    protected $fillable = [
+        'marker_id',
+        'uid',
+        'latitude',
+        'longitude',
+        'description',
+        'status',
+        'admin_note',
+        'image' // Pastikan ini ada
+    ];
+
+
     public function user()
     {
         return $this->belongsTo(User::class, 'uid');

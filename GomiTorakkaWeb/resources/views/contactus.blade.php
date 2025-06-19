@@ -49,7 +49,7 @@
                                 type="text" 
                                 id="name" 
                                 name="name" 
-                                placeholder="John Doe" 
+                                placeholder="Joe" 
                                 class="input input-bordered w-full" 
                                 required
                             >
@@ -63,7 +63,7 @@
                                 type="email" 
                                 id="email" 
                                 name="email" 
-                                placeholder="your@email.com" 
+                                placeholder="example@gmail.com" 
                                 class="input input-bordered w-full" 
                                 required
                             >
