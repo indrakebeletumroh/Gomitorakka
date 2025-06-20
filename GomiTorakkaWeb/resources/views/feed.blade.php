@@ -309,6 +309,8 @@
             margin-bottom: 10px;
             color: #9ca3af;
         }
+
+            
     </style>
 </head>
 
@@ -440,6 +442,7 @@
                             {!! nl2br(e($post->content)) !!}
                         </div>
                         <button class="read-more-btn" data-post-id="{{ $post->post_id }}">Read more</button>
+                        
                     </div>
 
                     <div class="post-actions">

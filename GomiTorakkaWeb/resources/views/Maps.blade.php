@@ -2,6 +2,7 @@
 <html data-theme="emerald">
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="is-logged-in" content="{{ session()->has('uid') ? 'true' : 'false' }}">
 
     <title>Waste Management Map - GomiTorakka</title>
@@ -55,7 +56,7 @@
 
         #map {
             height: 80vh;
-            min-height: 600px;
+            min-height: 400px;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             z-index: 0;
@@ -299,27 +300,93 @@
         }
 
         /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .map-controls {
+                left: 15px;
+                bottom: 15px;
+            }
+            
+            #infoBox {
+                min-width: 180px;
+                padding: 10px 14px;
+                font-size: 0.9rem;
+            }
+        }
+
         @media (max-width: 768px) {
+            .container {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            
+            .map-container {
+                padding: 0;
+            }
+            
             #map {
                 height: 70vh;
-                min-height: 400px;
-                border-radius: 0;
+                min-height: 350px;
+                border-radius: 12px;
             }
-
+            
             .map-controls {
                 bottom: 10px;
                 left: 10px;
+                gap: 8px;
             }
-
+            
             .map-btn {
                 width: 44px;
                 height: 44px;
                 font-size: 18px;
             }
+            
+            #infoBox {
+                top: 70px;
+                bottom: auto;
+                min-width: 160px;
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .text-lg {
+                font-size: 1rem;
+            }
+        }
 
-            #markerFormDrawer {
-                width: 85%;
-                left: -85%;
+        @media (max-width: 576px) {
+            #map {
+                height: 65vh;
+                min-height: 300px;
+                border-radius: 10px;
+            }
+            
+            .map-controls {
+                flex-direction: row;
+                bottom: 10px;
+                left: auto;
+                right: 10px;
+            }
+            
+            #infoBox {
+                top: 60px;
+                min-width: 140px;
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .py-8 {
+                padding-top: 1.5rem;
+                padding-bottom: 1.5rem;
             }
         }
 
@@ -410,6 +477,36 @@
             border-radius: 8px;
             border: 1px solid #ddd;
         }
+        
+        /* Mobile drawer styles */
+        @media (max-width: 768px) {
+            #markerFormDrawer {
+                width: 100%;
+                height: 85%;
+                top: auto;
+                bottom: -85%;
+                left: 0;
+                border-radius: 20px 20px 0 0;
+                transition: bottom 0.3s ease-in-out;
+            }
+            
+            #markerFormDrawer.open {
+                bottom: 0;
+            }
+            
+            #markerFormOverlay {
+                background: rgba(0, 0, 0, 0.3);
+            }
+            
+            .drawer-footer {
+                position: sticky;
+                bottom: 0;
+                background: white;
+                padding: 15px 0;
+                margin-bottom: -20px;
+                margin-top: 25px;
+            }
+        }
     </style>
 </head>
 
@@ -465,7 +562,7 @@
                     <label for="markerDesc">Description:</label>
                     <textarea id="markerDesc" placeholder="e.g., Near the guard post"></textarea>
 
-                    <div class="mb-4">
+                    <div class="mb-4" id="imageUploadSection">
                         <label for="imageInput" class="block text-sm font-medium text-gray-700 mb-1">Upload Marker Image</label>
                         <label for="imageInput" class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
                             <div class="flex flex-col items-center justify-center pt-5 pb-6">
@@ -678,11 +775,16 @@
             const descInput = document.getElementById('markerDesc');
             const statusDiv = document.getElementById('markerStatus');
             const submitBtn = document.getElementById('submitDrawerBtn');
+            const imageUploadSection = document.getElementById('imageUploadSection');
 
             overlay.style.display = 'block';
-            setTimeout(() => {
+            
+            // Mobile drawer handling
+            if (window.innerWidth <= 768) {
+                drawer.classList.add('open');
+            } else {
                 drawer.style.left = '0';
-            }, 10);
+            }
 
             if (isViewMode) {
                 // View mode - disable editing
@@ -690,12 +792,14 @@
                 document.getElementById('imageInput').disabled = true;
                 submitBtn.style.display = 'none';
                 statusDiv.style.display = 'block';
+                imageUploadSection.style.display = 'none';
             } else {
                 // Edit/Add mode - enable editing
                 descInput.readOnly = false;
                 document.getElementById('imageInput').disabled = false;
                 submitBtn.style.display = 'block';
                 statusDiv.style.display = 'none';
+                imageUploadSection.style.display = 'block';
                 document.getElementById('imagePreviewContainer').style.display = 'none';
             }
         }
@@ -704,10 +808,16 @@
             const drawer = document.getElementById('markerFormDrawer');
             const overlay = document.getElementById('markerFormOverlay');
 
-            drawer.style.left = '-400px';
-            setTimeout(() => {
+            // Mobile drawer handling
+            if (window.innerWidth <= 768) {
+                drawer.classList.remove('open');
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 300);
+            } else {
+                drawer.style.left = '-400px';
                 overlay.style.display = 'none';
-            }, 300);
+            }
 
             // Reset form
             document.getElementById('markerDesc').value = '';
@@ -729,7 +839,26 @@
 
         document.getElementById('btn-tambah-marker').addEventListener('click', () => {
             if (!isLoggedIn) {
-                window.location.href = '/login'; // arahkan ke halaman login
+                // Create a modal to prompt login
+                const loginModal = document.createElement('div');
+                loginModal.className = 'fixed inset-0 bg-black bg-opacity-50 z-3000 flex items-center justify-center p-4';
+                loginModal.innerHTML = `
+                    <div class="bg-white rounded-lg p-6 max-w-sm w-full animate__animated animate__fadeInDown">
+                        <h3 class="text-xl font-bold mb-4">Login Required</h3>
+                        <p class="mb-5">You need to be logged in to add waste points.</p>
+                        <div class="flex justify-end gap-3">
+                            <button class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300" id="cancelLogin">Cancel</button>
+                            <a href="/login" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Go to Login</a>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(loginModal);
+                
+                // Add event to close modal
+                document.getElementById('cancelLogin').addEventListener('click', () => {
+                    loginModal.remove();
+                });
+                
                 return;
             }
 
@@ -742,8 +871,6 @@
                 document.getElementById('infoBox').style.display = 'none';
             }, 3000);
         });
-
-
 
         // Map click handler
         map.on('click', function(e) {
@@ -935,6 +1062,22 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             fetchMarkers();
+            
+            // Adjust drawer position on window resize
+            window.addEventListener('resize', function() {
+                const drawer = document.getElementById('markerFormDrawer');
+                const overlay = document.getElementById('markerFormOverlay');
+                
+                if (overlay.style.display === 'block') {
+                    if (window.innerWidth <= 768) {
+                        drawer.classList.add('open');
+                        drawer.style.left = '0';
+                    } else {
+                        drawer.classList.remove('open');
+                        drawer.style.left = '0';
+                    }
+                }
+            });
         });
     </script>
 </body>
