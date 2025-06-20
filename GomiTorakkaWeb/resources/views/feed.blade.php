@@ -347,10 +347,10 @@
                             class="textarea textarea-bordered w-full bg-gray-100 text-gray-800"
                             rows="3"
                             placeholder="Write your comment here..."
-                            maxlength="2000"
+                            maxlength="400"
                             required></textarea>
                         <div class="text-right text-xs text-gray-500 mt-1">
-                            <span id="commentCharCount">0</span>/2000 characters
+                            <span id="commentCharCount">0</span>/400 characters
                         </div>
                     </div>
                 </div>
@@ -373,9 +373,9 @@
                 <div class="flex-1">
                     <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data" id="postForm">
                         @csrf
-                        <textarea name="content" id="postContent" rows="3" class="textarea textarea-bordered w-full mb-4" placeholder="What's on your mind?" maxlength="4000" required>{{ old('content') }}</textarea>
+                        <textarea name="content" id="postContent" rows="3" class="textarea textarea-bordered w-full mb-4" placeholder="What's on your mind?" maxlength="300" required>{{ old('content') }}</textarea>
                         <div class="text-right text-xs text-gray-500 mb-4">
-                            <span id="postCharCount">0</span>/4000 characters
+                            <span id="postCharCount">0</span>/300 characters
                         </div>
 
                         <div class="mb-4">
