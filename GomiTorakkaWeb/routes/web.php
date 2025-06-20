@@ -88,4 +88,6 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::post('/inbox/mark-as-read', [InboxController::class, 'markAsRead']);
 
     Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
+
+    Route::post('/inbox/mark-all-as-read', [InboxController::class, 'markAllAsRead']);
 });

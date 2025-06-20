@@ -50,4 +50,19 @@ class InboxController extends Controller
         return response()->json($inbox);
     }
 
+    public function markAllAsRead(Request $request)
+    {
+        $uid = session('uid');
+
+        if (!$uid) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        // Hapus semua pesan yang belum dibaca
+        \App\Models\Inbox::where('user_id', $uid)
+            ->where('status', 'unread')
+            ->delete();
+
+        return response()->json(['message' => 'All unread messages deleted.']);
+    }
 }

@@ -1,4 +1,5 @@
 <!-- Navbar -->
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <nav id="navbar" class="navbar sticky top-0 left-0 right-0 z-50 bg-base-100 transition-all duration-300 shadow-md relative">
   <div class="flex items-center justify-between w-full px-8">
     <!-- Burger Menu Button -->
@@ -49,7 +50,7 @@
 
         <i class="fas fa-inbox"></i>
         @if ($unreadCount > 0)
-        <span class="badge badge-sm badge-error absolute top-0 right-0 bg-green-600 border-green-600">
+        <span id="notifBadge" class="badge badge-sm badge-error absolute top-0 right-0 bg-green-600 border-green-600">
           {{ $unreadCount }}
         </span>
         @endif
@@ -142,27 +143,35 @@
         panel.classList.remove('opacity-0', 'translate-y-5');
       }, 10);
 
-      // Ambil data inbox dari server
       try {
         const response = await fetch(`/api/inbox`);
         const data = await response.json();
 
-        // Render pesan ke dalam list
         if (data.length === 0) {
           inboxList.innerHTML = '<li class="text-gray-500">No message.</li>';
         } else {
-          inboxList.innerHTML = data.map(item => {
-            const isRejected = item.message.includes("Your Request Is Rejected By Admin.");
-            const bgColor = isRejected ? "bg-red-100 border-red-100 hover:bg-red-50" : "bg-green-50 border-green-100 hover:bg-green-100";
+          const messagesHtml = data.map(item => {
+            const isRejected = item.message.toLowerCase().includes("rejected");
+            const bgColor = isRejected ?
+              "bg-red-100 border-red-100 hover:bg-red-50" :
+              "bg-green-50 border-green-100 hover:bg-green-100";
 
             return `
-              <li class="${bgColor} p-3 rounded-lg border transition-colors">
-                <div class="font-semibold">${item.title}</div>
-                <div class="text-sm text-gray-700">${item.message}</div>
-              </li>
-            `;
+            <li class="${bgColor} p-3 rounded-lg border transition-colors">
+              <div class="font-semibold">${item.title}</div>
+              <div class="text-sm text-gray-700">${item.message}</div>
+            </li>
+          `;
           }).join('');
 
+          inboxList.innerHTML = `
+          <li class="mb-2 flex justify-between items-center">
+            <button onclick="markAllAsRead()" class="text-sm text-blue-600 hover:underline">
+              Mark All as Read
+            </button>
+          </li>
+          ${messagesHtml}
+        `;
         }
       } catch (error) {
         inboxList.innerHTML = '<li class="text-red-500">Failed to load message.</li>';
@@ -209,6 +218,34 @@
       }
     });
   });
+
+  function markAllAsRead() {
+    fetch('/inbox/mark-all-as-read', {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.message);
+
+        // Hapus elemen badge notifikasi
+        const notifBadge = document.getElementById('notifBadge');
+        if (notifBadge) {
+          notifBadge.remove();
+        }
+
+        // Refresh isi inbox
+        toggleInbox();
+        setTimeout(() => toggleInbox(), 400);
+      })
+      .catch(error => {
+        console.error('Error saat markAllAsRead:', error);
+      });
+  }
 </script>
 
 <!-- Tailwind CSS Animations -->
