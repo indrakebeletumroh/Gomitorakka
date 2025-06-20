@@ -84,6 +84,13 @@
                         {{ session('deactivated') }}
                     </div>
                     @endif
+                    @if ($errors->has('login'))
+                    <div id="error-message" style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 10px; border: 1px solid #f5c6cb; transition: opacity 0.5s ease;">
+                        {{ $errors->first('login') }}
+                    </div>
+                    @endif
+
+
 
                     <div class="space-y-6">
                         <div>
@@ -149,6 +156,18 @@
                     btn.classList.remove('animate__animated', 'animate__pulse');
                 }, 1000);
             });
+        });
+        // Tunggu sampai halaman selesai dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            const errorBox = document.getElementById('error-message');
+            if (errorBox) {
+                setTimeout(() => {
+                    errorBox.style.opacity = '0';
+                    setTimeout(() => {
+                        errorBox.style.display = 'none';
+                    }, 500); // tunggu animasi fade out selesai
+                }, 5000); // tampil selama 3 detik
+            }
         });
     </script>
 </body>
