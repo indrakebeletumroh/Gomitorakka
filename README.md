@@ -5,6 +5,9 @@
 GOMITORAKKA (ゴミトラッカ) adalah aplikasi berbasis web yang membantu pengguna dalam menemukan lokasi tempat sampah terdekat, melihat kondisi tempat sampah melalui foto, serta memberikan komentar untuk meningkatkan kesadaran lingkungan.
 
 ## Fitur Utama
+  Note : Feed masih dalam pengembangan, beberapa tampilan mungkin agak sedikit broken
+
+## Fitur Utama
 - **Login**  
   Pengguna dapat masuk ke dalam aplikasi menggunakan akun terdaftar.
 
