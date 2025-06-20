@@ -195,7 +195,7 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn-register w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline mt-6">
+                            <button type="submit" class="cursor-pointer btn-register w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline mt-6">
                                 Create Account
                             </button>
                         </div>

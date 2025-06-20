@@ -115,7 +115,7 @@
 
                         </div>
 
-                        <button type="submit" class="btn-login w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline">
+                        <button type="submit" cursor class=" cursor-pointer btn-login w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline">
                             Login
                         </button>
                     </div>
